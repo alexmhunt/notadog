@@ -9,5 +9,5 @@ Oliver Rayner
 
 ### A09 (Mod the sample toy)
 
-Alex - [Gradient Maker](https://github.com/alexmhunt/notadog/blob/gh-pages/Projects/GradientMaker/game.html)
+Alex - [Gradient Maker](https://alexmhunt.github.io/notadog/Projects/GradientMaker/game.html)
 
