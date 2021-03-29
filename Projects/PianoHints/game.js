@@ -44,10 +44,10 @@ PS.init = function( system, options ) {
 	const CREAM = 0xFFFDD0;
 
 	// Array storing title hint names 
-	const STATUSTITLE = ["1.) Shift + Reload to Get Hint","2.) Play some Music",
-	"3.) Volume is the border","4.) Pitch is the shape",
-	"5.) Click to color","6.) Release to erase",
-	"7.) SPACE loathes exit unlike","8.) ENTER Will get rid of SPACE","9.) Clean up BSlime", "10.) Make Something New"]
+	const STATUSTITLE = ["Shift + Reload to Get Hint","Play Some Music",
+	"Volume is The Border","Pitch is The Shape",
+	"Click is to Color","Release is to Erase",
+	"SPACE Loathes Exits Unlike","ENTER Will Get Rid of SPACE","Clean up Slime","Make Something New"]
 
     // Random number generator for Title length
 	var rando = PS.random( STATUSTITLE.length - 1 );
