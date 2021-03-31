@@ -25,7 +25,6 @@ Any value returned is ignored.
 let toyParams = {
 	laserColor : PS.COLOR_RED,
 	lasers : [], // array of laser objects
-	SPEED : 6,
 	fadeRate : 60,
 }
 
@@ -37,11 +36,11 @@ function animate(){
 	// loop through all drops, moving each
 	// according to its heading
 	while (i < len){
-		//PS.debug("animating laser \n")
 		let laser = toyParams.lasers[i];
 		let x = laser.position.x, y = laser.position.y;
 
-		// enable fade again
+		// enable fade again for the
+		// bead the laser is exiting
 		PS.fade(x, y, toyParams.fadeRate);
 
 		// calculate expected position
@@ -60,12 +59,12 @@ function animate(){
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
 			//PS.debug("deleting sprite at " + x + " , " + y + "\n")
-			PS.spriteDelete(laser.sprite)
+			PS.spriteDelete(laser.sprite);
 			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
 			len -= 1; // keep loop in sync
 		}
-		else{
+		else{ // Laser gets to live...for now
 			laser.lifetime -= 1;
 			i += 1;
 		}
@@ -95,7 +94,7 @@ PS.init = function( system, options ) {
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
 	PS.fade(PS.ALL,PS.ALL,toyParams.fadeRate);
 	PS.borderColor(PS.ALL,PS.ALL,0);
-	PS.timerStart(30, animate);
+	PS.timerStart(15, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -128,7 +127,7 @@ PS.touch = function( x, y, data, options ) {
 		color : 0,
 		position : [],
 		heading : 45, // in degrees
-		lifetime : 10 // in ticks
+		lifetime : 30 // in ticks
 	};
 
 	// Create laser at the clicked point
