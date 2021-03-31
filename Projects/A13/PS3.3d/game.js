@@ -22,6 +22,45 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+let toyParams = {
+	laserColor : PS.COLOR_RED,
+	lasers : [], // array of laser objects
+	SPEED : 6,
+}
+
+// Animates all lasers
+function animate(){
+	let len = toyParams.lasers.length;
+	let i = 0;
+
+	// loop through all drops, moving each
+	// according to its heading
+	while (i < len){
+		//PS.debug("animating laser \n")
+		let laser = toyParams.lasers[i];
+		let x = laser.position.x, y = laser.position.y;
+
+		// calculate expected position
+		// placeholder
+		x += 1, y += 1; // down & right
+		if(x > 15){ x = 15;}
+		if(y > 15){ y = 15;}
+		PS.debug("moving sprite to " + x + " , " + y + "\n");
+		laser.position = PS.spriteMove(laser.sprite, x, y);
+
+		if (laser.lifetime === 0){
+			PS.debug("deleting sprite at " + x + " , " + y + "\n")
+			PS.spriteDelete(laser.sprite)
+			toyParams.lasers.splice(i , 1);
+			len -= 1;
+		}
+		else{
+			laser.lifetime--;
+			i += 1;
+		}
+	}
+}
+
 PS.init = function( system, options ) {
 	// Change this string to your team name
 	// Use only ALPHABETIC characters
@@ -40,9 +79,12 @@ PS.init = function( system, options ) {
 	PS.statusText("Be Amazed");
 	// Install additional initialization code
 	// here as needed
-	
+
+	// set up base color and fader, remove borders
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
 	PS.fade(PS.ALL,PS.ALL,60);
+	PS.borderColor(PS.ALL,PS.ALL,0);
+	PS.timerStart(PS.DEFAULT, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -56,8 +98,6 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSave( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : false } );
-
-	PS.borderColor(PS.ALL,PS.ALL,0);
 };
 
 /*
@@ -71,16 +111,24 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-	// Uncomment the following code line
-	// to inspect x/y parameters:
+	// created sprite
+	let laser = {
+		sprite : null,
+		color : 0,
+		position : [],
+		heading : 45, // in degrees
+		lifetime : 10 // in ticks
+	};
 
-	PS.color(x,y,PS.COLOR_RED);
+	// Create laser at the clicked point
+	// PS.color(x,y,PS.COLOR_RED);
+	laser.sprite = PS.spriteSolid(1,1); // create sprite
+	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
+	laser.color = PS.spriteSolidColor(laser.sprite, toyParams.laserColor); // set sprite color
+
+	toyParams.lasers.push(laser);
 
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
-	// Add code here for mouse clicks/touches
-	// over a bead.
-	
 };
 
 /*
