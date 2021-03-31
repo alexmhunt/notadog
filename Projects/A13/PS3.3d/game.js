@@ -23,7 +23,7 @@ Any value returned is ignored.
 */
 
 let toyParams = {
-	laserColor : PS.COLOR_RED,
+	laserColor : 0xFF0000,
 	lasers : [], // array of laser objects
 	fadeRate : 60,
 }
@@ -68,6 +68,7 @@ function animate(){
 		if (laser.lifetime === 0){
 			// PS.debug("deleting sprite at " + x + " , " + y + "\n")
 			PS.spriteDelete(laser.sprite);
+			PS.audioPlay("fx_bloink",{volume:0.25});
 
 			resetBead(laser.position.x, laser.position.y);
 
@@ -102,6 +103,7 @@ function animate(){
 
 			// Bounce laser if it reached one of the edges
 			if((x > 15) || (y > 15) || (x < 0) || (y < 0)){
+				PS.audioPlay("fx_chirp2");
 				bounce(laser, x, y);
 			}
 
@@ -137,7 +139,7 @@ PS.init = function( system, options ) {
 	// Use only ALPHABETIC characters
 	// No numbers, spaces or punctuation!
 
-	const TEAM = "teamname";
+	const TEAM = "NotADOG";
 
 	// Begin with essential setup
 	// Establish initial grid size
@@ -190,6 +192,8 @@ PS.touch = function( x, y, data, options ) {
 		heading : 45, // in degrees
 		lifetime : 60 // in ticks
 	};
+
+	PS.audioPlay("fx_shoot4"); // laser sound on click
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
