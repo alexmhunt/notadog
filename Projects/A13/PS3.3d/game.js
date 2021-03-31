@@ -33,6 +33,21 @@ function animate(){
 	let len = toyParams.lasers.length;
 	let i = 0;
 
+	function bounce(laser){
+		let x = laser.position.x, y = laser.position.y;
+
+	}
+	// Resets a bead's alpha to max and color to black.
+	function resetBead(x, y){
+		PS.alpha(x, y, 255);
+		PS.color(x, y, PS.COLOR_BLACK);
+	}
+	function clamp(val, min, max){
+		if(val > max){ val = max;}
+		else if (val < min){ val = min;}
+		return val;
+	}
+
 	// loop through all drops, moving each
 	// according to its heading
 	while (i < len){
@@ -45,35 +60,54 @@ function animate(){
 		PS.fade(x, y, toyParams.fadeRate);
 
 
-		// calculate expected position
-		// placeholder
+		// calculate expected position based on laser's heading angle
 		let prevPos = [x, y];
-		x += 1, y += 1; // down & right
+		let deltaX = Math.round(1 * Math.sin((laser.heading * Math.PI/180)));
+		let deltaY = Math.round(1 * Math.cos((laser.heading * Math.PI/180)));
+		//PS.debug(deltaX + " , " + deltaY + "\n");
+		if(laser.heading < 0){ // negative angle
+			// negated because sin and cos only return values from [0,1]
+			x -= -1 * deltaX;
+			y -= -1 * deltaY;
+		}
+		else if (laser.heading > 0){ // positive angle
+			x += deltaX;
+			y += deltaY;
+		}
+
+
+		//x += 1, y += 1; // down & right
 
 		// clamp x and y values if they exceed grid dimensions
-		// replace with bouncing code later
-		if(x > 15){ x = 15;}
-		if(y > 15){ y = 15;}
+		x = clamp(x,0, 15);
+		y = clamp(y,0, 15);
 
+		//PS.debug("x = " + x + " y = " + y + "\n");
+		//PS.debug("moving sprite from " + prevPos[0] + " , " + prevPos[1] + "\n");
 		//PS.debug("moving sprite to " + x + " , " + y + "\n");
 		PS.fade(x, y, 0); // temporarily disable fade
 
 		laser.position = PS.spriteMove(laser.sprite, x, y);
-		PS.alpha(prevPos[0], prevPos[1], 255);
-		PS.color(prevPos[0], prevPos[1], PS.COLOR_BLACK);
 
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
 			//PS.debug("deleting sprite at " + x + " , " + y + "\n")
 			PS.spriteDelete(laser.sprite);
+
+			resetBead(x,y)
 			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
 			len -= 1; // keep loop in sync
+
 		}
 		else{ // Laser gets to live...for now
+			// reset color of previous position to black
+			resetBead(prevPos[0], prevPos[1]);
 			laser.lifetime -= 1;
 			i += 1;
 		}
+
+
 	}
 }
 
@@ -100,7 +134,7 @@ PS.init = function( system, options ) {
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
 	PS.fade(PS.ALL,PS.ALL,toyParams.fadeRate);
 	PS.borderColor(PS.ALL,PS.ALL,0);
-	PS.timerStart(15, animate);
+	PS.timerStart(5, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -132,8 +166,8 @@ PS.touch = function( x, y, data, options ) {
 		sprite : null,
 		color : 0,
 		position : [],
-		heading : 45, // in degrees
-		lifetime : 30 // in ticks
+		heading : 90, // in degrees
+		lifetime : 60 // in ticks
 	};
 
 	// Create laser at the clicked point
