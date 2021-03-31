@@ -33,8 +33,17 @@ function animate(){
 	let len = toyParams.lasers.length;
 	let i = 0;
 
-	function bounce(laser){
-		let x = laser.position.x, y = laser.position.y;
+	function bounce(laser, x, y){
+
+		if(x > 15 || x < 0) {
+			laser.heading = -laser.heading;
+		}
+		if(y > 15){
+			laser.heading += laser.heading * 2;
+		}
+		if (y < 0){
+			laser.heading -= 90;
+		}
 
 	}
 	// Resets a bead's alpha to max and color to black.
@@ -42,6 +51,7 @@ function animate(){
 		PS.alpha(x, y, 255);
 		PS.color(x, y, PS.COLOR_BLACK);
 	}
+	// Clamps val to be in the range [min, max].
 	function clamp(val, min, max){
 		if(val > max){ val = max;}
 		else if (val < min){ val = min;}
@@ -54,58 +64,69 @@ function animate(){
 		let laser = toyParams.lasers[i];
 		let x = laser.position.x, y = laser.position.y;
 
-		// enable fade again for the
-		// bead the laser is exiting
-
-		PS.fade(x, y, toyParams.fadeRate);
-
-
-		// calculate expected position based on laser's heading angle
-		let prevPos = [x, y];
-		let deltaX = Math.round(1 * Math.sin((laser.heading * Math.PI/180)));
-		let deltaY = Math.round(1 * Math.cos((laser.heading * Math.PI/180)));
-		//PS.debug(deltaX + " , " + deltaY + "\n");
-		if(laser.heading < 0){ // negative angle
-			// negated because sin and cos only return values from [0,1]
-			x -= -1 * deltaX;
-			y -= -1 * deltaY;
-		}
-		else if (laser.heading > 0){ // positive angle
-			x += deltaX;
-			y += deltaY;
-		}
-
-
-		//x += 1, y += 1; // down & right
-
-		// clamp x and y values if they exceed grid dimensions
-		x = clamp(x,0, 15);
-		y = clamp(y,0, 15);
-
-		//PS.debug("x = " + x + " y = " + y + "\n");
-		//PS.debug("moving sprite from " + prevPos[0] + " , " + prevPos[1] + "\n");
-		//PS.debug("moving sprite to " + x + " , " + y + "\n");
-		PS.fade(x, y, 0); // temporarily disable fade
-
-		laser.position = PS.spriteMove(laser.sprite, x, y);
-
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
-			//PS.debug("deleting sprite at " + x + " , " + y + "\n")
+			// PS.debug("deleting sprite at " + x + " , " + y + "\n")
 			PS.spriteDelete(laser.sprite);
 
-			resetBead(x,y)
+			resetBead(laser.position.x, laser.position.y);
+
 			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
 			len -= 1; // keep loop in sync
 
+
 		}
-		else{ // Laser gets to live...for now
+		else{ // Laser gets to live...for now, so move it
+
+
+			// enable fade again for the
+			// bead the laser is exiting
+			PS.fade(x, y, toyParams.fadeRate);
+
+			// calculate expected position based on laser's heading angle
+			let prevPos = [x, y];
+			let deltaX = Math.round(1 * Math.sin((laser.heading * Math.PI/180)));
+			let deltaY = Math.round(1 * Math.cos((laser.heading * Math.PI/180)));
+			//PS.debug(deltaX + " , " + deltaY + "\n");
+			if(laser.heading < 0){ // negative angle
+				// negated because sin and cos only return values from [0,1]
+				x -= -1 * deltaX;
+				y -= -1 * deltaY;
+			}
+			else if (laser.heading > 0){ // positive angle
+				x += deltaX;
+				y += deltaY;
+			}
+
+
+			// Bounce laser if it reached one of the edges
+			if((x > 15) || (y > 15) || (x < 0) || (y < 0)){
+				bounce(laser, x, y);
+			}
+
+			x = clamp(x,0, 15);
+			y = clamp(y,0, 15);
+
+			//PS.debug("x = " + x + " y = " + y + "\n");
+			//PS.debug("moving sprite from " + prevPos[0] + " , " + prevPos[1] + "\n");
+			//PS.debug("moving sprite to " + x + " , " + y + "\n");
+			PS.fade(x, y, 0); // temporarily disable fade
+
+			laser.position = PS.spriteMove(laser.sprite, x, y);
+
+
 			// reset color of previous position to black
-			resetBead(prevPos[0], prevPos[1]);
+			if((prevPos[0] != x) || (prevPos[1] != y)){
+				resetBead(prevPos[0], prevPos[1]);
+			}
 			laser.lifetime -= 1;
 			i += 1;
 		}
+
+
+
+
 
 
 	}
@@ -166,7 +187,7 @@ PS.touch = function( x, y, data, options ) {
 		sprite : null,
 		color : 0,
 		position : [],
-		heading : 90, // in degrees
+		heading : 45, // in degrees
 		lifetime : 60 // in ticks
 	};
 
