@@ -139,7 +139,7 @@ PS.init = function( system, options ) {
 	// Use only ALPHABETIC characters
 	// No numbers, spaces or punctuation!
 
-	const TEAM = "NotADOG";
+	const TEAM = "NotaDOG";
 
 	// Begin with essential setup
 	// Establish initial grid size
