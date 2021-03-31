@@ -26,6 +26,7 @@ let toyParams = {
 	laserColor : PS.COLOR_RED,
 	lasers : [], // array of laser objects
 	SPEED : 6,
+	fadeRate : 60,
 }
 
 // Animates all lasers
@@ -40,22 +41,32 @@ function animate(){
 		let laser = toyParams.lasers[i];
 		let x = laser.position.x, y = laser.position.y;
 
+		// enable fade again
+		PS.fade(x, y, toyParams.fadeRate);
+
 		// calculate expected position
 		// placeholder
 		x += 1, y += 1; // down & right
+
+		// clamp x and y values if they exceed grid dimensions
+		// replace with bouncing code later
 		if(x > 15){ x = 15;}
 		if(y > 15){ y = 15;}
-		PS.debug("moving sprite to " + x + " , " + y + "\n");
+
+		//PS.debug("moving sprite to " + x + " , " + y + "\n");
+		PS.fade(x, y, 0); // temporarily disable fade
 		laser.position = PS.spriteMove(laser.sprite, x, y);
 
+		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
-			PS.debug("deleting sprite at " + x + " , " + y + "\n")
+			//PS.debug("deleting sprite at " + x + " , " + y + "\n")
 			PS.spriteDelete(laser.sprite)
+			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
-			len -= 1;
+			len -= 1; // keep loop in sync
 		}
 		else{
-			laser.lifetime--;
+			laser.lifetime -= 1;
 			i += 1;
 		}
 	}
@@ -82,9 +93,9 @@ PS.init = function( system, options ) {
 
 	// set up base color and fader, remove borders
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
-	PS.fade(PS.ALL,PS.ALL,60);
+	PS.fade(PS.ALL,PS.ALL,toyParams.fadeRate);
 	PS.borderColor(PS.ALL,PS.ALL,0);
-	PS.timerStart(PS.DEFAULT, animate);
+	PS.timerStart(30, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -122,6 +133,7 @@ PS.touch = function( x, y, data, options ) {
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
+	PS.fade(x, y, 0); // temporarily disable fade
 	laser.sprite = PS.spriteSolid(1,1); // create sprite
 	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
 	laser.color = PS.spriteSolidColor(laser.sprite, toyParams.laserColor); // set sprite color
