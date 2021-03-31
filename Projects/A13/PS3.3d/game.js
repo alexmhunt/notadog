@@ -34,6 +34,7 @@ PS.init = function( system, options ) {
 
 	PS.gridSize( 16, 16 ); // or whatever size you want
 
+	PS.statusColor(0xFFFDD0);
 	PS.gridColor(0x08041F);
 
 	PS.statusText("Be Amazed");
