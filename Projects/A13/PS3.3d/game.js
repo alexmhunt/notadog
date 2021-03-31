@@ -149,7 +149,7 @@ PS.init = function( system, options ) {
 	PS.statusColor(0xFFFDD0);
 	PS.gridColor(0x08041F);
 
-	PS.statusText("Be Amazed");
+	PS.statusText("Lightshow Toy");
 	// Install additional initialization code
 	// here as needed
 
