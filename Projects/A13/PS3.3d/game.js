@@ -32,10 +32,16 @@ PS.init = function( system, options ) {
 	// Begin with essential setup
 	// Establish initial grid size
 
-	PS.gridSize( 8, 8 ); // or whatever size you want
+	PS.gridSize( 16, 16 ); // or whatever size you want
 
+	PS.gridColor(0x08041F);
+
+	PS.statusText("Be Amazed");
 	// Install additional initialization code
 	// here as needed
+	
+	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
+	PS.fade(PS.ALL,PS.ALL,60);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -49,6 +55,8 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSave( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : false } );
+
+	PS.borderColor(PS.ALL,PS.ALL,0);
 };
 
 /*
@@ -65,10 +73,13 @@ PS.touch = function( x, y, data, options ) {
 	// Uncomment the following code line
 	// to inspect x/y parameters:
 
+	PS.color(x,y,PS.COLOR_RED);
+
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
 
 	// Add code here for mouse clicks/touches
 	// over a bead.
+	
 };
 
 /*
