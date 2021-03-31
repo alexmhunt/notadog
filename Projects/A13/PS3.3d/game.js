@@ -41,10 +41,13 @@ function animate(){
 
 		// enable fade again for the
 		// bead the laser is exiting
+
 		PS.fade(x, y, toyParams.fadeRate);
+
 
 		// calculate expected position
 		// placeholder
+		let prevPos = [x, y];
 		x += 1, y += 1; // down & right
 
 		// clamp x and y values if they exceed grid dimensions
@@ -54,7 +57,10 @@ function animate(){
 
 		//PS.debug("moving sprite to " + x + " , " + y + "\n");
 		PS.fade(x, y, 0); // temporarily disable fade
+
 		laser.position = PS.spriteMove(laser.sprite, x, y);
+		PS.alpha(prevPos[0], prevPos[1], 255);
+		PS.color(prevPos[0], prevPos[1], PS.COLOR_BLACK);
 
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
