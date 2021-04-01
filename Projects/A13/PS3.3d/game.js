@@ -169,7 +169,7 @@ PS.init = function( system, options ) {
 			return;
 		}
 		PS.dbEvent( TEAM, "startup", user );
-		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
+		PS.dbSave( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : true } );
 };
 
