@@ -96,6 +96,7 @@ function animate(){
 			//PS.debug("deleting " + PS.spriteSolidColor(laser.sprite, PS.CURRENT) + " sprite at " + x + " , " + y + "\n")
 			resetBead(x, y);
 			PS.spriteDelete(laser.sprite);
+			resetBead(x, y);
 			PS.fade(x, y, toyParams.fadeRate);
 			PS.audioPlay("fx_bloink",{volume:0.1});
 
@@ -158,6 +159,10 @@ function animate(){
 		}
 	}
 
+	if(len <= 0){
+		PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+		PS.alpha(PS.ALL, PS.ALL, 255);
+	}
 }
 
 PS.init = function( system, options ) {
