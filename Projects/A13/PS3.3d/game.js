@@ -44,8 +44,6 @@ let toyParams = {
 function randomColor(){
 	let theColors = [colors.laserRed,colors.electricBlue,colors.neonYellow,colors.laserGreen,colors.annoyingOrange,colors.lighterBlue];
 	let j = PS.random(theColors.length) - 1;
-	let theColors = [0xFF0000,PS.COLOR_BLUE,PS.COLOR_YELLOW,PS.COLOR_RED,PS.COLOR_GREEN];
-	let j = PS.random(5) - 1;
 	return theColors[j]; 
 }
 
