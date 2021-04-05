@@ -22,12 +22,18 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+
 let toyParams = {
-	laserColor : 0xFF0000,
+	square : 20,
 	lasers : [], // array of laser objects
 	fadeRate : 60,
 }
 
+function randomColor(){
+	let theColors = [0xFF0000,PS.COLOR_BLACK,PS.COLOR_YELLOW,PS.COLOR_RED,PS.COLOR_GREEN];
+	let j = PS.random(5) - 1;
+	return theColors[j]; 
+}
 // Animates all lasers
 function animate(){
 	let len = toyParams.lasers.length;
@@ -35,10 +41,10 @@ function animate(){
 
 	function bounce(laser, x, y){
 
-		if(x > 15 || x < 0) {
+		if(x > (toyParams.square - 1) || x < 0) {
 			laser.heading = -laser.heading;
 		}
-		if(y > 15){
+		if(y > (toyParams.square - 1)){
 			laser.heading += laser.heading * 2;
 		}
 		if (y < 0){
@@ -68,7 +74,7 @@ function animate(){
 		if (laser.lifetime === 0){
 			// PS.debug("deleting sprite at " + x + " , " + y + "\n")
 			PS.spriteDelete(laser.sprite);
-			PS.audioPlay("fx_bloink",{volume:0.25});
+			PS.audioPlay("fx_bloink",{volume:0.1});
 
 			resetBead(laser.position.x, laser.position.y);
 
@@ -102,13 +108,13 @@ function animate(){
 
 
 			// Bounce laser if it reached one of the edges
-			if((x > 15) || (y > 15) || (x < 0) || (y < 0)){
+			if((x > (toyParams.square - 1)) || (y > (toyParams.square - 1)) || (x < 0) || (y < 0)){
 				PS.audioPlay("fx_chirp2");
 				bounce(laser, x, y);
 			}
 
-			x = clamp(x,0, 15);
-			y = clamp(y,0, 15);
+			x = clamp(x,0, (toyParams.square - 1));
+			y = clamp(y,0, (toyParams.square - 1));
 
 			//PS.debug("x = " + x + " y = " + y + "\n");
 			//PS.debug("moving sprite from " + prevPos[0] + " , " + prevPos[1] + "\n");
@@ -144,7 +150,7 @@ PS.init = function( system, options ) {
 	// Begin with essential setup
 	// Establish initial grid size
 
-	PS.gridSize( 16, 16 ); // or whatever size you want
+	PS.gridSize( toyParams.square, toyParams.square ); // or whatever size you want
 
 	PS.statusColor(0xFFFDD0);
 	PS.gridColor(0x08041F);
@@ -193,14 +199,14 @@ PS.touch = function( x, y, data, options ) {
 		lifetime : 60 // in ticks
 	};
 
-	PS.audioPlay("fx_shoot4"); // laser sound on click
+	PS.audioPlay("fx_shoot4",{volume:.25}); // laser sound on click
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
 	PS.fade(x, y, 0); // temporarily disable fade
 	laser.sprite = PS.spriteSolid(1,1); // create sprite
 	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
-	laser.color = PS.spriteSolidColor(laser.sprite, toyParams.laserColor); // set sprite color
+	laser.color = PS.spriteSolidColor(laser.sprite, randomColor()); // set sprite color
 
 	toyParams.lasers.push(laser);
 
