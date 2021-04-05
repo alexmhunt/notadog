@@ -56,7 +56,7 @@ function animate(){
 			laser.heading += laser.heading * 2;
 		}
 		if (y < 0){
-			laser.heading -= 90;
+			laser.heading += laser.heading * 2;
 		}
 
 	}
