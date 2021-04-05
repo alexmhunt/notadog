@@ -44,13 +44,23 @@ let toyParams = {
 function randomColor(){
 	let theColors = [colors.laserRed,colors.electricBlue,colors.neonYellow,colors.laserGreen,colors.annoyingOrange,colors.lighterBlue];
 	let j = PS.random(theColors.length) - 1;
+	let theColors = [0xFF0000,PS.COLOR_BLUE,PS.COLOR_YELLOW,PS.COLOR_RED,PS.COLOR_GREEN];
+	let j = PS.random(5) - 1;
 	return theColors[j]; 
 }
+
+function randomAngle(){
+	let angles = [-45, 45, 135, -135];
+	let num = PS.random(4) - 1;
+	return angles[num];
+}
+
 // Animates all lasers
 function animate(){
 	let len = toyParams.lasers.length;
 	let i = 0;
 
+	// Makes a laser bounce.
 	function bounce(laser, x, y){
 
 		if(x > (toyParams.square - 1) || x < 0) {
@@ -60,7 +70,7 @@ function animate(){
 			laser.heading += laser.heading * 2;
 		}
 		if (y < 0){
-			laser.heading -= 90;
+			laser.heading += laser.heading * 2;
 		}
 
 	}
@@ -68,6 +78,7 @@ function animate(){
 	function resetBead(x, y){
 		PS.alpha(x, y, 255);
 		PS.color(x, y, PS.COLOR_BLACK);
+		PS.fade(x, y, toyParams.fadeRate);
 	}
 	// Clamps val to be in the range [min, max].
 	function clamp(val, min, max){
@@ -84,15 +95,19 @@ function animate(){
 
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
-			// PS.debug("deleting sprite at " + x + " , " + y + "\n")
+			//PS.debug("deleting " + PS.spriteSolidColor(laser.sprite, PS.CURRENT) + " sprite at " + x + " , " + y + "\n")
+			resetBead(x, y);
 			PS.spriteDelete(laser.sprite);
+			PS.fade(x, y, toyParams.fadeRate);
 			PS.audioPlay("fx_bloink",{volume:0.1});
 
-			resetBead(laser.position.x, laser.position.y);
+
 
 			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
 			len -= 1; // keep loop in sync
+
+
 
 
 		}
@@ -143,13 +158,8 @@ function animate(){
 			laser.lifetime -= 1;
 			i += 1;
 		}
-
-
-
-
-
-
 	}
+
 }
 
 PS.init = function( system, options ) {
@@ -175,7 +185,7 @@ PS.init = function( system, options ) {
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
 	PS.fade(PS.ALL,PS.ALL,toyParams.fadeRate);
 	PS.borderColor(PS.ALL,PS.ALL,0);
-	PS.timerStart(5, animate);
+	PS.timerStart(2, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
@@ -208,7 +218,7 @@ PS.touch = function( x, y, data, options ) {
 		color : 0,
 		position : [],
 		heading : 45, // in degrees
-		lifetime : 60 // in ticks
+		lifetime : 120 // in ticks
 	};
 
 	PS.audioPlay("fx_shoot4",{volume:.25}); // laser sound on click
@@ -219,6 +229,7 @@ PS.touch = function( x, y, data, options ) {
 	laser.sprite = PS.spriteSolid(1,1); // create sprite
 	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
 	laser.color = PS.spriteSolidColor(laser.sprite, randomColor()); // set sprite color
+	laser.heading = randomAngle();
 
 	toyParams.lasers.push(laser);
 
