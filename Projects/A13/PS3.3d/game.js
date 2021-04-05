@@ -22,6 +22,17 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+// Color hex code storing for easier readability
+let colors = {
+	laserRed : 0xFF008,
+	electricBlue: 0x6F00FA,
+	neonYellow: 0xFFFB19,
+	laserGreen: 0x00E83E,
+	annoyingOrange: 0xFF8119,
+	lighterBlue: 0x2ADAFA,
+	statusColor: 0xFFFDD0,
+	gridColor: 0x08041F
+}
 
 let toyParams = {
 	square : 20,
@@ -29,9 +40,10 @@ let toyParams = {
 	fadeRate : 60,
 }
 
+// Used to create a random color
 function randomColor(){
-	let theColors = [0xFF0000,PS.COLOR_BLACK,PS.COLOR_YELLOW,PS.COLOR_RED,PS.COLOR_GREEN];
-	let j = PS.random(5) - 1;
+	let theColors = [colors.laserRed,colors.electricBlue,colors.neonYellow,colors.laserGreen,colors.annoyingOrange,colors.lighterBlue];
+	let j = PS.random(theColors.length) - 1;
 	return theColors[j]; 
 }
 // Animates all lasers
@@ -152,8 +164,8 @@ PS.init = function( system, options ) {
 
 	PS.gridSize( toyParams.square, toyParams.square ); // or whatever size you want
 
-	PS.statusColor(0xFFFDD0);
-	PS.gridColor(0x08041F);
+	PS.statusColor(colors.statusColor);
+	PS.gridColor(colors.gridColor);
 
 	PS.statusText("Lightshow Toy");
 	// Install additional initialization code
