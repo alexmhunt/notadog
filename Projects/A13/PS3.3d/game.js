@@ -47,6 +47,10 @@ function randomColor(){
 	return theColors[j]; 
 }
 
+function volumeAdjuster(val){
+	return ((PS.random(10) * .1) * val);
+}
+
 function randomAngle(){
 	let angles = [-45, 45, 135, -135];
 	let num = PS.random(4) - 1;
@@ -97,7 +101,7 @@ function animate(){
 			resetBead(x, y);
 			PS.spriteDelete(laser.sprite);
 			PS.fade(x, y, toyParams.fadeRate);
-			PS.audioPlay("fx_bloink",{volume:0.1});
+			PS.audioPlay("fx_bloink",{volume:volumeAdjuster(.2)});
 
 
 
@@ -134,7 +138,7 @@ function animate(){
 
 			// Bounce laser if it reached one of the edges
 			if((x > (toyParams.square - 1)) || (y > (toyParams.square - 1)) || (x < 0) || (y < 0)){
-				PS.audioPlay("fx_chirp2");
+				PS.audioPlay("fx_chirp2",{volume:volumeAdjuster(.7)});
 				bounce(laser, x, y);
 			}
 
@@ -219,7 +223,7 @@ PS.touch = function( x, y, data, options ) {
 		lifetime : 120 // in ticks
 	};
 
-	PS.audioPlay("fx_shoot4",{volume:.25}); // laser sound on click
+	PS.audioPlay("fx_shoot4",{volume:volumeAdjuster(.3)}); // laser sound on click
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
