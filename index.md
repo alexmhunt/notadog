@@ -17,4 +17,4 @@ Oliver - [Piano Hints](https://alexmhunt.github.io/notadog/Projects/PianoHints/g
 [Lightshow Toy](https://alexmhunt.github.io/notadog/Projects/A13/PS3.3d/game.html) [(Survey)](https://forms.gle/a9RtE6DX8pt79saV7)
 
 ### A17 - Polish and post your toy
-[Lightshow Toy] (https://alexmhunt.github.io/notadog/Projects/A17/PS3.3d/game.html)
+[Lightshow Toy](https://alexmhunt.github.io/notadog/Projects/A17/PS3.3d/game.html)
