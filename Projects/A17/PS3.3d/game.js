@@ -28,7 +28,7 @@ Any value returned is ignored.
 
 // Color hex code storing for easier readability
 let colors = {
-	laserRed : 0xFF008,
+	laserRed : 0xFF0000,
 	electricBlue: 0x6F00FA,
 	neonYellow: 0xFFFB19,
 	laserGreen: 0x00E83E,
