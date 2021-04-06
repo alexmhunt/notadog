@@ -30,12 +30,13 @@ let colors = {
 	laserGreen: 0x00E83E,
 	annoyingOrange: 0xFF8119,
 	lighterBlue: 0x2ADAFA,
-	statusColor: 0xFFFDD0,
-	gridColor: 0x08041F
+	statusColor: 0xF2F200,
+	gridColor: 0x00000F
 }
 
+// Parameters of the toy
 let toyParams = {
-	square : 20,
+	square : 20, // width and height of grid
 	lasers : [], // array of laser objects
 	fadeRate : 60,
 }
@@ -47,10 +48,12 @@ function randomColor(){
 	return theColors[j]; 
 }
 
+// Adjusts sound and alters volum for variety
 function volumeAdjuster(val){
 	return ((PS.random(10) * .1) * val);
 }
 
+// Launches laser in different angles
 function randomAngle(){
 	let angles = [-45, 45, 135, -135];
 	let num = PS.random(4) - 1;
@@ -102,7 +105,7 @@ function animate(){
 			PS.spriteDelete(laser.sprite);
 			resetBead(x, y);
 			PS.fade(x, y, toyParams.fadeRate);
-			PS.audioPlay("fx_bloink",{volume:volumeAdjuster(.2)});
+			PS.audioPlay("fx_bloink",{volume:volumeAdjuster(.06)});
 
 
 
@@ -136,10 +139,9 @@ function animate(){
 				y += deltaY;
 			}
 
-
 			// Bounce laser if it reached one of the edges
 			if((x > (toyParams.square - 1)) || (y > (toyParams.square - 1)) || (x < 0) || (y < 0)){
-				PS.audioPlay("fx_chirp2",{volume:volumeAdjuster(.7)});
+				PS.audioPlay("fx_chirp2",{volume:volumeAdjuster(.03)});
 				bounce(laser, x, y);
 			}
 
@@ -198,7 +200,7 @@ PS.init = function( system, options ) {
 	// of the PS.init() event handler (as shown)
 	// DO NOT MODIFY THIS FUNCTION CALL
 	// except as instructed
-
+/*
 	PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
 		if ( user === PS.ERROR ) {
 			return;
@@ -206,6 +208,7 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : true } );
+*/
 };
 
 /*
@@ -228,7 +231,7 @@ PS.touch = function( x, y, data, options ) {
 		lifetime : 120 // in ticks
 	};
 
-	PS.audioPlay("fx_shoot4",{volume:volumeAdjuster(.3)}); // laser sound on click
+	PS.audioPlay("fx_shoot4",{volume:volumeAdjuster(.05)}); // laser sound on click
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
@@ -237,7 +240,6 @@ PS.touch = function( x, y, data, options ) {
 	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
 	laser.color = PS.spriteSolidColor(laser.sprite, randomColor()); // set sprite color
 	laser.heading = randomAngle();
-
 	toyParams.lasers.push(laser);
 
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
