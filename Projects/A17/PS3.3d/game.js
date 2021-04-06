@@ -22,10 +22,46 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+// Team Not a Dog (Alex Hunt & Oliver Rayner)
+// IMGD2900 Assignment 17
+// Lightshow Toy
+
+// Color hex code storing for easier readability
+let colors = {
+	laserRed : 0xFF008,
+	electricBlue: 0x6F00FA,
+	neonYellow: 0xFFFB19,
+	laserGreen: 0x00E83E,
+	annoyingOrange: 0xFF8119,
+	lighterBlue: 0x2ADAFA,
+	statusColor: 0xF2F200,
+	gridColor: 0x00000F
+}
+
+// Parameters of the toy
 let toyParams = {
-	laserColor : 0xFF0000,
+	square : 20, // width and height of grid
 	lasers : [], // array of laser objects
 	fadeRate : 60,
+}
+
+// Used to create a random color
+function randomColor(){
+	let theColors = [colors.laserRed,colors.electricBlue,colors.neonYellow,colors.laserGreen,colors.annoyingOrange,colors.lighterBlue];
+	let j = PS.random(theColors.length) - 1;
+	return theColors[j]; 
+}
+
+// Adjusts sound and alters volum for variety
+function volumeAdjuster(val){
+	return ((PS.random(10) * .1) * val);
+}
+
+// Launches laser in different angles
+function randomAngle(){
+	let angles = [-45, 45, 135, -135];
+	let num = PS.random(4) - 1;
+	return angles[num];
 }
 
 // Animates all lasers
@@ -33,16 +69,17 @@ function animate(){
 	let len = toyParams.lasers.length;
 	let i = 0;
 
+	// Makes a laser bounce.
 	function bounce(laser, x, y){
 
-		if(x > 15 || x < 0) {
+		if(x > (toyParams.square - 1) || x < 0) {
 			laser.heading = -laser.heading;
 		}
-		if(y > 15){
+		if(y > (toyParams.square - 1)){
 			laser.heading += laser.heading * 2;
 		}
 		if (y < 0){
-			laser.heading -= 90;
+			laser.heading += laser.heading * 2;
 		}
 
 	}
@@ -50,6 +87,7 @@ function animate(){
 	function resetBead(x, y){
 		PS.alpha(x, y, 255);
 		PS.color(x, y, PS.COLOR_BLACK);
+		PS.fade(x, y, toyParams.fadeRate);
 	}
 	// Clamps val to be in the range [min, max].
 	function clamp(val, min, max){
@@ -66,20 +104,19 @@ function animate(){
 
 		// Kill laser once its lifetime ends
 		if (laser.lifetime === 0){
-			// PS.debug("deleting sprite at " + x + " , " + y + "\n")
+			//PS.debug("deleting " + PS.spriteSolidColor(laser.sprite, PS.CURRENT) + " sprite at " + x + " , " + y + "\n")
+			resetBead(x, y);
 			PS.spriteDelete(laser.sprite);
-			PS.audioPlay("fx_bloink",{volume:0.25});
-
-			resetBead(laser.position.x, laser.position.y);
+			resetBead(x, y);
+			PS.fade(x, y, toyParams.fadeRate);
+			PS.audioPlay("fx_bloink",{volume:volumeAdjuster(.06)});
 
 			// remove from lasers array
 			toyParams.lasers.splice(i , 1);
 			len -= 1; // keep loop in sync
 
-
 		}
 		else{ // Laser gets to live...for now, so move it
-
 
 			// enable fade again for the
 			// bead the laser is exiting
@@ -100,23 +137,21 @@ function animate(){
 				y += deltaY;
 			}
 
-
 			// Bounce laser if it reached one of the edges
-			if((x > 15) || (y > 15) || (x < 0) || (y < 0)){
-				PS.audioPlay("fx_chirp2");
+			if((x > (toyParams.square - 1)) || (y > (toyParams.square - 1)) || (x < 0) || (y < 0)){
+				PS.audioPlay("fx_chirp2",{volume:volumeAdjuster(.03)});
 				bounce(laser, x, y);
 			}
 
-			x = clamp(x,0, 15);
-			y = clamp(y,0, 15);
+			// Clamp laser position within grid bounds
+			x = clamp(x,0, (toyParams.square - 1));
+			y = clamp(y,0, (toyParams.square - 1));
 
-			//PS.debug("x = " + x + " y = " + y + "\n");
-			//PS.debug("moving sprite from " + prevPos[0] + " , " + prevPos[1] + "\n");
-			//PS.debug("moving sprite to " + x + " , " + y + "\n");
+			// disable fade for the laser's head
+			// to make colors more vivid
 			PS.fade(x, y, 0); // temporarily disable fade
 
 			laser.position = PS.spriteMove(laser.sprite, x, y);
-
 
 			// reset color of previous position to black
 			if((prevPos[0] != x) || (prevPos[1] != y)){
@@ -125,12 +160,11 @@ function animate(){
 			laser.lifetime -= 1;
 			i += 1;
 		}
+	}
 
-
-
-
-
-
+	if(len <= 0){ // reset all beads to black when all lasers die
+		PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+		PS.alpha(PS.ALL, PS.ALL, 255);
 	}
 }
 
@@ -144,10 +178,10 @@ PS.init = function( system, options ) {
 	// Begin with essential setup
 	// Establish initial grid size
 
-	PS.gridSize( 16, 16 ); // or whatever size you want
+	PS.gridSize( toyParams.square, toyParams.square ); // or whatever size you want
 
-	PS.statusColor(0xFFFDD0);
-	PS.gridColor(0x08041F);
+	PS.statusColor(colors.statusColor);
+	PS.gridColor(colors.gridColor);
 
 	PS.statusText("Lightshow Toy");
 	// Install additional initialization code
@@ -157,13 +191,13 @@ PS.init = function( system, options ) {
 	PS.color(PS.ALL,PS.ALL,PS.COLOR_BLACK);
 	PS.fade(PS.ALL,PS.ALL,toyParams.fadeRate);
 	PS.borderColor(PS.ALL,PS.ALL,0);
-	PS.timerStart(5, animate);
+	PS.timerStart(2, animate);
 
 	// PS.dbLogin() must be called at the END
 	// of the PS.init() event handler (as shown)
 	// DO NOT MODIFY THIS FUNCTION CALL
 	// except as instructed
-
+/*
 	PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
 		if ( user === PS.ERROR ) {
 			return;
@@ -171,6 +205,7 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : true } );
+*/
 };
 
 /*
@@ -190,18 +225,18 @@ PS.touch = function( x, y, data, options ) {
 		color : 0,
 		position : [],
 		heading : 45, // in degrees
-		lifetime : 60 // in ticks
+		lifetime : 120 // in ticks
 	};
 
-	PS.audioPlay("fx_shoot4"); // laser sound on click
+	PS.audioPlay("fx_shoot4",{volume:volumeAdjuster(.05)}); // laser sound on click
 
 	// Create laser at the clicked point
 	// PS.color(x,y,PS.COLOR_RED);
 	PS.fade(x, y, 0); // temporarily disable fade
 	laser.sprite = PS.spriteSolid(1,1); // create sprite
 	laser.position = PS.spriteMove(laser.sprite, x, y); // place sprite
-	laser.color = PS.spriteSolidColor(laser.sprite, toyParams.laserColor); // set sprite color
-
+	laser.color = PS.spriteSolidColor(laser.sprite, randomColor()); // set sprite color
+	laser.heading = randomAngle();
 	toyParams.lasers.push(laser);
 
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
