@@ -1,9 +1,38 @@
 /*
-game_iife.js for Perlenspiel 3.3.x
-Last revision: 2018-10-14 (BM)
+game.js for Perlenspiel 3.3.xd
+Last revision: 2021-04-08 (BM)
+
+Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
+This version of Perlenspiel (3.3.x) is hosted at <https://ps3.perlenspiel.net>
+Perlenspiel is Copyright © 2009-21 Brian Moriarty.
+This file is part of the standard Perlenspiel 3.3.x devkit distribution.
+
+Perlenspiel is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Perlenspiel is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details.
+
+You may have received a copy of the GNU Lesser General Public License
+along with the Perlenspiel devkit. If not, see <http://www.gnu.org/licenses/>.
 */
 
-"use strict";
+/*
+This JavaScript file is a template for creating new Perlenspiel 3.3.x games.
+Add code to the event handlers required by your project.
+Any unused event-handling function templates can be safely deleted.
+Refer to the tutorials and documentation at <https://ps3.perlenspiel.net> for details.
+*/
+
+/*
+The following comment lines are for JSHint <https://jshint.com>, a tool for monitoring code quality.
+You may find them useful if your development environment is configured to support JSHint.
+If you don't use JSHint (or are using it with a configuration file), you can safely delete these lines.
+*/
 
 /* jshint browser : true, devel : true, esversion : 6, freeze : true */
 /* globals PS : true */
@@ -62,7 +91,7 @@ const G = ( function () {
 			// using ONLY alphabetic characters (a-z).
 			// No numbers, spaces, punctuation or special characters!
 
-			const TEAM = "teamname";
+			const TEAM = "notadog";
 
 			// This code should be the last thing
 			// called by your PS.init() handler.
@@ -80,9 +109,11 @@ const G = ( function () {
 			// Change the false in the final line above to true
 			// before deploying the code to your Web site.
 		},
+		
 		touch : function ( x, y ) {
 			// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
 		},
+
 		keyDown : function ( key ) {
 			// PS.debug( "PS.keyDown(): key=" + key + "\n" );
 			switch ( key ) {
@@ -118,5 +149,3 @@ const G = ( function () {
 PS.init = G.init;
 PS.touch = G.touch;
 PS.keyDown = G.keyDown;
-
-
