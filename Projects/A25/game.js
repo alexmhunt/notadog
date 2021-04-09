@@ -14,34 +14,49 @@ Last revision: 2018-10-14 (BM)
 // <script src="game_iife.js"></script>
 
 const G = ( function () {
+	const PLANE_SPRITE = 1;
+	let sprite_player = {
+		id : 0,
+		x : 8,
+		y : 12,
+		color : PS.COLOR_BLUE,
+	};
+	let spriteBlocks = [];
+
+	/* Init functions */
+	function initMap(){
+		let sprite_note = PS.spriteSolid(1,1);
+		sprite_note = PS.spriteSolid(1,1);
+		PS.spriteSolidColor(sprite_note, PS.COLOR_BLACK);
+		PS.spritePlane(sprite_note, PLANE_SPRITE);
+		PS.spriteMove(sprite_note, 8, 8);
+	}
+
+	/* Player functions */
+	function player_move(dx, dy){
+		sprite_player.x += dx;
+		sprite_player.y += dy;
+		PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
+
+	}
+
 	return {
 		init : function () {
-			// Uncomment the following code line
-			// to verify operation:
 
-			// PS.debug( "PS.init() called\n" );
+			PS.gridSize(16, 16); // can change later
 
-			// This function should normally begin
-			// with a call to PS.gridSize( x, y )
-			// where x and y are the desired initial
-			// dimensions of the grid.
-			// Call PS.gridSize() FIRST to avoid problems!
-			// The sample call below sets the grid to the
-			// default dimensions (8 x 8).
-			// Uncomment the following code line and change
-			// the x and y parameters as needed.
+			PS.statusText( "Safe and (not) Sound" );
 
-			// PS.gridSize( 8, 8 );
+			// draw map
+			initMap();
 
-			// This is also a good place to display
-			// your game title or a welcome message
-			// in the status line above the grid.
-			// Uncomment the following code line and
-			// change the string parameter as needed.
+			// create a 1x1 solid player sprite
+			// placed at low middle of grid
+			sprite_player.id = PS.spriteSolid(1,1);
+			PS.spriteSolidColor(sprite_player.id, sprite_player.color);
+			PS.spritePlane(sprite_player.id, PLANE_SPRITE);
+			PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
 
-			// PS.statusText( "Game" );
-
-			// Add any other initialization code you need here.
 
 			// Change this TEAM constant to your team name,
 			// using ONLY alphabetic characters (a-z).
@@ -70,6 +85,32 @@ const G = ( function () {
 		},
 		keyDown : function ( key ) {
 			// PS.debug( "PS.keyDown(): key=" + key + "\n" );
+			switch ( key ) {
+				case PS.KEY_ARROW_UP:
+				case 119:
+				case 87: {
+					player_move( 0, -1 );
+					break;
+				}
+				case PS.KEY_ARROW_DOWN:
+				case 115:
+				case 83: {
+					player_move( 0, 1 );
+					break;
+				}
+				case PS.KEY_ARROW_LEFT:
+				case 97:
+				case 65: {
+					player_move( -1, 0 );
+					break;
+				}
+				case PS.KEY_ARROW_RIGHT:
+				case 100:
+				case 68: {
+					player_move( 1, 0 );
+					break;
+				}
+			}
 		}
 	};
 } () );
@@ -78,10 +119,4 @@ PS.init = G.init;
 PS.touch = G.touch;
 PS.keyDown = G.keyDown;
 
-PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
-	if ( user === PS.ERROR ) {
-		return;
-	}
-	PS.dbEvent( TEAM, "startup", user );
-	PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
-}, { active : false } );
+
