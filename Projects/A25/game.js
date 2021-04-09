@@ -69,15 +69,25 @@ const G = ( function () {
 
 	}
 
+	let gridDimensions = {
+		gridX : 16,
+		gridY : 16,
+	};
+
 	return {
 		init : function () {
 
-			PS.gridSize(16, 16); // can change later
+			PS.gridSize(gridDimensions.gridX,gridDimensions.gridY); // can change later
 
 			PS.statusText( "Safe and (not) Sound" );
 
+			PS.statusColor(PS.COLOR_YELLOW);
+			PS.gridColor(0x101215);
+
 			// draw map
 			initMap();
+
+			PS.color(PS.ALL,PS.ALL, 0x424242)
 
 			// create a 1x1 solid player sprite
 			// placed at low middle of grid
