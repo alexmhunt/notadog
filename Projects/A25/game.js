@@ -43,29 +43,100 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 // <script src="game_iife.js"></script>
 
 const G = ( function () {
-	const PLANE_SPRITE = 1;
+	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2;
 	let sprite_player = {
-		id : 0,
+		id : "",
 		x : 8,
 		y : 12,
+		prevPos : [],
 		color : PS.COLOR_BLUE,
 	};
-	let spriteBlocks = [];
+	let spriteNotes = [];
 
 	/* Init functions */
 	function initMap(){
-		let sprite_note = PS.spriteSolid(1,1);
-		sprite_note = PS.spriteSolid(1,1);
-		PS.spriteSolidColor(sprite_note, PS.COLOR_BLACK);
-		PS.spritePlane(sprite_note, PLANE_SPRITE);
-		PS.spriteMove(sprite_note, 8, 8);
+		// initialize one note block
+		let sprite_note = {
+			id : "",
+			color : PS.COLOR_BLACK,
+			x : 8,
+			y : 8,
+			order : 1
+		};
+		sprite_note.id = PS.spriteSolid(1,1);
+		PS.spriteSolidColor(sprite_note.id, sprite_note.color);
+		PS.spritePlane(sprite_note.id, 2);
+		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
+		PS.spriteCollide(sprite_note.id, event_note_collide);
+
+		spriteNotes.push(sprite_note);
+		//console.log(spriteNotes);
 	}
 
 	/* Player functions */
-	function player_move(dx, dy){
-		sprite_player.x += dx;
-		sprite_player.y += dy;
-		PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
+	function sprite_move(spriteObj, dx, dy){
+		if(spriteObj.id === sprite_player.id){
+			sprite_player.prevPos[0] = spriteObj.x;
+			sprite_player.prevPos[1] = spriteObj.y;
+
+			//PS.debug(sprite_player.prevPos + "\n")
+		}
+		spriteObj.x += dx;
+		spriteObj.y += dy;
+		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
+
+	}
+
+	/* Note functions */
+	function event_note_collide(s1, p1, s2, p2, type){
+		// if overlapped with player, move one square forward
+		// opposite of the pushing direction
+		if(s2 === sprite_player.id){
+			// check type
+			if(type === PS.SPRITE_OVERLAP){
+				let spriteObj = null;
+				// find the note object with matching sprite
+				for(let i=0;i<spriteNotes.length;i++){
+					let curSprite = spriteNotes[i];
+					if(curSprite.id === s1){
+						spriteObj = curSprite;
+					}
+				}
+				if(spriteObj == null){return;}
+
+				//PS.debug("player pushed " + spriteObj.id + "\n")
+
+				// check which edge the player is pushing
+				//PS.debug("Player position: (" + sprite_player.x + " , " +
+				//sprite_player.y + ")\n");
+
+				let prevx = sprite_player.prevPos[0];
+				let prevy = sprite_player.prevPos[1];
+
+				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
+					// player pushing from above
+					//PS.debug("moving down\n")
+					console.log(spriteObj);
+					sprite_move(spriteObj, 0, 1);
+				}
+				else if((prevx < spriteObj.x) && (prevy === spriteObj.y)){
+					// player pushing from immediate left
+					sprite_move(spriteObj, 1, 0);
+				}
+				else if((prevx === spriteObj.x) && (prevy > spriteObj.y)){
+					// player pushing from below
+					sprite_move(spriteObj, 0, -1);
+				}
+				else if((prevx > spriteObj.x) && (prevy === spriteObj.y)){
+					// player pushing from immediate right
+					sprite_move(spriteObj, -1, 0);
+				}
+
+
+
+			}
+
+		}
 
 	}
 
@@ -83,7 +154,7 @@ const G = ( function () {
 			// placed at low middle of grid
 			sprite_player.id = PS.spriteSolid(1,1);
 			PS.spriteSolidColor(sprite_player.id, sprite_player.color);
-			PS.spritePlane(sprite_player.id, PLANE_SPRITE);
+			PS.spritePlane(sprite_player.id, PLANE_SPRITE_PLAYER);
 			PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
 
 
@@ -109,7 +180,7 @@ const G = ( function () {
 			// Change the false in the final line above to true
 			// before deploying the code to your Web site.
 		},
-		
+
 		touch : function ( x, y ) {
 			// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
 		},
@@ -120,25 +191,26 @@ const G = ( function () {
 				case PS.KEY_ARROW_UP:
 				case 119:
 				case 87: {
-					player_move( 0, -1 );
+					// PS.debug("Player sprite id =  " + sprite_player.id + "\n");
+					sprite_move(sprite_player, 0, -1 );
 					break;
 				}
 				case PS.KEY_ARROW_DOWN:
 				case 115:
 				case 83: {
-					player_move( 0, 1 );
+					sprite_move(sprite_player,0, 1 );
 					break;
 				}
 				case PS.KEY_ARROW_LEFT:
 				case 97:
 				case 65: {
-					player_move( -1, 0 );
+					sprite_move(sprite_player, -1, 0 );
 					break;
 				}
 				case PS.KEY_ARROW_RIGHT:
 				case 100:
 				case 68: {
-					player_move( 1, 0 );
+					sprite_move(sprite_player, 1, 0 );
 					break;
 				}
 			}
