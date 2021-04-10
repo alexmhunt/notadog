@@ -84,8 +84,7 @@ const G = ( function () {
 		x : 8,
 		y : 12,
 		prevPos : [],
-		color : PS.COLOR_BLUE,
-		at_wall : false
+		color : 0xFF600,
 	};
 	let spriteNotes = [];
 
