@@ -149,6 +149,20 @@ const G = ( function () {
 
 	}
 
+	// Interpolates a color between two [R, G, B] colors
+	// by [factor] and returns a [R, G, B] color
+	function interpolateColors(color1, color2, factor){
+		// Copy color1
+		let result = color1.slice();
+
+		// Interpolate each RGB channel based on the interpolation factor
+		for(let i = 0; i < 3; i++){
+			result[i] = Math.round(result[i] + factor*(color2[i]-color1[i]));
+		}
+
+		return result;
+	}
+
 	return {
 		init : function () {
 
