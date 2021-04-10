@@ -48,9 +48,35 @@ const G = ( function () {
 		gridY : 16,
 		colorOfGrid : 0x101215,
 		groundColor : 0x424242,
+		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
+		noteColor : PS.COLOR_RED,
 
 	};
+	let pathmap;
+	const map = {
+		width: gridDimensions.gridX,
+		height: gridDimensions.gridY,
+		pixelSize : 1,
+		data:[
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		]
+	}; // example pathmap, unused for now
 	
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2;
 	let sprite_player = {
@@ -59,27 +85,56 @@ const G = ( function () {
 		y : 12,
 		prevPos : [],
 		color : PS.COLOR_BLUE,
+		at_wall : false
 	};
 	let spriteNotes = [];
 
 	/* Init functions */
-	function initMap(){
-		// initialize one note block
+	function initLevel(){
+		// initialize your note blocks here
 		let sprite_note = {
 			id : "",
-			color : PS.COLOR_BLACK,
 			x : 8,
 			y : 8,
 			order : 1
 		};
 		sprite_note.id = PS.spriteSolid(1,1);
-		PS.spriteSolidColor(sprite_note.id, sprite_note.color);
+		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColor);
 		PS.spritePlane(sprite_note.id, 2);
 		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
 		PS.spriteCollide(sprite_note.id, event_note_collide);
 
 		spriteNotes.push(sprite_note);
+
+		drawMap();
 		//console.log(spriteNotes);
+	}
+
+	function drawMap(){
+		let i = 0;
+		for ( let y = 0; y < map.height; y += 1 ) {
+			for ( let x = 0; x < map.width; x += 1 ) {
+				let data = map.data[ i ];
+				let color;
+				switch ( data ) {
+					case 0:
+						color = gridDimensions.wallColor;
+						break;
+					case 1:
+						color = gridDimensions.groundColor;
+						break;
+					default:
+						color = gridDimensions.colorOfGrid;
+						break;
+				}
+				PS.color( x, y, color );
+				i += 1;
+			}
+		}
+	}
+
+	function isWall(x, y){
+		return (PS.color(x,y) === gridDimensions.wallColor);
 	}
 
 	/* Player functions */
@@ -90,9 +145,18 @@ const G = ( function () {
 
 			//PS.debug(sprite_player.prevPos + "\n")
 		}
+
+		if(isWall((spriteObj.x + dx), (spriteObj.y + dy))){
+			//PS.debug("hit wall\n");
+			return;
+		}
+
+		// only move if the move won't put the sprite out of grid bounds
 		spriteObj.x += dx;
 		spriteObj.y += dy;
 		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
+
+
 
 	}
 
@@ -124,25 +188,32 @@ const G = ( function () {
 
 				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
 					// player pushing from above
-					//PS.debug("moving down\n")
-					console.log(spriteObj);
+					if(isWall(spriteObj.x, (spriteObj.y + 1))){
+						sprite_move(sprite_player, 0, -1);
+					}
 					sprite_move(spriteObj, 0, 1);
 				}
 				else if((prevx < spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate left
+					if(isWall((spriteObj.x + 1), spriteObj.y)){
+						sprite_move(sprite_player, -1, 0);
+					}
 					sprite_move(spriteObj, 1, 0);
 				}
 				else if((prevx === spriteObj.x) && (prevy > spriteObj.y)){
 					// player pushing from below
+					if(isWall(spriteObj.x, (spriteObj.y - 1))){
+						sprite_move(sprite_player, 0, 1);
+					}
 					sprite_move(spriteObj, 0, -1);
 				}
 				else if((prevx > spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate right
+					if(isWall((spriteObj.x - 1), spriteObj.y)){
+						sprite_move(sprite_player, 1, 0);
+					}
 					sprite_move(spriteObj, -1, 0);
 				}
-
-
-
 			}
 
 		}
@@ -174,9 +245,9 @@ const G = ( function () {
 			PS.gridColor(gridDimensions.colorOfGrid);
 
 			// draw map
-			initMap();
+			initLevel();
 
-			PS.color(PS.ALL,PS.ALL,gridDimensions.groundColor);
+			//PS.color(PS.ALL,PS.ALL,gridDimensions.groundColor);
 
 			// create a 1x1 solid player sprite
 			// placed at low middle of grid
@@ -184,6 +255,8 @@ const G = ( function () {
 			PS.spriteSolidColor(sprite_player.id, sprite_player.color);
 			PS.spritePlane(sprite_player.id, PLANE_SPRITE_PLAYER);
 			PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
+			pathmap = PS.pathMap(map);
+
 
 
 			// Change this TEAM constant to your team name,
