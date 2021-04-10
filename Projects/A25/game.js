@@ -43,6 +43,15 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 // <script src="game_iife.js"></script>
 
 const G = ( function () {
+	let gridDimensions = {
+		gridX : 16,
+		gridY : 16,
+		colorOfGrid : 0x101215,
+		groundColor : 0x424242,
+		textColor : PS.COLOR_YELLOW,
+
+	};
+	
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2;
 	let sprite_player = {
 		id : "",
@@ -140,11 +149,6 @@ const G = ( function () {
 
 	}
 
-	let gridDimensions = {
-		gridX : 16,
-		gridY : 16,
-	};
-
 	return {
 		init : function () {
 
@@ -152,13 +156,13 @@ const G = ( function () {
 
 			PS.statusText( "Safe and (not) Sound" );
 
-			PS.statusColor(PS.COLOR_YELLOW);
-			PS.gridColor(0x101215);
+			PS.statusColor(gridDimensions.textColor);
+			PS.gridColor(gridDimensions.colorOfGrid);
 
 			// draw map
 			initMap();
 
-			PS.color(PS.ALL,PS.ALL, 0x424242)
+			PS.color(PS.ALL,PS.ALL,gridDimensions.groundColor);
 
 			// create a 1x1 solid player sprite
 			// placed at low middle of grid
