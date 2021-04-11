@@ -51,6 +51,15 @@ const G = ( function () {
 		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
+		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
+		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
+					    0x991919,0x831515,0x6e1212,0x580e0e,0x420b0b],
+		noteColorOrange : [0xf2d6bf,0xeec9aa,0xeabb95,0xe5ad7f,0xe1a06a,
+		                   0xdd9255,0xd88d3f,0xbf6b26,0xaa5f22,0x94531d,
+						   0x7f4719,0x6a3c15,0x553011,0x40240d,0x2a1808],
+		noteColorBlue : [0xeae9fd,0xd6d2fa,0xada6f5,0x9890f3,0x8379f0,
+		                 0x6f63ee,0x5a4deb,0x4636e9,0x2c1dcf,0x271ab8,
+						 0x2216a1,0x1d138a,0x191073,0x140d5c,0x0f0a45],
 		noteColorGreen : [0xc0f0d6,0xabebc9,0x96e6bb,0x81e0ad,0x6cdba0,
 						  0x57d692,0x42d185,0x29b86b,0x24a35f,0x1f8f53,
 	                      0x1b7a47,0x17663c,0x125230,0x0e3d24,0x092918]
@@ -101,7 +110,7 @@ const G = ( function () {
 			order : 1
 		};
 		sprite_note.id = PS.spriteSolid(1,1);
-		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColorGreen[sprite_note.y]);
+		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColorBlue[sprite_note.y]);
 		PS.spritePlane(sprite_note.id, 2);
 		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
 		PS.spriteCollide(sprite_note.id, event_note_collide);
@@ -158,12 +167,10 @@ const G = ( function () {
 
 		if(spriteObj.id != sprite_player.id){
 			PS.debug("note at " + spriteObj.y + "\n")
-			PS.spriteSolidColor(spriteObj.id, gridDimensions.noteColorGreen[spriteObj.y]);
+			PS.spriteSolidColor(spriteObj.id, gridDimensions.noteColorBlue[spriteObj.y]);
+			PS.audioPlay(PS.piano(((spriteObj.y - gridDimensions.gridY) * -1) * 5));
 		}
-
-
-
-
+		//PS.debug(spriteObj.y + "\n")
 	}
 	
 
