@@ -114,6 +114,7 @@ const G = ( function () {
 		PS.spriteMove(this.id, this.x, this.y);
 		PS.spriteCollide(this.id, event_note_collide);
 		spriteNotes.push(this);
+
 	}
 
 	function enemy(xPos, yPos, myMessage){
@@ -141,7 +142,7 @@ const G = ( function () {
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
 		testedNow.color = PS.spriteSolidColor(testedNow.id, gridDimensions.noteColorRed[testedNow.y]);
 
-		testedAgain.color = PS.spriteSolidColor(testedAgain.id, gridDimensions.noteColorBlue[testedAgain.y]);
+		testedAgain.color = PS.spriteSolidColor(testedAgain.id, gridDimensions.noteColorOrange[testedAgain.y]);
 
 		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[testNote.y]);
 
@@ -150,7 +151,7 @@ const G = ( function () {
 			"\"No one escapes Musi City!\"");
 
 		tested.color = PS.spriteSolidColor(tested.id, gridDimensions.noteColorGreen[tested.y]);
-	
+
 		drawMap();
 		//console.log(spriteNotes);
 	}
@@ -184,7 +185,6 @@ const G = ( function () {
 		return (PS.color(x,y) === gridDimensions.wallColor);
 	}
 
-	/* Player functions */
 	function sprite_move(spriteObj, dx, dy){
 		if(spriteObj.id === sprite_player.id){
 			sprite_player.prevPos[0] = spriteObj.x;
@@ -204,10 +204,31 @@ const G = ( function () {
 
 		if(spriteObj.id != sprite_player.id){
 			PS.debug("note at " + spriteObj.y + "\n")
-			PS.spriteSolidColor(spriteObj.id, gridDimensions.noteColorBlue[spriteObj.y]);
 			PS.audioPlay(PS.piano(((spriteObj.y - gridDimensions.gridY) * -1) * 6));
+			note_color_change(spriteObj);
 		}
 		PS.debug(spriteObj.y + "\n")
+	}
+
+	function note_color_change(noteBlock){
+		let order = noteBlock.order;
+
+		switch(order){
+			case 1:
+				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorRed[noteBlock.y]);
+				break;
+			case 2:
+				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorOrange[noteBlock.y]);
+				break;
+			case 3:
+				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorBlue[noteBlock.y]);
+				break;
+			case 4:
+				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorGreen[noteBlock.y]);
+				break;
+			default:
+				break;
+		}
 	}
 	
 
