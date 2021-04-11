@@ -134,15 +134,23 @@ const G = ( function () {
 	function initLevel(){
 		// initialize your note blocks here
 
-		let testNote = new noteBlock(PS.spriteSolid(1,1), 0, 8, 8, "testsound", 1);
+		let testedNow = new noteBlock(PS.spriteSolid(1,1), 0, 4, 8, "testsound", 1);
+		let testedAgain = new noteBlock(PS.spriteSolid(1,1), 0, 6, 8, "testsound", 2);
+		let testNote = new noteBlock(PS.spriteSolid(1,1), 0, 8, 8, "testsound", 3);
+		let tested = new noteBlock(PS.spriteSolid(1,1), 0, 10, 8, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+		testedNow.color = PS.spriteSolidColor(testedNow.id, gridDimensions.noteColorRed[testedNow.y]);
+
+		testedAgain.color = PS.spriteSolidColor(testedAgain.id, gridDimensions.noteColorBlue[testedAgain.y]);
+
 		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[testNote.y]);
 
 		// create one enemy
 		let enemy1 = new enemy(PS.spriteSolid(1,1), gridDimensions.enemyColor, 14, 1,
 			"\"No one escapes Musi City!\"");
 
-
+		tested.color = PS.spriteSolidColor(tested.id, gridDimensions.noteColorGreen[tested.y]);
+	
 		drawMap();
 		//console.log(spriteNotes);
 	}
@@ -197,9 +205,9 @@ const G = ( function () {
 		if(spriteObj.id != sprite_player.id){
 			PS.debug("note at " + spriteObj.y + "\n")
 			PS.spriteSolidColor(spriteObj.id, gridDimensions.noteColorBlue[spriteObj.y]);
-			PS.audioPlay(PS.piano(((spriteObj.y - gridDimensions.gridY) * -1) * 5));
+			PS.audioPlay(PS.piano(((spriteObj.y - gridDimensions.gridY) * -1) * 6));
 		}
-		//PS.debug(spriteObj.y + "\n")
+		PS.debug(spriteObj.y + "\n")
 	}
 	
 
@@ -370,7 +378,20 @@ const G = ( function () {
 		},
 
 		keyDown : function ( key ) {
-			//PS.debug( "PS.keyDown(): key=" + key + "\n" );
+			PS.debug( "PS.keyDown(): key=" + key + "\n" );
+			//Notes will play at an interval, player needs to match up the sounds
+			if(key === PS.KEY_SPACE) {
+				let hearing = [30,42,48,42];
+				for (let i=0; i<4; i++){
+					task(i);
+				}
+				function task(i) {
+					setTimeout(function() {
+						PS.audioPlay(PS.piano(hearing[i]));
+
+					}, 1000 * i);
+				}
+			}
 			switch ( key ) {
 				case PS.KEY_ARROW_UP:
 				case 119:
