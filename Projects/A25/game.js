@@ -155,7 +155,12 @@ const G = ( function () {
 		spriteObj.x += dx;
 		spriteObj.y += dy;
 		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
-		PS.debug(spriteObj.y + "\n")
+
+		if(spriteObj.id != sprite_player.id){
+			PS.debug("note at " + spriteObj.y + "\n")
+			PS.spriteSolidColor(spriteObj.id, gridDimensions.noteColorGreen[spriteObj.y]);
+		}
+
 
 
 
