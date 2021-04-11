@@ -102,9 +102,9 @@ const G = ( function () {
 	let spriteNotes = [], spriteEnemies = [];
 
 	// object prototypes
-	function noteBlock(spriteId, initColor, xPos, yPos, playSound, orderNum){
-		this.id = spriteId,
-		this.color = initColor;
+	function noteBlock(xPos, yPos, playSound, orderNum){
+		this.id = PS.spriteSolid(1,1),
+		this.color = 0;
 		this.x = xPos;
 		this.y = yPos;
 		this.sound = playSound;
@@ -116,9 +116,9 @@ const G = ( function () {
 		spriteNotes.push(this);
 	}
 
-	function enemy(spriteId, initColor, xPos, yPos, myMessage){
-		this.id = spriteId,
-		this.color = initColor;
+	function enemy(xPos, yPos, myMessage){
+		this.id = PS.spriteSolid(1,1),
+		this.color = gridDimensions.enemyColor;
 		this.x = xPos;
 		this.y = yPos;
 		this.message = myMessage;
@@ -134,10 +134,10 @@ const G = ( function () {
 	function initLevel(){
 		// initialize your note blocks here
 
-		let testedNow = new noteBlock(PS.spriteSolid(1,1), 0, 4, 8, "testsound", 1);
-		let testedAgain = new noteBlock(PS.spriteSolid(1,1), 0, 6, 8, "testsound", 2);
-		let testNote = new noteBlock(PS.spriteSolid(1,1), 0, 8, 8, "testsound", 3);
-		let tested = new noteBlock(PS.spriteSolid(1,1), 0, 10, 8, "testers", 4);
+		let testedNow = new noteBlock(4, 8, "testsound", 1);
+		let testedAgain = new noteBlock( 6, 8, "testsound", 2);
+		let testNote = new noteBlock( 8, 8, "testsound", 3);
+		let tested = new noteBlock( 10, 8, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
 		testedNow.color = PS.spriteSolidColor(testedNow.id, gridDimensions.noteColorRed[testedNow.y]);
 
@@ -146,7 +146,7 @@ const G = ( function () {
 		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[testNote.y]);
 
 		// create one enemy
-		let enemy1 = new enemy(PS.spriteSolid(1,1), gridDimensions.enemyColor, 14, 1,
+		let enemy1 = new enemy(14, 1,
 			"\"No one escapes Musi City!\"");
 
 		tested.color = PS.spriteSolidColor(tested.id, gridDimensions.noteColorGreen[tested.y]);
