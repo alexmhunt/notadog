@@ -324,6 +324,7 @@ const G = ( function () {
 		return result;
 	}
 
+	let isPlaying = false;
 	return {
 		init : function () {
 
@@ -380,7 +381,8 @@ const G = ( function () {
 		keyDown : function ( key ) {
 			PS.debug( "PS.keyDown(): key=" + key + "\n" );
 			//Notes will play at an interval, player needs to match up the sounds
-			if(key === PS.KEY_SPACE) {
+			if((key === PS.KEY_SPACE) && !isPlaying) {
+				isPlaying = true;
 				let hearing = [30,42,48,42];
 				for (let i=0; i<4; i++){
 					task(i);
@@ -391,6 +393,11 @@ const G = ( function () {
 
 					}, 1000 * i);
 				}
+				// Prevent space bar spamming from making the player's ears bleed
+				setTimeout(function(){
+					isPlaying = false;
+				}, 1000 * hearing.length)
+
 			}
 			switch ( key ) {
 				case PS.KEY_ARROW_UP:
