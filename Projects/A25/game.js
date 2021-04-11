@@ -99,22 +99,26 @@ const G = ( function () {
 	};
 
 	let spriteNotes = [];
+	// object prototype for note block
+	function noteBlock(spriteId, initColor, xPos, yPos, playSound, orderNum){
+		this.id = spriteId,
+		this.color = initColor;
+		this.x = xPos;
+		this.y = yPos;
+		this.sound = playSound;
+		this.order = orderNum;
+	}
 
 	/* Init functions */
 	function initLevel(){
 		// initialize your note blocks here
-		let sprite_note = {
-			id : "",
-			x : 8,
-			y : 8,
-			order : 1
-		};
-		sprite_note.id = PS.spriteSolid(1,1);
-		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColorBlue[sprite_note.y]);
-		PS.spritePlane(sprite_note.id, 2);
-		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
-		PS.spriteCollide(sprite_note.id, event_note_collide);
-		spriteNotes.push(sprite_note);
+		let testNote = new noteBlock(PS.spriteSolid(1,1), 0, 8, 8, "testsound", 1);
+		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[sprite_note.y]);
+		PS.spritePlane(testNote.id, 2);
+		PS.spriteMove(testNote.id, sprite_note.x, sprite_note.y);
+		PS.spriteCollide(testNote.id, event_note_collide);
+		spriteNotes.push(testNote);
 
 		drawMap();
 		//console.log(spriteNotes);
