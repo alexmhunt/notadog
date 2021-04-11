@@ -65,14 +65,14 @@ const G = ( function () {
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+			0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+			0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -105,7 +105,6 @@ const G = ( function () {
 		PS.spritePlane(sprite_note.id, 2);
 		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
 		PS.spriteCollide(sprite_note.id, event_note_collide);
-
 		spriteNotes.push(sprite_note);
 
 		drawMap();
@@ -145,7 +144,6 @@ const G = ( function () {
 			sprite_player.prevPos[0] = spriteObj.x;
 			sprite_player.prevPos[1] = spriteObj.y;
 
-			//PS.debug(sprite_player.prevPos + "\n")
 		}
 
 		if(isWall((spriteObj.x + dx), (spriteObj.y + dy))){
@@ -157,10 +155,12 @@ const G = ( function () {
 		spriteObj.x += dx;
 		spriteObj.y += dy;
 		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
+		PS.debug(spriteObj.y + "\n")
 
 
 
 	}
+	
 
 	/* Note functions */
 	function event_note_collide(s1, p1, s2, p2, type){
@@ -183,7 +183,7 @@ const G = ( function () {
 
 				// check which edge the player is pushing
 				//PS.debug("Player position: (" + sprite_player.x + " , " +
-				//sprite_player.y + ")\n");
+				PS.debug(sprite_player.y + ")\n");
 
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
@@ -247,6 +247,7 @@ const G = ( function () {
 			PS.statusColor(gridDimensions.textColor);
 			PS.gridColor(gridDimensions.colorOfGrid);
 
+			
 			// draw map
 			initLevel();
 
@@ -259,7 +260,6 @@ const G = ( function () {
 			PS.spritePlane(sprite_player.id, PLANE_SPRITE_PLAYER);
 			PS.spriteMove(sprite_player.id, sprite_player.x, sprite_player.y);
 			pathmap = PS.pathMap(map);
-
 
 
 			// Change this TEAM constant to your team name,
