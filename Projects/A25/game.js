@@ -51,7 +51,9 @@ const G = ( function () {
 		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
-
+		noteColorGreen : [0xc0f0d6,0xabebc9,0x96e6bb,0x81e0ad,0x6cdba0,
+						  0x57d692,0x42d185,0x29b86b,0x24a35f,0x1f8f53,
+	                      0x1b7a47,0x17663c,0x125230,0x0e3d24,0x092918]
 	};
 	let pathmap;
 	const map = {
@@ -86,6 +88,7 @@ const G = ( function () {
 		prevPos : [],
 		color : 0xFF600,
 	};
+
 	let spriteNotes = [];
 
 	/* Init functions */
@@ -98,7 +101,7 @@ const G = ( function () {
 			order : 1
 		};
 		sprite_note.id = PS.spriteSolid(1,1);
-		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColor);
+		PS.spriteSolidColor(sprite_note.id, gridDimensions.noteColorGreen[sprite_note.y]);
 		PS.spritePlane(sprite_note.id, 2);
 		PS.spriteMove(sprite_note.id, sprite_note.x, sprite_note.y);
 		PS.spriteCollide(sprite_note.id, event_note_collide);
@@ -236,6 +239,7 @@ const G = ( function () {
 	return {
 		init : function () {
 
+
 			PS.gridSize(gridDimensions.gridX,gridDimensions.gridY); // can change later
 
 			PS.statusText( "Safe and (not) Sound" );
@@ -286,7 +290,7 @@ const G = ( function () {
 		},
 
 		keyDown : function ( key ) {
-			// PS.debug( "PS.keyDown(): key=" + key + "\n" );
+			//PS.debug( "PS.keyDown(): key=" + key + "\n" );
 			switch ( key ) {
 				case PS.KEY_ARROW_UP:
 				case 119:
