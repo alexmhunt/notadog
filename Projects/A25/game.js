@@ -51,6 +51,7 @@ const G = ( function () {
 		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
+		enemyColor : PS.COLOR_WHITE,
 		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
 		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
 					    0x991919,0x831515,0x6e1212,0x580e0e,0x420b0b],
@@ -89,7 +90,7 @@ const G = ( function () {
 		]
 	}; // example pathmap, unused for now
 	
-	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2;
+	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
 	let sprite_player = {
 		id : "",
 		x : 8,
@@ -98,8 +99,9 @@ const G = ( function () {
 		color : 0xFF600,
 	};
 
-	let spriteNotes = [];
-	// object prototype for note block
+	let spriteNotes = [], spriteEnemies = [];
+
+	// object prototypes
 	function noteBlock(spriteId, initColor, xPos, yPos, playSound, orderNum){
 		this.id = spriteId,
 		this.color = initColor;
@@ -107,23 +109,46 @@ const G = ( function () {
 		this.y = yPos;
 		this.sound = playSound;
 		this.order = orderNum;
+
+		PS.spritePlane(this.id, PLANE_SPRITE_NOTE);
+		PS.spriteMove(this.id, this.x, this.y);
+		PS.spriteCollide(this.id, event_note_collide);
+		spriteNotes.push(this);
 	}
 
-	/* Init functions */
+	function enemy(spriteId, initColor, xPos, yPos, myMessage){
+		this.id = spriteId,
+		this.color = initColor;
+		this.x = xPos;
+		this.y = yPos;
+		this.message = myMessage;
+
+		PS.spritePlane(this.id, PLANE_SPRITE_ENEMY);
+		PS.spriteMove(this.id, this.x, this.y);
+		PS.spriteCollide(this.id, event_enemy_collide);
+		PS.spriteSolidColor(this.id, this.color);
+		spriteEnemies.push(this);
+	}
+
+	/* Level init functions */
 	function initLevel(){
 		// initialize your note blocks here
+
 		let testNote = new noteBlock(PS.spriteSolid(1,1), 0, 8, 8, "testsound", 1);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[sprite_note.y]);
-		PS.spritePlane(testNote.id, 2);
-		PS.spriteMove(testNote.id, sprite_note.x, sprite_note.y);
-		PS.spriteCollide(testNote.id, event_note_collide);
-		spriteNotes.push(testNote);
+		testNote.color = PS.spriteSolidColor(testNote.id, gridDimensions.noteColorBlue[testNote.y]);
+
+		// create one enemy
+		let enemy1 = new enemy(PS.spriteSolid(1,1), gridDimensions.enemyColor, 14, 1,
+			"\"No one escapes Musi City!\"");
+
 
 		drawMap();
 		//console.log(spriteNotes);
 	}
 
+	// draw the base map grid
+	// can be used for any level
 	function drawMap(){
 		let i = 0;
 		for ( let y = 0; y < map.height; y += 1 ) {
@@ -179,6 +204,7 @@ const G = ( function () {
 	
 
 	/* Note functions */
+	// note block collison
 	function event_note_collide(s1, p1, s2, p2, type){
 		// if overlapped with player, move one square forward
 		// opposite of the pushing direction
@@ -236,6 +262,44 @@ const G = ( function () {
 
 		}
 
+	}
+
+	// enemy collision
+	function event_enemy_collide(s1, p1, s2, p2, type){
+		if(s2 === sprite_player.id){
+
+			// check type
+			if(type === PS.SPRITE_OVERLAP){
+				let spriteObj = null;
+				// find the note object with matching sprite
+				for(let i=0;i<spriteEnemies.length;i++){
+					let curSprite = spriteEnemies[i];
+					if(curSprite.id === s1){
+						spriteObj = curSprite;
+					}
+				}
+				if(spriteObj == null){return;}
+
+				let prevx = sprite_player.prevPos[0];
+				let prevy = sprite_player.prevPos[1];
+
+				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
+					sprite_move(sprite_player, 0, -1);
+				}
+				else if((prevx < spriteObj.x) && (prevy === spriteObj.y)){
+					sprite_move(sprite_player, -1, 0);
+				}
+				else if((prevx === spriteObj.x) && (prevy > spriteObj.y)){
+					sprite_move(sprite_player, 0, 1);
+				}
+				else if((prevx > spriteObj.x) && (prevy === spriteObj.y)){
+					sprite_move(sprite_player, 1, 0);
+				}
+
+				PS.statusText(spriteObj.message);
+
+			}
+		}
 	}
 
 	// Interpolates a color between two [R, G, B] colors
