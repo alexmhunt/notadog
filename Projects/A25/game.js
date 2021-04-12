@@ -200,12 +200,12 @@ const G = ( function () {
 		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
 
 		if(spriteObj.id != sprite_player.id){
-			PS.debug("note at " + spriteObj.y + "\n")
+			//PS.debug("note at " + spriteObj.y + "\n")
 			spriteObj.pitch = ((spriteObj.y - gridDimensions.gridY) * -1) * 6;
 			PS.audioPlay(PS.piano(spriteObj.pitch));
 			note_color_change(spriteObj);
 		}
-		PS.debug(spriteObj.y + "\n")
+		//PS.debug(spriteObj.y + "\n")
 	}
 
 	function note_color_change(noteBlock){
@@ -266,7 +266,7 @@ const G = ( function () {
 
 				// check which edge the player is pushing
 				//PS.debug("Player position: (" + sprite_player.x + " , " +
-				PS.debug(sprite_player.y + ")\n");
+				//PS.debug(sprite_player.y + ")\n");
 
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
@@ -357,6 +357,26 @@ const G = ( function () {
 		return result;
 	}
 
+	function playExample(){
+		if(!isPlaying){
+			let hearing = [66,54,42,54];
+			for (let i=0; i<4; i++){
+				task(i);
+			}
+			function task(i) {
+				setTimeout(function() {
+					PS.audioPlay(PS.piano(hearing[i]));
+					//PS.debug(spriteNotes[i].y + "\n");
+
+				}, 1000 * i);
+			}
+			// Prevent space bar spamming from making the player's ears bleed
+			setTimeout(function(){
+				isPlaying = false;
+			}, 1000 * hearing.length)
+		}
+	}
+
 	let isPlaying = false;
 	return {
 		init : function () {
@@ -364,7 +384,7 @@ const G = ( function () {
 
 			PS.gridSize(gridDimensions.gridX,gridDimensions.gridY); // can change later
 
-			PS.statusText( "Press space to play!" );
+			PS.statusText( "H to listen, Space to play" );
 
 			PS.statusColor(gridDimensions.textColor);
 			PS.gridColor(gridDimensions.colorOfGrid);
@@ -412,18 +432,18 @@ const G = ( function () {
 		},
 
 		keyDown : function ( key ) {
-			PS.debug( "PS.keyDown(): key=" + key + "\n" );
+			//PS.debug( "PS.keyDown(): key=" + key + "\n" );
 			//Notes will play at an interval, player needs to match up the sounds
 			if((key === PS.KEY_SPACE) && !isPlaying) {
 				isPlaying = true;
-				let hearing = [30,42,54,42];
+				let hearing = [66,54,42,54];
 				for (let i=0; i<4; i++){
 					task(i);
 				}
 				function task(i) {
 					setTimeout(function() {
 						PS.audioPlay(PS.piano(spriteNotes[i].pitch));
-						PS.debug(spriteNotes[i].y + "\n");
+						//PS.debug(spriteNotes[i].y + "\n");
 
 					}, 1000 * i);
 				}
@@ -462,6 +482,11 @@ const G = ( function () {
 					sprite_move(sprite_player, 1, 0 );
 					break;
 				}
+				case 104:
+					playExample();
+					break;
+				default:
+					break;
 			}
 		}
 	};
