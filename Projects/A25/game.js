@@ -359,6 +359,7 @@ const G = ( function () {
 
 	function playExample(){
 		if(!isPlaying){
+			isPlaying = true;
 			let hearing = [66,54,42,54];
 			for (let i=0; i<4; i++){
 				task(i);
