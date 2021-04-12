@@ -1,22 +1,18 @@
 /*
 game.js for Perlenspiel 3.3.xd
 Last revision: 2021-04-08 (BM)
-
 Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
 This version of Perlenspiel (3.3.x) is hosted at <https://ps3.perlenspiel.net>
 Perlenspiel is Copyright © 2009-21 Brian Moriarty.
 This file is part of the standard Perlenspiel 3.3.x devkit distribution.
-
 Perlenspiel is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 Perlenspiel is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Lesser General Public License for more details.
-
 You may have received a copy of the GNU Lesser General Public License
 along with the Perlenspiel devkit. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -404,7 +400,7 @@ const G = ( function () {
 			//Notes will play at an interval, player needs to match up the sounds
 			if((key === PS.KEY_SPACE) && !isPlaying) {
 				isPlaying = true;
-				let hearing = [30,42,48,42];
+				let hearing = [30,42,54,42];
 				for (let i=0; i<4; i++){
 					task(i);
 				}
