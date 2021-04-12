@@ -196,7 +196,7 @@ const G = ( function () {
 
 		// only move if the move won't put the sprite out of grid bounds
 		spriteObj.x += dx;
-		spriteObj.y += dy;
+		spriteObj.y += dy; 
 		PS.spriteMove(spriteObj.id, spriteObj.x, spriteObj.y);
 
 		if(spriteObj.id != sprite_player.id){
@@ -270,6 +270,7 @@ const G = ( function () {
 
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
+
 
 				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
 					// player pushing from above
