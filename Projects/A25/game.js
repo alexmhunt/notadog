@@ -104,6 +104,7 @@ const G = ( function () {
 		this.x = xPos;
 		this.y = yPos;
 		this.sound = playSound;
+		this.pitch = ((this.y - gridDimensions.gridY) * -1) * 6;
 		this.order = orderNum;
 
 		PS.spritePlane(this.id, PLANE_SPRITE_NOTE);
@@ -200,7 +201,8 @@ const G = ( function () {
 
 		if(spriteObj.id != sprite_player.id){
 			PS.debug("note at " + spriteObj.y + "\n")
-			PS.audioPlay(PS.piano(((spriteObj.y - gridDimensions.gridY) * -1) * 6));
+			spriteObj.pitch = ((spriteObj.y - gridDimensions.gridY) * -1) * 6;
+			PS.audioPlay(PS.piano(spriteObj.pitch));
 			note_color_change(spriteObj);
 		}
 		PS.debug(spriteObj.y + "\n")
@@ -225,6 +227,20 @@ const G = ( function () {
 			default:
 				break;
 		}
+	}
+
+	function checkSolved(puzzleNum){
+		switch(puzzleNum){
+			case 1:
+				if((spriteNotes[0].y === 5) && (spriteNotes[1].y === 7) &&
+					(spriteNotes[2].y === 9) && (spriteNotes[3].y === 7)){
+					return true;
+				}
+				break;
+			default:
+				break;
+		}
+		return false;
 	}
 	
 
@@ -348,7 +364,7 @@ const G = ( function () {
 
 			PS.gridSize(gridDimensions.gridX,gridDimensions.gridY); // can change later
 
-			PS.statusText( "Safe and (not) Sound" );
+			PS.statusText( "Press space to play!" );
 
 			PS.statusColor(gridDimensions.textColor);
 			PS.gridColor(gridDimensions.colorOfGrid);
@@ -406,13 +422,17 @@ const G = ( function () {
 				}
 				function task(i) {
 					setTimeout(function() {
-						PS.audioPlay(PS.piano(hearing[i]));
+						PS.audioPlay(PS.piano(spriteNotes[i].pitch));
+						PS.debug(spriteNotes[i].y + "\n");
 
 					}, 1000 * i);
 				}
 				// Prevent space bar spamming from making the player's ears bleed
 				setTimeout(function(){
 					isPlaying = false;
+					if(checkSolved(1)){
+						PS.statusText("Congratulations, you solved the puzzle!");
+					}
 				}, 1000 * hearing.length)
 
 			}
