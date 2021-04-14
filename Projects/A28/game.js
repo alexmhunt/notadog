@@ -212,6 +212,7 @@ const G = ( function () {
 			PS.statusText("Congratulations, you beat the game!")
 			return;
 		}
+
 		initLevel();
 	}
 
@@ -610,7 +611,20 @@ const G = ( function () {
 					isPlaying = false;
 					console.log(checkSolved())
 					if(checkSolved()){
-						PS.statusText("Level solved! Moving on...");
+						switch(currentLevel){
+							case 0:
+								PS.statusText("There! Moving on...");
+								break;
+							case 1:
+								PS.statusText("One step closer to home!");
+								break;
+							case 2:
+								PS.statusText("Will I ever get out of here?");
+								break;
+							default:
+								break;
+						}
+
 						nextLevel();
 					}
 				}, 1000 * hearing.length)
