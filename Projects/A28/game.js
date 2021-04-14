@@ -136,7 +136,7 @@ const G = ( function () {
 		},
 	];
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
-	const solutions = [[54], [66,54,42,54]];
+	const solutions = [[54], [66,54,42,54], [66,54,42,54]];
 	let sprite_player = {
 		id : "",
 		x : 8,
@@ -207,6 +207,11 @@ const G = ( function () {
 		currentLevel += 1;
 		isPlaying = false;
 		PS.statusText( "H to listen, Space to play" );
+
+		if(currentLevel > maps.length){
+			PS.statusText("Congratulations, you beat the game!")
+			return;
+		}
 		initLevel();
 	}
 
