@@ -450,7 +450,6 @@ const G = ( function () {
 	// changes the color of a note
 	function note_color_change(noteBlock){
 		let order = noteBlock.order;
-
 		switch(order){
 			case 1:
 				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorRed[noteBlock.y]);
@@ -602,6 +601,7 @@ const G = ( function () {
 				function task(i) {
 					setTimeout(function() {
 						PS.audioPlay(PS.piano(spriteNotes[i].pitch));
+						PS.debug(spritNotes[i].y + "\n");
 						//PS.debug(spriteNotes[i].y + "\n");
 
 					}, 1000 * i);
@@ -621,6 +621,8 @@ const G = ( function () {
 							case 2:
 								PS.statusText("Will I ever get out of here?");
 								break;
+							case 3:
+								PS.statusTest("The end");
 							default:
 								break;
 						}
