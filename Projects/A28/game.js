@@ -683,21 +683,24 @@ const G = ( function () {
 					if(checkSolved()){
 						switch(currentLevel){
 							case 0:
+								PS.audioPlay("fx_ding",{volume:.25});
 								PS.statusText("There! Moving on...");
+								nextLevel();	
 								break;
 							case 1:
+								PS.audioPlay("fx_ding",{volume:.25});
 								PS.statusText("One step closer to home!");
+								nextLevel();	
 								break;
 							case 2:
+								PS.audioPlay("fx_ding",{volume:.25});
 								PS.statusText("Will I ever get out of here?");
 								break;
-							case 3:
-								PS.statusTest("The end");
 							default:
 								break;
 						}
 
-						nextLevel();
+						//	nextLevel();						
 					}
 				}, 1000 * hearing.length)
 
