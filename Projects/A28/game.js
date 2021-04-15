@@ -156,6 +156,7 @@ const G = ( function () {
 		this.sound = playSound;
 		this.pitch = ((this.y - gridDimensions.gridY) * -1) * 6;
 		this.order = orderNum;
+		this.fading = false;
 
 		PS.spritePlane(this.id, PLANE_SPRITE_NOTE);
 		PS.spriteMove(this.id, this.x, this.y);
@@ -328,15 +329,21 @@ const G = ( function () {
 
 	// Moves a sprite
 	function sprite_move(spriteObj, dx, dy){
-		if(spriteObj.id === sprite_player.id){
+		let player = false;
+		if(spriteObj.id === sprite_player.id){player = true;}
+
+		if(player){
 			sprite_player.prevPos[0] = spriteObj.x;
 			sprite_player.prevPos[1] = spriteObj.y;
 
+			let adjacent = player_note_adjacent()
+			if((adjacent != null) && adjacent.fading){
+				return;
+			}
 		}
-		PS.fade(spriteObj.x, spriteObj.y, 0)
+		//PS.fade(spriteObj.x, spriteObj.y, 0)
 
 		if(isWall((spriteObj.x + dx), (spriteObj.y + dy))){
-			//PS.debug("hit wall\n");
 			return;
 		}
 
@@ -354,6 +361,19 @@ const G = ( function () {
 		//PS.debug(spriteObj.y + "\n")
 	}
 
+	function player_note_adjacent(){
+		for(let i=0; i<spriteNotes.length;i++){
+			let note = spriteNotes[i];
+			if((note.x == sprite_player.x) && ((note.y == sprite_player.y + 1) || note.y == sprite_player.y -1) ||
+				(note.y == sprite_player.y) && ((note.x == sprite_player.x + 1) || note.x == sprite_player.x -1)){
+				//PS.debug("true\n")
+				return note;
+			}
+		}
+
+		return null;
+	}
+
 	/* Collision */
 	// note block collison
 	function event_note_collide(s1, p1, s2, p2, type){
@@ -363,6 +383,7 @@ const G = ( function () {
 		if(s2 === sprite_player.id){
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
+
 				let spriteObj = null;
 				// find the note object with matching sprite
 				for(let i=0;i<spriteNotes.length;i++){
@@ -372,6 +393,9 @@ const G = ( function () {
 					}
 				}
 				if(spriteObj == null){return;}
+
+				PS.fade(spriteObj.x, spriteObj.y, PS.DEFAULT);
+				note_color_change(spriteObj)
 
 				//PS.debug("player pushed " + spriteObj.id + "\n")
 
@@ -385,43 +409,35 @@ const G = ( function () {
 
 				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
 					// player pushing from above
-					if(isWall(spriteObj.x, (spriteObj.y + 1)) || isPlaying){
+					if(isWall(spriteObj.x, (spriteObj.y + 1))){
 						sprite_move(sprite_player, 0, -1);
 					}
-					if(!isPlaying){
-						sprite_move(spriteObj, 0, 1);
-					}
+					sprite_move(spriteObj, 0, 1);
 
 				}
 				else if((prevx < spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate left
-					if(isWall((spriteObj.x + 1), spriteObj.y) || isPlaying){
+					if(isWall((spriteObj.x + 1), spriteObj.y)){
 						sprite_move(sprite_player, -1, 0);
 					}
-					if(!isPlaying){
-						sprite_move(spriteObj, 1, 0);
-					}
+					sprite_move(spriteObj, 1, 0);
 
 				}
 				else if((prevx === spriteObj.x) && (prevy > spriteObj.y)){
 					// player pushing from below
-					if(isWall(spriteObj.x, (spriteObj.y - 1)) || isPlaying){
+					if(isWall(spriteObj.x, (spriteObj.y - 1))){
 						sprite_move(sprite_player, 0, 1);
 						note_color_change(spriteObj)
 					}
-					if(!isPlaying){
-						sprite_move(spriteObj, 0, -1);
-					}
+					sprite_move(spriteObj, 0, -1);
 
 				}
 				else if((prevx > spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate right
-					if(isWall((spriteObj.x - 1), spriteObj.y) || isPlaying){
+					if(isWall((spriteObj.x - 1), spriteObj.y)){
 						sprite_move(sprite_player, 1, 0);
 					}
-					if(!isPlaying){
-						sprite_move(spriteObj, -1, 0);
-					}
+					sprite_move(spriteObj, -1, 0);
 
 				}
 			}
@@ -433,18 +449,18 @@ const G = ( function () {
 	// enemy collision
 	function event_enemy_collide(s1, p1, s2, p2, type){
 		if(s2 === sprite_player.id){
-
+			for(let i=0;i<spriteEnemies.length;i++){
+				let curSprite = spriteEnemies[i];
+				if(curSprite.id === s1){
+					spriteObj = curSprite;
+				}
+			}
+			if(spriteObj == null){return;}
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
 				let spriteObj = null;
 				// find the note object with matching sprite
-				for(let i=0;i<spriteEnemies.length;i++){
-					let curSprite = spriteEnemies[i];
-					if(curSprite.id === s1){
-						spriteObj = curSprite;
-					}
-				}
-				if(spriteObj == null){return;}
+
 
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
@@ -465,16 +481,25 @@ const G = ( function () {
 				PS.statusText(spriteObj.message);
 
 			}
+			else{
+				PS.statusText(spriteObj.message);
+			}
 		}
 	}
 
 	/* Helpers */
 	// changes the color of a note
-	function note_color_change(noteBlock){
+	function note_color_change(noteBlock, fade){
 		if(noteBlock.id === null){
 			return;
 		}
 		let order = noteBlock.order;
+
+		if(fade){
+			//PS.debug("fade off\n");
+			PS.fade(noteBlock.x, noteBlock.y, 10, {onEnd : fadeOff, params : [noteBlock]})
+		}
+
 		switch(order){
 			case 1:
 				noteBlock.color = PS.spriteSolidColor(noteBlock.id, gridDimensions.noteColorRed[noteBlock.y]);
@@ -494,8 +519,14 @@ const G = ( function () {
 	}
 
 	function note_flash(noteBlock){
-		PS.fade(noteBlock.x, noteBlock.y, 15, {onEnd : note_color_change, params : [noteBlock]})
-		PS.spriteSolidColor(noteBlock.id, PS.COLOR_WHITE);
+		noteBlock.fading = true;
+		PS.fade(noteBlock.x, noteBlock.y, 10, {onEnd : note_color_change, params : [noteBlock, 1]})
+		noteBlock.color = PS.spriteSolidColor(noteBlock.id, PS.COLOR_WHITE);
+	}
+
+	function fadeOff(noteBlock){
+		noteBlock.fading = false;
+
 	}
 
 	// Interpolates a color between two [R, G, B] colors
