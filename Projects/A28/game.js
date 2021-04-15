@@ -196,12 +196,16 @@ const G = ( function () {
 	async function nextLevel(){
 		await sleep(2000);
 		// reset variables
+		PS.fade(PS.ALL, PS.ALL, PS.DEFAULT)
 		for(let i = 0; i < spriteNotes.length; i++){
 			PS.spriteDelete(spriteNotes[i].id);
+			//spriteNotes[i].id = null;
 		}
 		for(let i = 0; i < spriteEnemies.length; i++){
 			PS.spriteDelete(spriteEnemies[i].id);
 		}
+
+
 
 		spriteNotes = [], spriteEnemies = [];
 		currentLevel += 1;
@@ -212,6 +216,8 @@ const G = ( function () {
 			PS.statusText("Congratulations, you beat the game!")
 			return;
 		}
+
+
 
 		initLevel();
 	}
@@ -239,6 +245,7 @@ const G = ( function () {
 		let lvl1note3 = new noteBlock( 8, 8, "testsound", 3);
 		let lvl1note4 = new noteBlock( 10, 8, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+		//PS.debug(lv1note1.id + "\n")
 		lvl1note1.color = PS.spriteSolidColor(lvl1note1.id, gridDimensions.noteColorRed[lvl1note1.y]);
 
 		lvl1note2.color = PS.spriteSolidColor(lvl1note2.id, gridDimensions.noteColorOrange[lvl1note2.y]);
@@ -326,6 +333,7 @@ const G = ( function () {
 			sprite_player.prevPos[1] = spriteObj.y;
 
 		}
+		PS.fade(spriteObj.x, spriteObj.y, 0)
 
 		if(isWall((spriteObj.x + dx), (spriteObj.y + dy))){
 			//PS.debug("hit wall\n");
@@ -351,6 +359,7 @@ const G = ( function () {
 	function event_note_collide(s1, p1, s2, p2, type){
 		// if overlapped with player, move one square forward
 		// opposite of the pushing direction
+
 		if(s2 === sprite_player.id){
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
@@ -376,31 +385,44 @@ const G = ( function () {
 
 				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
 					// player pushing from above
-					if(isWall(spriteObj.x, (spriteObj.y + 1))){
+					if(isWall(spriteObj.x, (spriteObj.y + 1)) || isPlaying){
 						sprite_move(sprite_player, 0, -1);
 					}
-					sprite_move(spriteObj, 0, 1);
+					if(!isPlaying){
+						sprite_move(spriteObj, 0, 1);
+					}
+
 				}
 				else if((prevx < spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate left
-					if(isWall((spriteObj.x + 1), spriteObj.y)){
+					if(isWall((spriteObj.x + 1), spriteObj.y) || isPlaying){
 						sprite_move(sprite_player, -1, 0);
 					}
-					sprite_move(spriteObj, 1, 0);
+					if(!isPlaying){
+						sprite_move(spriteObj, 1, 0);
+					}
+
 				}
 				else if((prevx === spriteObj.x) && (prevy > spriteObj.y)){
 					// player pushing from below
-					if(isWall(spriteObj.x, (spriteObj.y - 1))){
+					if(isWall(spriteObj.x, (spriteObj.y - 1)) || isPlaying){
 						sprite_move(sprite_player, 0, 1);
+						note_color_change(spriteObj)
 					}
-					sprite_move(spriteObj, 0, -1);
+					if(!isPlaying){
+						sprite_move(spriteObj, 0, -1);
+					}
+
 				}
 				else if((prevx > spriteObj.x) && (prevy === spriteObj.y)){
 					// player pushing from immediate right
-					if(isWall((spriteObj.x - 1), spriteObj.y)){
+					if(isWall((spriteObj.x - 1), spriteObj.y) || isPlaying){
 						sprite_move(sprite_player, 1, 0);
 					}
-					sprite_move(spriteObj, -1, 0);
+					if(!isPlaying){
+						sprite_move(spriteObj, -1, 0);
+					}
+
 				}
 			}
 
@@ -449,6 +471,9 @@ const G = ( function () {
 	/* Helpers */
 	// changes the color of a note
 	function note_color_change(noteBlock){
+		if(noteBlock.id === null){
+			return;
+		}
 		let order = noteBlock.order;
 
 		switch(order){
@@ -467,6 +492,11 @@ const G = ( function () {
 			default:
 				break;
 		}
+	}
+
+	function note_flash(noteBlock){
+		PS.fade(noteBlock.x, noteBlock.y, 15, {onEnd : note_color_change, params : [noteBlock]})
+		PS.spriteSolidColor(noteBlock.id, PS.COLOR_WHITE);
 	}
 
 	// Interpolates a color between two [R, G, B] colors
@@ -491,8 +521,11 @@ const G = ( function () {
 			for (let i=0; i<hearing.length; i++){
 				task(i);
 			}
+
 			function task(i) {
 				setTimeout(function() {
+					note_flash(spriteNotes[i])
+					//note_color_change(spriteNotes[i])
 					PS.audioPlay(PS.piano(hearing[i]));
 					//PS.debug(spriteNotes[i].y + "\n");
 
@@ -601,6 +634,7 @@ const G = ( function () {
 				}
 				function task(i) {
 					setTimeout(function() {
+						note_flash(spriteNotes[i])
 						PS.audioPlay(PS.piano(spriteNotes[i].pitch));
 						//PS.debug(spriteNotes[i].y + "\n");
 
