@@ -213,12 +213,13 @@ const G = ( function () {
 		isPlaying = false;
 		PS.statusText( "H to listen, Space to play" );
 
-		if(currentLevel > maps.length){
-			PS.statusText("Congratulations, you beat the game!")
+		if(currentLevel > maps.length+1){
+			PS.statusText("Congratulations, you're free now!")
 			return;
 		}
-
-		initLevel();
+		else{
+			initLevel();
+		}
 	}
 
 	// tutorial level
@@ -577,6 +578,12 @@ const G = ( function () {
 			case 1:
 				if((spriteNotes[0].y === 5) && (spriteNotes[1].y === 7) &&
 					(spriteNotes[2].y === 9) && (spriteNotes[3].y === 7)){
+					return true;
+				}
+				break;
+			case 2:
+				if((spriteNotes[0].y === 4) && (spriteNotes[1].y === 5) &&
+					(spriteNotes[2].y ===7) && (spriteNotes[3].y === 11)){
 					return true;
 				}
 				break;
