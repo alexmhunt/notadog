@@ -117,26 +117,26 @@ const G = ( function () {
 			pixelSize : 1,
 			data:[
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-				0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-				0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+				0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+				0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0,
+				0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]
 		},
 	];
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
-	const solutions = [[54], [66,54,42,54], [66,54,42,54]];
+	const solutions = [[54], [66,54,42,54], [72,66,54,30]];
 	let sprite_player = {
 		id : "",
 		x : 8,
@@ -218,8 +218,6 @@ const G = ( function () {
 			return;
 		}
 
-
-
 		initLevel();
 	}
 
@@ -274,10 +272,10 @@ const G = ( function () {
 		pathmap = PS.pathMap(maps[2]);
 		drawMap(maps[2]);
 
-		let lvl2note1 = new noteBlock(4, 8, "testsound", 1);
-		let lvl2note2 = new noteBlock( 6, 8, "testsound", 2);
-		let lvl2note3 = new noteBlock( 8, 8, "testsound", 3);
-		let lvl2note4 = new noteBlock( 10, 8, "testers", 4);
+		let lvl2note1 = new noteBlock(5, 9, "testsound", 1);
+		let lvl2note2 = new noteBlock( 11, 10, "testsound", 2);
+		let lvl2note3 = new noteBlock( 12, 5, "testsound", 3);
+		let lvl2note4 = new noteBlock( 4, 3, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
 		lvl2note1.color = PS.spriteSolidColor(lvl2note1.id, gridDimensions.noteColorRed[lvl2note1.y]);
 
@@ -286,8 +284,10 @@ const G = ( function () {
 		lvl2note3.color = PS.spriteSolidColor(lvl2note3.id, gridDimensions.noteColorBlue[lvl2note3.y]);
 
 		// create one enemy
-		let enemy1 = new enemy(14, 1,
-			"\"No one escapes Musi City!\"");
+		let enemy1 = new enemy(2, 5,"\"What's wrong little cube!\"");
+		let enemy2 = new enemy(8, 11,"\"Why did you bump into me!\"");
+		let enemy3 = new enemy(11, 6,"\"The city breathes leave!\"");
+		let enemy4 = new enemy(14, 14,"\"No one escapes Musi City!\"");
 
 		lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
 
@@ -554,8 +554,6 @@ const G = ( function () {
 
 			function task(i) {
 				setTimeout(function() {
-					note_flash(spriteNotes[i])
-					//note_color_change(spriteNotes[i])
 					PS.audioPlay(PS.piano(hearing[i]));
 					//PS.debug(spriteNotes[i].y + "\n");
 
