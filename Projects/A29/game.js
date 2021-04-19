@@ -48,6 +48,7 @@ const G = ( function () {
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
 		enemyColor : PS.COLOR_WHITE,
+		familyColor: 0xFF69B4,
 		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
 		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
 					    0x991919,0x831515,0x6e1212,0x580e0e,0x420b0b],
@@ -212,9 +213,9 @@ const G = ( function () {
 		spriteNotes.push(this);
 
 	}
-	function enemy(xPos, yPos, myMessage){
-		this.id = PS.spriteSolid(1,1);
-		this.color = gridDimensions.enemyColor;
+	function enemy(spriteD,xPos, yPos, myMessage,color){
+		this.id = PS.spriteSolid(spriteD,spriteD);
+		this.color = color;
 		this.x = xPos;
 		this.y = yPos;
 		this.message = myMessage;
@@ -334,8 +335,8 @@ const G = ( function () {
 		lvl2note3.color = PS.spriteSolidColor(lvl2note3.id, gridDimensions.noteColorBlue[lvl2note3.y]);
 
 		// create one enemy
-		let enemy1 = new enemy(14, 1,
-			"\"No one escapes Musi City!\"");
+		let enemy1 = new enemy(1,14, 1,
+			"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
 
 		lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
 
@@ -366,10 +367,10 @@ const G = ( function () {
 		lvl3note3.color = PS.spriteSolidColor(lvl3note3.id, gridDimensions.noteColorBlue[lvl3note3.y]);
 
 		// create multiple enemies
-		let enemy1 = new enemy(2, 5,"\"What's wrong little cube!\"");
-		let enemy2 = new enemy(8, 11,"\"Why did you bump into me!\"");
-		let enemy3 = new enemy(11, 6,"\"The city breathes leave!\"");
-		let enemy4 = new enemy(14, 14,"\"No one escapes Musi City!\"");
+		let enemy1 = new enemy(1,2, 5,"\"What's wrong little cube!\"",gridDimensions.enemyColor);
+		let enemy2 = new enemy(1,8, 11,"\"Why did you bump into me!\"",gridDimensions.enemyColor);
+		let enemy3 = new enemy(1,11, 6,"\"The city breathes leave!\"",gridDimensions.enemyColor);
+		let enemy4 = new enemy(1,14, 14,"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
 
 		lvl3note4.color = PS.spriteSolidColor(lvl3note4.id, gridDimensions.noteColorGreen[lvl3note4.y]);
 
@@ -389,25 +390,17 @@ const G = ( function () {
 		drawMap(maps[4]);
 
 		// create multiple siblings
-		let enemy1 = new enemy(1, 1,"\"What's wrong little cube!\"");
-		let enemy2 = new enemy(2, 9,"\"Why did you bump into me!\"");
-		let enemy3 = new enemy(4, 11,"\"The city breathes leave!\"");
-		let enemy4 = new enemy(5, 4,"\"No one escapes Musi City!\"");
-		let enemy5 = new enemy(7, 12,"\"What's wrong little cube!\"");
-		let enemy6 = new enemy(9, 4,"\"Why did you bump into me!\"");
-		let enemy7 = new enemy(10, 11,"\"The city breathes leave!\"");
-		let enemy8 = new enemy(12, 9,"\"No one escapes Musi City!\"");
-		let enemy9 = new enemy(14, 1,"\"What's wrong little cube!\"");
+		let enemy1 = new enemy(1, 1, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor);
+		let enemy2 = new enemy(1, 2, 9,"\"Why did you bump into me!\"",gridDimensions.familyColor);
+		let enemy3 = new enemy(1, 4, 11,"\"The city breathes leave!\"",gridDimensions.familyColor);
+		let enemy4 = new enemy(1, 5, 4,"\"No one escapes Musi City!\"",gridDimensions.familyColor);
+		let enemy5 = new enemy(1, 7, 12,"\"What's wrong little cube!\"",gridDimensions.familyColor);
+		let enemy6 = new enemy(1, 9, 4,"\"Why did you bump into me!\"",gridDimensions.familyColor);
+		let enemy7 = new enemy(1, 10, 11,"\"The city breathes leave!\"",gridDimensions.familyColor);
+		let enemy8 = new enemy(1, 12, 9,"\"No one escapes Musi City!\"",gridDimensions.familyColor);
+		let enemy9 = new enemy(1, 14, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor);
 		// create the mama
-		let enemy12 = new enemy(6, 7,"\"Welcome Home Child!\"");
-		let enemy13 = new enemy(7, 7,"\"Welcome Home Child!\"");
-		let enemy14 = new enemy(8, 7,"\"Welcome Home Child!\"");
-		let enemy15 = new enemy(6, 8,"\"Welcome Home Child!\"");
-		let enemy16 = new enemy(7, 8,"\"Welcome Home Child!\"");
-		let enemy17 = new enemy(8, 8,"\"Welcome Home Child!\"");
-		let enemy18 = new enemy(6, 9,"\"Welcome Home Child!\"");
-		let enemy19 = new enemy(7, 9,"\"Welcome Home Child!\"");
-		let enemy20 = new enemy(8, 9,"\"Welcome Home Child!\"");
+		let enemy12 = new enemy(3,6, 7,"\"Welcome Home Child!\"",gridDimensions.familyColor);
 
 		//sprite_player.id = PS.spriteSolid(1,1);
 		//PS.spriteSolidColor(sprite_player.id, sprite_player.color);
