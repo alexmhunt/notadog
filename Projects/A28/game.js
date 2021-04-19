@@ -189,6 +189,7 @@ const G = ( function () {
 				break;
 			case 2:
 				initLevel2();
+				break;
 			default:
 				break;
 		}
