@@ -93,6 +93,30 @@ const G = ( function () {
 			pixelSize : 1,
 			data:[
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			]
+		},
+		// level 2 map
+		{
+			width: gridDimensions.gridX,
+			height: gridDimensions.gridY,
+			pixelSize : 1,
+			data:[
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
 				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
 				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -110,7 +134,7 @@ const G = ( function () {
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]
 		},
-		// level 2 map
+		// level 3 map
 		{
 			width: gridDimensions.gridX,
 			height: gridDimensions.gridY,
@@ -136,7 +160,7 @@ const G = ( function () {
 		},
 	];
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
-	const solutions = [[54], [66,54,42,54], [72,66,54,30]];
+	const solutions = [[54], [84,84,84,84], [66,54,42,54], [72,66,54,30]];
 	let sprite_player = {
 		id : "",
 		x : 8,
@@ -189,6 +213,9 @@ const G = ( function () {
 				break;
 			case 2:
 				initLevel2();
+				break;
+			case 3:
+				initLevel3();
 			default:
 				break;
 		}
@@ -226,24 +253,23 @@ const G = ( function () {
 	function initLevel0(){
 		// initialize your note blocks here
 
-		let lvl1note1 = new noteBlock(8, 9, "testsound", 1);
+		let lvl0note1 = new noteBlock( 8, 9, "testsound", 1);
 
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		lvl1note1.color = PS.spriteSolidColor(lvl1note1.id, gridDimensions.noteColorRed[lvl1note1.y]);
+		lvl0note1.color = PS.spriteSolidColor(lvl0note1.id, gridDimensions.noteColorRed[lvl0note1.y]);
 
 		pathmap = PS.pathMap(maps[0]);
 
 		drawMap(maps[0]);
 		//console.log(spriteNotes);
 	}
-
 	function initLevel1(){
 		// initialize your note blocks here
 		drawMap(maps[1]);
-		let lvl1note1 = new noteBlock(4, 8, "testsound", 1);
-		let lvl1note2 = new noteBlock( 6, 8, "testsound", 2);
-		let lvl1note3 = new noteBlock( 8, 8, "testsound", 3);
-		let lvl1note4 = new noteBlock( 10, 8, "testers", 4);
+		let lvl1note1 = new noteBlock( 8, 11, "testsound", 1);
+		let lvl1note2 = new noteBlock( 8, 9, "testsound", 2);
+		let lvl1note3 = new noteBlock( 8, 6, "testsound", 3);
+		let lvl1note4 = new noteBlock( 8, 2, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
 		//PS.debug(lv1note1.id + "\n")
 		lvl1note1.color = PS.spriteSolidColor(lvl1note1.id, gridDimensions.noteColorRed[lvl1note1.y]);
@@ -251,10 +277,6 @@ const G = ( function () {
 		lvl1note2.color = PS.spriteSolidColor(lvl1note2.id, gridDimensions.noteColorOrange[lvl1note2.y]);
 
 		lvl1note3.color = PS.spriteSolidColor(lvl1note3.id, gridDimensions.noteColorBlue[lvl1note3.y]);
-
-		// create one enemy
-		let enemy1 = new enemy(14, 1,
-			"\"No one escapes Musi City!\"");
 
 		lvl1note4.color = PS.spriteSolidColor(lvl1note4.id, gridDimensions.noteColorGreen[lvl1note4.y]);
 
@@ -270,14 +292,13 @@ const G = ( function () {
 
 	function initLevel2(){
 		// initialize your note blocks here
-		pathmap = PS.pathMap(maps[2]);
 		drawMap(maps[2]);
-
-		let lvl2note1 = new noteBlock(5, 9, "testsound", 1);
-		let lvl2note2 = new noteBlock( 11, 10, "testsound", 2);
-		let lvl2note3 = new noteBlock( 12, 5, "testsound", 3);
-		let lvl2note4 = new noteBlock( 4, 3, "testers", 4);
+		let lvl2note1 = new noteBlock( 4, 8, "testsound", 1);
+		let lvl2note2 = new noteBlock( 6, 8, "testsound", 2);
+		let lvl2note3 = new noteBlock( 8, 8, "testsound", 3);
+		let lvl2note4 = new noteBlock( 10, 8, "testers", 4);
 		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+		//PS.debug(lv1note1.id + "\n")
 		lvl2note1.color = PS.spriteSolidColor(lvl2note1.id, gridDimensions.noteColorRed[lvl2note1.y]);
 
 		lvl2note2.color = PS.spriteSolidColor(lvl2note2.id, gridDimensions.noteColorOrange[lvl2note2.y]);
@@ -285,12 +306,44 @@ const G = ( function () {
 		lvl2note3.color = PS.spriteSolidColor(lvl2note3.id, gridDimensions.noteColorBlue[lvl2note3.y]);
 
 		// create one enemy
+		let enemy1 = new enemy(14, 1,
+			"\"No one escapes Musi City!\"");
+
+		lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
+
+		pathmap = PS.pathMap(maps[2]);
+
+		PS.spriteMove(sprite_player.id, 10, 13);
+		sprite_player.prevPos = [10, 13];
+		sprite_player.x = 10, sprite_player.y = 13;
+
+
+		//console.log(spriteNotes);
+	}
+
+	function initLevel3(){
+		// initialize your note blocks here
+		pathmap = PS.pathMap(maps[3]);
+		drawMap(maps[3]);
+
+		let lvl3note1 = new noteBlock(5, 9, "testsound", 1);
+		let lvl3note2 = new noteBlock( 11, 10, "testsound", 2);
+		let lvl3note3 = new noteBlock( 12, 5, "testsound", 3);
+		let lvl3note4 = new noteBlock( 4, 3, "testers", 4);
+		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+		lvl3note1.color = PS.spriteSolidColor(lvl3note1.id, gridDimensions.noteColorRed[lvl3note1.y]);
+
+		lvl3note2.color = PS.spriteSolidColor(lvl3note2.id, gridDimensions.noteColorOrange[lvl3note2.y]);
+
+		lvl3note3.color = PS.spriteSolidColor(lvl3note3.id, gridDimensions.noteColorBlue[lvl3note3.y]);
+
+		// create one enemy
 		let enemy1 = new enemy(2, 5,"\"What's wrong little cube!\"");
 		let enemy2 = new enemy(8, 11,"\"Why did you bump into me!\"");
 		let enemy3 = new enemy(11, 6,"\"The city breathes leave!\"");
 		let enemy4 = new enemy(14, 14,"\"No one escapes Musi City!\"");
 
-		lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
+		lvl3note4.color = PS.spriteSolidColor(lvl3note4.id, gridDimensions.noteColorGreen[lvl3note4.y]);
 
 		//sprite_player.id = PS.spriteSolid(1,1);
 		//PS.spriteSolidColor(sprite_player.id, sprite_player.color);
@@ -576,12 +629,18 @@ const G = ( function () {
 				}
 				break;
 			case 1:
+				if((spriteNotes[0].y === 2) && (spriteNotes[1].y === 2) &&
+					(spriteNotes[2].y === 2) && (spriteNotes[3].y === 2)){
+					return true;
+				}
+				break;
+			case 2:
 				if((spriteNotes[0].y === 5) && (spriteNotes[1].y === 7) &&
 					(spriteNotes[2].y === 9) && (spriteNotes[3].y === 7)){
 					return true;
 				}
 				break;
-			case 2:
+			case 3:
 				if((spriteNotes[0].y === 4) && (spriteNotes[1].y === 5) &&
 					(spriteNotes[2].y ===7) && (spriteNotes[3].y === 11)){
 					return true;
@@ -689,10 +748,15 @@ const G = ( function () {
 								break;
 							case 1:
 								PS.audioPlay("fx_ding",{volume:.2});
-								PS.statusText("One step closer to home!");
-								nextLevel();	
+								PS.statusText("Huh they can Merge!");
+								nextLevel();
 								break;
 							case 2:
+								PS.audioPlay("fx_ding",{volume:.2});
+								PS.statusText("One step closer to home!");
+								nextLevel();
+								break;
+							case 3:
 								PS.audioPlay("fx_ding",{volume:.2});
 								PS.statusText("Will I ever get out of here?");
 								break;
