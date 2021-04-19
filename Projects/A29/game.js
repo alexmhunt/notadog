@@ -48,7 +48,7 @@ const G = ( function () {
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
 		enemyColor : PS.COLOR_WHITE,
-		familyColor: 0xFF69B4,
+		familyColor: [0x01BEFE,0xFFDD00,0xFF7D00,0xFF006D,0xADFF02,0x8F00FF],
 		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
 		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
 					    0x991919,0x831515,0x6e1212,0x580e0e,0x420b0b],
@@ -244,6 +244,7 @@ const G = ( function () {
 				break;
 			case 4:
 				initLevel4();
+				PS.audioPlay('fx_tada');
 				break;
 			default:
 				break;
@@ -390,17 +391,17 @@ const G = ( function () {
 		drawMap(maps[4]);
 
 		// create multiple siblings
-		let enemy1 = new enemy(1, 1, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor);
-		let enemy2 = new enemy(1, 2, 9,"\"Why did you bump into me!\"",gridDimensions.familyColor);
-		let enemy3 = new enemy(1, 4, 11,"\"The city breathes leave!\"",gridDimensions.familyColor);
-		let enemy4 = new enemy(1, 5, 4,"\"No one escapes Musi City!\"",gridDimensions.familyColor);
-		let enemy5 = new enemy(1, 7, 12,"\"What's wrong little cube!\"",gridDimensions.familyColor);
-		let enemy6 = new enemy(1, 9, 4,"\"Why did you bump into me!\"",gridDimensions.familyColor);
-		let enemy7 = new enemy(1, 10, 11,"\"The city breathes leave!\"",gridDimensions.familyColor);
-		let enemy8 = new enemy(1, 12, 9,"\"No one escapes Musi City!\"",gridDimensions.familyColor);
-		let enemy9 = new enemy(1, 14, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor);
+		let enemy1 = new enemy(1, 1, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy2 = new enemy(1, 2, 9,"\"Why did you bump into me!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy3 = new enemy(1, 4, 11,"\"The city breathes leave!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy4 = new enemy(1, 5, 4,"\"No one escapes Musi City!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy5 = new enemy(1, 7, 12,"\"What's wrong little cube!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy6 = new enemy(1, 9, 4,"\"Why did you bump into me!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy7 = new enemy(1, 10, 11,"\"The city breathes leave!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy8 = new enemy(1, 12, 9,"\"No one escapes Musi City!\"",gridDimensions.familyColor[PS.random(6)-1]);
+		let enemy9 = new enemy(1, 14, 1,"\"What's wrong little cube!\"",gridDimensions.familyColor[PS.random(6)-1]);
 		// create the mama
-		let enemy12 = new enemy(3,6, 7,"\"Welcome Home Child!\"",gridDimensions.familyColor);
+		let enemy10 = new enemy(3,6, 7,"\"Welcome Home Child!\"",gridDimensions.familyColor[PS.random(6)-1]);
 
 		//sprite_player.id = PS.spriteSolid(1,1);
 		//PS.spriteSolidColor(sprite_player.id, sprite_player.color);
