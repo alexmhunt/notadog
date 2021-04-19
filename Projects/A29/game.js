@@ -158,6 +158,30 @@ const G = ( function () {
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]
 		},
+		// level 4 map
+		{
+			width: gridDimensions.gridX,
+			height: gridDimensions.gridY,
+			pixelSize : 1,
+			data:[
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			]
+		},
 	];
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
 	const solutions = [[54], [84,84,84,84], [66,54,42,54], [72,66,54,30]];
@@ -216,6 +240,10 @@ const G = ( function () {
 				break;
 			case 3:
 				initLevel3();
+				break;
+			case 4:
+				initLevel4();
+				break;
 			default:
 				break;
 		}
@@ -337,7 +365,7 @@ const G = ( function () {
 
 		lvl3note3.color = PS.spriteSolidColor(lvl3note3.id, gridDimensions.noteColorBlue[lvl3note3.y]);
 
-		// create one enemy
+		// create multiple enemies
 		let enemy1 = new enemy(2, 5,"\"What's wrong little cube!\"");
 		let enemy2 = new enemy(8, 11,"\"Why did you bump into me!\"");
 		let enemy3 = new enemy(11, 6,"\"The city breathes leave!\"");
@@ -352,6 +380,42 @@ const G = ( function () {
 		PS.spriteMove(sprite_player.id, 10, 13);
 		sprite_player.prevPos = [10, 13];
 		sprite_player.x = 10, sprite_player.y = 13;
+
+		//console.log(spriteNotes);
+	}
+	function initLevel4(){
+		// initialize your note blocks here
+		pathmap = PS.pathMap(maps[4]);
+		drawMap(maps[4]);
+
+		// create multiple siblings
+		let enemy1 = new enemy(1, 1,"\"What's wrong little cube!\"");
+		let enemy2 = new enemy(2, 9,"\"Why did you bump into me!\"");
+		let enemy3 = new enemy(4, 11,"\"The city breathes leave!\"");
+		let enemy4 = new enemy(5, 4,"\"No one escapes Musi City!\"");
+		let enemy5 = new enemy(7, 12,"\"What's wrong little cube!\"");
+		let enemy6 = new enemy(9, 4,"\"Why did you bump into me!\"");
+		let enemy7 = new enemy(10, 11,"\"The city breathes leave!\"");
+		let enemy8 = new enemy(12, 9,"\"No one escapes Musi City!\"");
+		let enemy9 = new enemy(14, 1,"\"What's wrong little cube!\"");
+		// create the mama
+		let enemy12 = new enemy(6, 7,"\"Welcome Home Child!\"");
+		let enemy13 = new enemy(7, 7,"\"Welcome Home Child!\"");
+		let enemy14 = new enemy(8, 7,"\"Welcome Home Child!\"");
+		let enemy15 = new enemy(6, 8,"\"Welcome Home Child!\"");
+		let enemy16 = new enemy(7, 8,"\"Welcome Home Child!\"");
+		let enemy17 = new enemy(8, 8,"\"Welcome Home Child!\"");
+		let enemy18 = new enemy(6, 9,"\"Welcome Home Child!\"");
+		let enemy19 = new enemy(7, 9,"\"Welcome Home Child!\"");
+		let enemy20 = new enemy(8, 9,"\"Welcome Home Child!\"");
+
+		//sprite_player.id = PS.spriteSolid(1,1);
+		//PS.spriteSolidColor(sprite_player.id, sprite_player.color);
+		//PS.spritePlane(sprite_player.id, PLANE_SPRITE_PLAYER);
+		// init player to desired position
+		PS.spriteMove(sprite_player.id, 9, 14);
+		sprite_player.prevPos = [9, 14];
+		sprite_player.x = 9, sprite_player.y = 14;
 
 		//console.log(spriteNotes);
 	}
@@ -759,6 +823,7 @@ const G = ( function () {
 							case 3:
 								PS.audioPlay("fx_ding",{volume:.2});
 								PS.statusText("Will I ever get out of here?");
+								nextLevel();
 								break;
 							default:
 								break;
