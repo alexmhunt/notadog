@@ -283,34 +283,83 @@ const G = ( function () {
 	function initLevel0(){
 		// initialize your note blocks here
 
-		let lvl0note1 = new noteBlock( 8, 9, "testsound", 1);
+		if(spriteNotes[0]){
+			PS.spriteMove(spriteNotes[0].id, 8, 9)
+			spriteNotes[0].x = 8;
+			spriteNotes[0].y = 9;
+			spriteNotes[0].color = PS.spriteSolidColor(spriteNotes[0].id, gridDimensions.noteColorRed[spriteNotes[0].y]);
+			spriteNotes[0].pitch = pitch(spriteNotes[0]);
+			note_color_change(spriteNotes[0]);
+		}
+		else{
+			let lvl0note1 = new noteBlock( 8, 9, "testsound", 1);
+			// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+			lvl0note1.color = PS.spriteSolidColor(lvl0note1.id, gridDimensions.noteColorRed[lvl0note1.y]);
+			pathmap = PS.pathMap(maps[0]);
+		}
 
-		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		lvl0note1.color = PS.spriteSolidColor(lvl0note1.id, gridDimensions.noteColorRed[lvl0note1.y]);
+		if(sprite_player.id){
+			PS.spriteMove(sprite_player.id, 8, 12);
+			sprite_player.prevPos = [8, 12];
+			sprite_player.x = 8, sprite_player.y = 12;
+		}
 
-		pathmap = PS.pathMap(maps[0]);
 
 		drawMap(maps[0]);
 		//console.log(spriteNotes);
 	}
+
 	function initLevel1(){
-		// initialize your note blocks here
-		drawMap(maps[1]);
-		let lvl1note1 = new noteBlock( 8, 11, "testsound", 1);
-		let lvl1note2 = new noteBlock( 8, 9, "testsound", 2);
-		let lvl1note3 = new noteBlock( 8, 6, "testsound", 3);
-		let lvl1note4 = new noteBlock( 8, 2, "testers", 4);
-		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		//PS.debug(lv1note1.id + "\n")
-		lvl1note1.color = PS.spriteSolidColor(lvl1note1.id, gridDimensions.noteColorRed[lvl1note1.y]);
+		let isInitialized = true;
+		for(let i=0; i<4;i++){
+			if(!spriteNotes[i]){
+				isInitialized = false;
+			}
+		}
 
-		lvl1note2.color = PS.spriteSolidColor(lvl1note2.id, gridDimensions.noteColorOrange[lvl1note2.y]);
+		if(isInitialized){
+			PS.spriteMove(spriteNotes[0].id, 8, 11)
+			spriteNotes[0].x = 8; spriteNotes[0].y = 11;
+			spriteNotes[0].color = PS.spriteSolidColor(spriteNotes[0].id, gridDimensions.noteColorRed[spriteNotes[0].y]);
+			spriteNotes[0].pitch = pitch(spriteNotes[0]);
+			note_color_change(spriteNotes[0]);
 
-		lvl1note3.color = PS.spriteSolidColor(lvl1note3.id, gridDimensions.noteColorBlue[lvl1note3.y]);
+			PS.spriteMove(spriteNotes[1].id, 8, 9)
+			spriteNotes[1].x = 8; spriteNotes[1].y = 9;
+			spriteNotes[1].color = PS.spriteSolidColor(spriteNotes[1].id, gridDimensions.noteColorRed[spriteNotes[1].y]);
+			spriteNotes[1].pitch = pitch(spriteNotes[1]);
+			note_color_change(spriteNotes[1]);
 
-		lvl1note4.color = PS.spriteSolidColor(lvl1note4.id, gridDimensions.noteColorGreen[lvl1note4.y]);
+			PS.spriteMove(spriteNotes[2].id, 8, 6)
+			spriteNotes[2].x = 8; spriteNotes[2].y = 6;
+			spriteNotes[2].color = PS.spriteSolidColor(spriteNotes[2].id, gridDimensions.noteColorRed[spriteNotes[2].y]);
+			spriteNotes[2].pitch = pitch(spriteNotes[2]);
+			note_color_change(spriteNotes[2]);
 
-		pathmap = PS.pathMap(maps[1]);
+			PS.spriteMove(spriteNotes[3].id, 8, 2)
+			spriteNotes[3].x = 8; spriteNotes[3].y = 2;
+			spriteNotes[3].color = PS.spriteSolidColor(spriteNotes[3].id, gridDimensions.noteColorRed[spriteNotes[3].y]);
+			spriteNotes[3].pitch = pitch(spriteNotes[3]);
+			note_color_change(spriteNotes[3]);
+		}
+		else{
+			drawMap(maps[1]);
+			let lvl1note1 = new noteBlock( 8, 11, "testsound", 1);
+			let lvl1note2 = new noteBlock( 8, 9, "testsound", 2);
+			let lvl1note3 = new noteBlock( 8, 6, "testsound", 3);
+			let lvl1note4 = new noteBlock( 8, 2, "testers", 4);
+			// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+			//PS.debug(lv1note1.id + "\n")
+			lvl1note1.color = PS.spriteSolidColor(lvl1note1.id, gridDimensions.noteColorRed[lvl1note1.y]);
+
+			lvl1note2.color = PS.spriteSolidColor(lvl1note2.id, gridDimensions.noteColorOrange[lvl1note2.y]);
+
+			lvl1note3.color = PS.spriteSolidColor(lvl1note3.id, gridDimensions.noteColorBlue[lvl1note3.y]);
+
+			lvl1note4.color = PS.spriteSolidColor(lvl1note4.id, gridDimensions.noteColorGreen[lvl1note4.y]);
+
+			pathmap = PS.pathMap(maps[1]);
+		}
 
 		PS.spriteMove(sprite_player.id, 10, 13);
 		sprite_player.prevPos = [10, 13];
@@ -320,28 +369,70 @@ const G = ( function () {
 		//console.log(spriteNotes);
 	}
 
+	function pitch(noteBlock){
+		return ((noteBlock.y - gridDimensions.gridY) * -1) * 6
+	}
+
 	function initLevel2(){
 		// initialize your note blocks here
-		drawMap(maps[2]);
-		let lvl2note1 = new noteBlock( 4, 8, "testsound", 1);
-		let lvl2note2 = new noteBlock( 6, 8, "testsound", 2);
-		let lvl2note3 = new noteBlock( 8, 8, "testsound", 3);
-		let lvl2note4 = new noteBlock( 10, 8, "testers", 4);
-		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		//PS.debug(lv1note1.id + "\n")
-		lvl2note1.color = PS.spriteSolidColor(lvl2note1.id, gridDimensions.noteColorRed[lvl2note1.y]);
+		let isInitialized = true;
+		for(let i=0; i<4;i++){
+			if(!spriteNotes[i]){
+				isInitialized = false;
+			}
+		}
+		if(!spriteEnemies[0]){
+			isInitialized = false;
+		}
 
-		lvl2note2.color = PS.spriteSolidColor(lvl2note2.id, gridDimensions.noteColorOrange[lvl2note2.y]);
+		if(isInitialized){
+			PS.spriteMove(spriteNotes[0].id, 4, 8)
+			spriteNotes[0].x = 4; spriteNotes[0].y = 8;
+			spriteNotes[0].color = PS.spriteSolidColor(spriteNotes[0].id, gridDimensions.noteColorRed[spriteNotes[0].y]);
+			spriteNotes[0].pitch = pitch(spriteNotes[0]);
+			note_color_change(spriteNotes[0]);
 
-		lvl2note3.color = PS.spriteSolidColor(lvl2note3.id, gridDimensions.noteColorBlue[lvl2note3.y]);
+			PS.spriteMove(spriteNotes[1].id, 6, 8)
+			spriteNotes[1].x = 6; spriteNotes[1].y = 8;
+			spriteNotes[1].color = PS.spriteSolidColor(spriteNotes[1].id, gridDimensions.noteColorRed[spriteNotes[1].y]);
+			spriteNotes[1].pitch = pitch(spriteNotes[1]);
+			note_color_change(spriteNotes[1]);
 
-		// create one enemy
-		let enemy1 = new enemy(1,14, 1,
-			"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
+			PS.spriteMove(spriteNotes[2].id, 8, 8)
+			spriteNotes[2].x = 8; spriteNotes[2].y = 8;
+			spriteNotes[2].color = PS.spriteSolidColor(spriteNotes[2].id, gridDimensions.noteColorRed[spriteNotes[2].y]);
+			spriteNotes[2].pitch = pitch(spriteNotes[2]);
+			note_color_change(spriteNotes[2]);
 
-		lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
+			PS.spriteMove(spriteNotes[3].id, 10, 8)
+			spriteNotes[3].x = 10; spriteNotes[3].y = 8;
+			spriteNotes[3].color = PS.spriteSolidColor(spriteNotes[3].id, gridDimensions.noteColorRed[spriteNotes[3].y]);
+			spriteNotes[3].pitch = pitch(spriteNotes[3]);
+			note_color_change(spriteNotes[3]);
 
-		pathmap = PS.pathMap(maps[2]);
+		}
+		else{
+			drawMap(maps[2]);
+			let lvl2note1 = new noteBlock( 4, 8, "testsound", 1);
+			let lvl2note2 = new noteBlock( 6, 8, "testsound", 2);
+			let lvl2note3 = new noteBlock( 8, 8, "testsound", 3);
+			let lvl2note4 = new noteBlock( 10, 8, "testers", 4);
+			// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+			//PS.debug(lv1note1.id + "\n")
+			lvl2note1.color = PS.spriteSolidColor(lvl2note1.id, gridDimensions.noteColorRed[lvl2note1.y]);
+
+			lvl2note2.color = PS.spriteSolidColor(lvl2note2.id, gridDimensions.noteColorOrange[lvl2note2.y]);
+
+			lvl2note3.color = PS.spriteSolidColor(lvl2note3.id, gridDimensions.noteColorBlue[lvl2note3.y]);
+
+			// create one enemy
+			let enemy1 = new enemy(1,14, 1,
+				"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
+
+			lvl2note4.color = PS.spriteSolidColor(lvl2note4.id, gridDimensions.noteColorGreen[lvl2note4.y]);
+
+			pathmap = PS.pathMap(maps[2]);
+		}
 
 		PS.spriteMove(sprite_player.id, 10, 13);
 		sprite_player.prevPos = [10, 13];
@@ -353,27 +444,68 @@ const G = ( function () {
 
 	function initLevel3(){
 		// initialize your note blocks here
-		pathmap = PS.pathMap(maps[3]);
-		drawMap(maps[3]);
 
-		let lvl3note1 = new noteBlock(5, 9, "testsound", 1);
-		let lvl3note2 = new noteBlock( 11, 10, "testsound", 2);
-		let lvl3note3 = new noteBlock( 12, 5, "testsound", 3);
-		let lvl3note4 = new noteBlock( 4, 3, "testers", 4);
-		// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
-		lvl3note1.color = PS.spriteSolidColor(lvl3note1.id, gridDimensions.noteColorRed[lvl3note1.y]);
+		let isInitialized = true;
+		for(let i=0; i<4;i++){
+			if(!spriteNotes[i]){
+				isInitialized = false;
+			}
+		}
+		for(let i=0; i<4;i++){
+			if(!spriteEnemies[i]){
+				isInitialized = false;
+			}
+		}
 
-		lvl3note2.color = PS.spriteSolidColor(lvl3note2.id, gridDimensions.noteColorOrange[lvl3note2.y]);
+		if(isInitialized){
+			PS.spriteMove(spriteNotes[0].id, 5, 9)
+			spriteNotes[0].x = 5; spriteNotes[0].y = 9;
+			spriteNotes[0].color = PS.spriteSolidColor(spriteNotes[0].id, gridDimensions.noteColorRed[spriteNotes[0].y]);
+			spriteNotes[0].pitch = pitch(spriteNotes[0]);
+			note_color_change(spriteNotes[0]);
 
-		lvl3note3.color = PS.spriteSolidColor(lvl3note3.id, gridDimensions.noteColorBlue[lvl3note3.y]);
+			PS.spriteMove(spriteNotes[1].id, 11, 10)
+			spriteNotes[1].x = 11; spriteNotes[1].y = 10;
+			spriteNotes[1].color = PS.spriteSolidColor(spriteNotes[1].id, gridDimensions.noteColorRed[spriteNotes[1].y]);
+			spriteNotes[1].pitch = pitch(spriteNotes[1]);
+			note_color_change(spriteNotes[1]);
 
-		// create multiple enemies
-		let enemy1 = new enemy(1,2, 5,"\"What's wrong little cube!\"",gridDimensions.enemyColor);
-		let enemy2 = new enemy(1,8, 11,"\"Why did you bump into me!\"",gridDimensions.enemyColor);
-		let enemy3 = new enemy(1,11, 6,"\"The city breathes leave!\"",gridDimensions.enemyColor);
-		let enemy4 = new enemy(1,14, 14,"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
+			PS.spriteMove(spriteNotes[2].id, 12, 5)
+			spriteNotes[2].x = 12; spriteNotes[2].y = 5;
+			spriteNotes[2].color = PS.spriteSolidColor(spriteNotes[2].id, gridDimensions.noteColorRed[spriteNotes[2].y]);
+			spriteNotes[2].pitch = pitch(spriteNotes[2]);
+			note_color_change(spriteNotes[2]);
 
-		lvl3note4.color = PS.spriteSolidColor(lvl3note4.id, gridDimensions.noteColorGreen[lvl3note4.y]);
+			PS.spriteMove(spriteNotes[3].id, 4, 3)
+			spriteNotes[3].x = 4; spriteNotes[3].y = 3;
+			spriteNotes[3].color = PS.spriteSolidColor(spriteNotes[3].id, gridDimensions.noteColorRed[spriteNotes[3].y]);
+			spriteNotes[3].pitch = pitch(spriteNotes[3]);
+			note_color_change(spriteNotes[3]);
+
+		}
+		else{
+			pathmap = PS.pathMap(maps[3]);
+			drawMap(maps[3]);
+
+			let lvl3note1 = new noteBlock(5, 9, "testsound", 1);
+			let lvl3note2 = new noteBlock( 11, 10, "testsound", 2);
+			let lvl3note3 = new noteBlock( 12, 5, "testsound", 3);
+			let lvl3note4 = new noteBlock( 4, 3, "testers", 4);
+			// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
+			lvl3note1.color = PS.spriteSolidColor(lvl3note1.id, gridDimensions.noteColorRed[lvl3note1.y]);
+
+			lvl3note2.color = PS.spriteSolidColor(lvl3note2.id, gridDimensions.noteColorOrange[lvl3note2.y]);
+
+			lvl3note3.color = PS.spriteSolidColor(lvl3note3.id, gridDimensions.noteColorBlue[lvl3note3.y]);
+
+			// create multiple enemies
+			let enemy1 = new enemy(1,2, 5,"\"What's wrong little cube!\"",gridDimensions.enemyColor);
+			let enemy2 = new enemy(1,8, 11,"\"Why did you bump into me!\"",gridDimensions.enemyColor);
+			let enemy3 = new enemy(1,11, 6,"\"The city breathes leave!\"",gridDimensions.enemyColor);
+			let enemy4 = new enemy(1,14, 14,"\"No one escapes Musi City!\"",gridDimensions.enemyColor);
+
+			lvl3note4.color = PS.spriteSolidColor(lvl3note4.id, gridDimensions.noteColorGreen[lvl3note4.y]);
+		}
 
 		//sprite_player.id = PS.spriteSolid(1,1);
 		//PS.spriteSolidColor(sprite_player.id, sprite_player.color);
@@ -385,6 +517,7 @@ const G = ( function () {
 
 		//console.log(spriteNotes);
 	}
+
 	function initLevel4(){
 		// initialize your note blocks here
 		pathmap = PS.pathMap(maps[4]);
@@ -437,6 +570,8 @@ const G = ( function () {
 				i += 1;
 			}
 		}
+		PS.color(0, 0, PS.COLOR_RED)
+		PS.glyph(0, 0, "↺");
 	}
 
 	// Moves a sprite
@@ -466,7 +601,7 @@ const G = ( function () {
 
 		if(spriteObj.id != sprite_player.id){
 			//PS.debug("note at " + spriteObj.y + "\n")
-			spriteObj.pitch = ((spriteObj.y - gridDimensions.gridY) * -1) * 6;
+			spriteObj.pitch = pitch(spriteObj);
 			PS.audioPlay(PS.piano(spriteObj.pitch));
 			note_color_change(spriteObj);
 		}
@@ -560,6 +695,7 @@ const G = ( function () {
 
 	// enemy collision
 	function event_enemy_collide(s1, p1, s2, p2, type){
+		let spriteObj = null;
 		if(s2 === sprite_player.id){
 			for(let i=0;i<spriteEnemies.length;i++){
 				let curSprite = spriteEnemies[i];
@@ -570,7 +706,7 @@ const G = ( function () {
 			if(spriteObj == null){return;}
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
-				let spriteObj = null;
+
 				// find the note object with matching sprite
 
 
@@ -638,7 +774,6 @@ const G = ( function () {
 
 	function fadeOff(noteBlock){
 		noteBlock.fading = false;
-
 	}
 
 	// Interpolates a color between two [R, G, B] colors
@@ -772,6 +907,9 @@ const G = ( function () {
 
 		touch : function ( x, y ) {
 			// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
+			if((x == 0) && (y == 0)){
+				initLevel()
+			}
 		},
 
 		keyDown : function ( key ) {
@@ -854,8 +992,13 @@ const G = ( function () {
 					sprite_move(sprite_player, 1, 0 );
 					break;
 				}
+				case 72:
 				case 104:
 					playExample();
+					break;
+				case 82:
+				case 114:
+					initLevel()
 					break;
 				default:
 					break;
