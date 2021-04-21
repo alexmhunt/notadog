@@ -215,7 +215,7 @@ const G = ( function () {
 	// Sprite grid planes
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
 	// Solution note sequences
-	const solutions = [[54], [84,84,84,84], [66,54,42,54], [72,66,54,30], [84,84,24,84]];
+	const solutions = [[54], [84,84,84,84], [66,54,42,54], [72,66,54,30], [84,84,30,84]];
 	let sprite_player = {
 		id : "",
 		x : 8,
