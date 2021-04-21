@@ -1,3 +1,4 @@
+
 /*
 game.js for Perlenspiel 3.3.xd
 Last revision: 2021-04-08 (BM)
@@ -45,15 +46,12 @@ const G = ( function () {
 		gridY : 16,
 		colorOfGrid : 0x101215,
 		groundColor : 0x424242,
-		final_groundColor : 0x91ed94,
-		final_wallColor : PS.COLOR_GREEN,
+		final_groundColor : 0x5353b8,
 		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
 		enemyColor : PS.COLOR_WHITE,
-		finalWallColor: 0xA0522E,
-		finalGroundColor: 0x91C722,
-		familyColor: [0x01BEFE,0xFFDD00,0xFF7D00,0xFF006D,0xADFF02,0x8F00FF],
+		familyColor: [0xB43104,0xD6B534,0x591C37,0x44BB43,0xABB4344,0xBB4C43],
 		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
 		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
 					    0x991919,0x831515,0x6e1212,0x580e0e,0x420b0b],
@@ -199,7 +197,7 @@ const G = ( function () {
 		x : 8,
 		y : 12,
 		prevPos : [],
-		color : 0xFF600,
+		color : 0xFFE600,
 	};
 	let spriteNotes = [], spriteEnemies = [];
 	let pathmap, currentLevel = 0, isPlaying = false;
@@ -257,7 +255,7 @@ const G = ( function () {
 				break;
 			case 4:
 				initLevel4();
-				PS.audioPlay('fx_tada');
+				PS.audioPlay('fx_tada',{volume:.2});
 				break;
 			default:
 				break;
@@ -570,11 +568,7 @@ const G = ( function () {
 				let color;
 				switch ( data ) {
 					case 0:
-						if(currentLevel == 4){
-							color = gridDimensions.final_wallColor;
-						}else{
-							color = gridDimensions.wallColor;
-						}
+						color = gridDimensions.wallColor;
 						break;
 					case 1:
 						if(currentLevel == 4){
