@@ -48,6 +48,8 @@ const G = ( function () {
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
 		enemyColor : PS.COLOR_WHITE,
+		finalWallColor: 0xA0522E,
+		finalGroundColor: 0x91C722,
 		familyColor: [0x01BEFE,0xFFDD00,0xFF7D00,0xFF006D,0xADFF02,0x8F00FF],
 		noteColorRed : [0xfbe9e9,0xf8d3d3,0xf4bdbd,0xf1a7a7,0xed9191,
 		                0xe97b7b,0xe66565,0xe24f4f,0xdf3939,0xc52020,
