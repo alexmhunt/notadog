@@ -281,15 +281,15 @@ const G = ( function () {
 		// advance level
 		currentLevel += 1;
 		isPlaying = false;
-		PS.statusText( "H to listen, Space to play" );
 
-		if(currentLevel > maps.length+1){
-			PS.statusText("Congratulations, you're free now!")
-			return;
+
+		if(currentLevel == 4){
+			PS.statusText("Congratulations, you're free now!");
 		}
 		else{
-			initLevel();
+			PS.statusText( "H to listen, Space to play" );
 		}
+		initLevel();
 	}
 
 	/* Level initializations */
