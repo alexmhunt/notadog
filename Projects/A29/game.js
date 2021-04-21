@@ -39,11 +39,14 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 // <script src="game_iife.js"></script>
 
 const G = ( function () {
+	// Global parameters
 	const gridDimensions = {
 		gridX : 16,
 		gridY : 16,
 		colorOfGrid : 0x101215,
 		groundColor : 0x424242,
+		final_groundColor : 0x91ed94,
+		final_wallColor : PS.COLOR_GREEN,
 		wallColor : PS.COLOR_BLACK,
 		textColor : PS.COLOR_YELLOW,
 		noteColor : PS.COLOR_RED,
@@ -62,6 +65,7 @@ const G = ( function () {
 						  0x57d692,0x42d185,0x29b86b,0x24a35f,0x1f8f53,
 	                      0x1b7a47,0x17663c,0x125230,0x0e3d24,0x092918]
 	};
+	// Pathmaps
 	const maps = [
 		// level 0 map
 		{
@@ -184,7 +188,9 @@ const G = ( function () {
 			]
 		},
 	];
+	// Sprite grid planes
 	const PLANE_SPRITE_PLAYER = 1, PLANE_SPRITE_NOTE = 2, PLANE_SPRITE_ENEMY = 3;
+	// Solution note sequences
 	const solutions = [[54], [84,84,84,84], [66,54,42,54], [72,66,54,30]];
 	let sprite_player = {
 		id : "",
@@ -197,6 +203,7 @@ const G = ( function () {
 	let pathmap, currentLevel = 0, isPlaying = false;
 
 	// object prototypes
+	// Creates a note block and adds it to the list of note blocks.
 	function noteBlock(xPos, yPos, playSound, orderNum){
 		this.id = PS.spriteSolid(1,1);
 		this.color = 0;
@@ -213,6 +220,7 @@ const G = ( function () {
 		spriteNotes.push(this);
 
 	}
+	// Creates an enemy and adds it to the list of enemies.
 	function enemy(spriteD,xPos, yPos, myMessage,color){
 		this.id = PS.spriteSolid(spriteD,spriteD);
 		this.color = color;
@@ -227,7 +235,10 @@ const G = ( function () {
 		spriteEnemies.push(this);
 	}
 
-	/* Level init functions */
+	/* Init functions */
+
+	// Calls the appropriate level init
+	// function based on the current level.
 	function initLevel(){
 		switch(currentLevel){
 			case 0:
@@ -251,6 +262,8 @@ const G = ( function () {
 		}
 	}
 
+	// Advances the player to the next level,
+	// performing cleanup on any remaining variables.
 	async function nextLevel(){
 		await sleep(2000);
 		// reset variables
@@ -263,9 +276,9 @@ const G = ( function () {
 			PS.spriteDelete(spriteEnemies[i].id);
 		}
 
-
-
 		spriteNotes = [], spriteEnemies = [];
+
+		// advance level
 		currentLevel += 1;
 		isPlaying = false;
 		PS.statusText( "H to listen, Space to play" );
@@ -279,6 +292,7 @@ const G = ( function () {
 		}
 	}
 
+	/* Level initializations */
 	// tutorial level
 	function initLevel0(){
 		// initialize your note blocks here
@@ -367,10 +381,6 @@ const G = ( function () {
 
 
 		//console.log(spriteNotes);
-	}
-
-	function pitch(noteBlock){
-		return ((noteBlock.y - gridDimensions.gridY) * -1) * 6
 	}
 
 	function initLevel2(){
@@ -518,6 +528,7 @@ const G = ( function () {
 		//console.log(spriteNotes);
 	}
 
+	// Final level (victory!)
 	function initLevel4(){
 		// initialize your note blocks here
 		pathmap = PS.pathMap(maps[4]);
@@ -547,8 +558,8 @@ const G = ( function () {
 		//console.log(spriteNotes);
 	}
 
-	// draw the base map grid
-	// can be used for any level
+	// Draw the base map grid.
+	// Can be used for any level.
 	function drawMap(map){
 		let i = 0;
 		for ( let y = 0; y < map.height; y += 1 ) {
@@ -557,10 +568,18 @@ const G = ( function () {
 				let color;
 				switch ( data ) {
 					case 0:
-						color = gridDimensions.wallColor;
+						if(currentLevel == 4){
+							color = gridDimensions.final_wallColor;
+						}else{
+							color = gridDimensions.wallColor;
+						}
 						break;
 					case 1:
-						color = gridDimensions.groundColor;
+						if(currentLevel == 4){
+							color = gridDimensions.final_groundColor;
+						}else{
+							color = gridDimensions.groundColor;
+						}
 						break;
 					default:
 						color = gridDimensions.colorOfGrid;
@@ -574,7 +593,7 @@ const G = ( function () {
 		PS.glyph(0, 0, "↺");
 	}
 
-	// Moves a sprite
+	// Moves a sprite by (dx, dy) map units.
 	function sprite_move(spriteObj, dx, dy){
 		let player = false;
 		if(spriteObj.id === sprite_player.id){player = true;}
@@ -608,6 +627,8 @@ const G = ( function () {
 		//PS.debug(spriteObj.y + "\n")
 	}
 
+	// If there is a note adjacent to the player,
+	// returns the note, null otherwise.
 	function player_note_adjacent(){
 		for(let i=0; i<spriteNotes.length;i++){
 			let note = spriteNotes[i];
@@ -622,16 +643,16 @@ const G = ( function () {
 	}
 
 	/* Collision */
-	// note block collison
+	// Handles note block collison.
 	function event_note_collide(s1, p1, s2, p2, type){
 		// if overlapped with player, move one square forward
 		// opposite of the pushing direction
-
 		if(s2 === sprite_player.id){
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
 
 				let spriteObj = null;
+
 				// find the note object with matching sprite
 				for(let i=0;i<spriteNotes.length;i++){
 					let curSprite = spriteNotes[i];
@@ -641,6 +662,7 @@ const G = ( function () {
 				}
 				if(spriteObj == null){return;}
 
+				// Turn off faders
 				PS.fade(spriteObj.x, spriteObj.y, PS.DEFAULT);
 				note_color_change(spriteObj)
 
@@ -653,7 +675,7 @@ const G = ( function () {
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
 
-
+				// Move the note block and the player
 				if((prevx == spriteObj.x) && (prevy < spriteObj.y)){
 					// player pushing from above
 					if(isWall(spriteObj.x, (spriteObj.y + 1))){
@@ -693,7 +715,7 @@ const G = ( function () {
 
 	}
 
-	// enemy collision
+	// Handles enemy collision.
 	function event_enemy_collide(s1, p1, s2, p2, type){
 		let spriteObj = null;
 		if(s2 === sprite_player.id){
@@ -706,9 +728,6 @@ const G = ( function () {
 			if(spriteObj == null){return;}
 			// check type
 			if(type === PS.SPRITE_OVERLAP){
-
-				// find the note object with matching sprite
-
 
 				let prevx = sprite_player.prevPos[0];
 				let prevy = sprite_player.prevPos[1];
@@ -736,7 +755,7 @@ const G = ( function () {
 	}
 
 	/* Helpers */
-	// changes the color of a note
+	// Changes the color of a note based on its y position.
 	function note_color_change(noteBlock, fade){
 		if(noteBlock.id === null){
 			return;
@@ -766,39 +785,37 @@ const G = ( function () {
 		}
 	}
 
+	// Makes a note block briefly flash white.
 	function note_flash(noteBlock){
 		noteBlock.fading = true;
 		PS.fade(noteBlock.x, noteBlock.y, 10, {onEnd : note_color_change, params : [noteBlock, 1]})
 		noteBlock.color = PS.spriteSolidColor(noteBlock.id, PS.COLOR_WHITE);
 	}
 
+	// Disable note block fade
+	// (to be called as a handler using PS.fade's onEnd)
 	function fadeOff(noteBlock){
 		noteBlock.fading = false;
 	}
 
-	// Interpolates a color between two [R, G, B] colors
-	// by [factor] and returns a [R, G, B] color
-	function interpolateColors(color1, color2, factor){
-		// Copy color1
-		let result = color1.slice();
-
-		// Interpolate each RGB channel based on the interpolation factor
-		for(let i = 0; i < 3; i++){
-			result[i] = Math.round(result[i] + factor*(color2[i]-color1[i]));
-		}
-
-		return result;
+	// Sets the pitch of a note block depending on its y position.
+	function pitch(noteBlock){
+		return ((noteBlock.y - gridDimensions.gridY) * -1) * 6
 	}
 
-	// Plays the solution sequence
+	// Plays the solution sequence for the current level,
+	// unless one is already playing or the current level
+	// is the last level.
 	function playExample(){
-		if(!isPlaying){
+		// Don't play if already playing or on the end level
+		if((!isPlaying) && (currentLevel != 4)){
 			isPlaying = true;
 			let hearing = solutions[currentLevel];
 			for (let i=0; i<hearing.length; i++){
 				task(i);
 			}
 
+			// Play the notes with a delay of 1 second
 			function task(i) {
 				setTimeout(function() {
 					PS.audioPlay(PS.piano(hearing[i]));
@@ -806,14 +823,19 @@ const G = ( function () {
 
 				}, 1000 * i);
 			}
-			// Prevent space bar spamming from making the player's ears bleed
+
+			// Prevent key spamming from making the player's ears bleed
+			// (a.k.a. prevent the player from triggering multiple plays at the same time)
 			setTimeout(function(){
 				isPlaying = false;
 			}, 1000 * hearing.length)
 		}
 	}
 
-	// checks if the player solved the puzzle
+	// Checks if the player solved the puzzle.
+	// If the player's note block sequence matches
+	// the solution, the puzzle is solved.
+	// Returns true if solved, false otherwise.
 	function checkSolved(){
 		switch(currentLevel){
 			case 0:
@@ -845,12 +867,12 @@ const G = ( function () {
 		return false;
 	}
 
-	// returns true if x, y is at an impassable wall
+	// Returns true if x, y is at an impassable wall.
 	function isWall(x, y){
 		return (PS.color(x,y) === gridDimensions.wallColor);
 	}
 
-	// sleep
+	// Sleep
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
@@ -915,7 +937,7 @@ const G = ( function () {
 		keyDown : function ( key ) {
 			//PS.debug( "PS.keyDown(): key=" + key + "\n" );
 			//Notes will play at an interval, player needs to match up the sounds
-			if((key === PS.KEY_SPACE) && !isPlaying) {
+			if((key === PS.KEY_SPACE) && (!isPlaying) && (currentLevel != 4)) {
 				isPlaying = true;
 				let hearing = solutions[currentLevel];
 				//console.log(solutions[currentLevel].length)
