@@ -114,7 +114,7 @@ PS.touch = function( x, y, data, options ) {
 	var volumeCheck = (tenReversedY * .1);
 
 	// Plays piano with pitch on x-axis and volume on y-axis
-	PS.audioPlay( PS.piano( soundArea), {volume: volumeCheck});
+	PS.audioPlay( PS.piano(soundArea), {volume: volumeCheck});
 };
 
 /*
