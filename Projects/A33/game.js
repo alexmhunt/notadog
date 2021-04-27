@@ -39,49 +39,81 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 "use strict"; // Do NOT delete this directive!
 
-const G = ( function () {
-	return {
+const G = (function () {
+    let time = 0, score = 0 // status bar parameters
+    const params = {
+        gridColor: 0x4a4a4a,
+		backColor : PS.COLOR_BLACK,
+		gridSize : [16,16],
+        player : 0x303030,
+        light : PS.COLOR_WHITE,
+		statusColor : PS.COLOR_WHITE,
+		spritePlanePlayer : 1
+    }
+    let player = {
+        id: "", // sprite id
+        color: params.player, // color
+        position: [0, 0], // [x,y] position on map
+        progress: 0 // progress towards completing level
+    }
 
-		init : function () {
-				const TEAM = "teamname";
+    function initPlayer(){
+    	player.id = PS.spriteSolid(1,1);
+    	PS.spriteSolidColor(player.id, player.color);
+    	PS.spritePlane(player.id, params.spritePlanePlayer);
+    	PS.spriteMove(player.id, 8, 8);
+		player.position = [8, 8];
+	}
 
-				// This code should be the last thing
-				// called by your PS.init() handler.
-				// DO NOT MODIFY IT, except for the change
-				// explained in the comment below.
-				PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
-					if ( user === PS.ERROR ) {
-						return;
-					}
-					PS.dbEvent( TEAM, "startup", user );
-					PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
-				}, { active : false } );
+    return {
+        init: function () {
+            const TEAM = "teamname";
 
-				// Change the false in the final line above to true
-				// before deploying the code to your Web site.
-		},
-		touch : function ( x, y ) {
-			// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-		},
-		keyDown : function ( key ) {
-			// PS.debug( "PS.keyDown(): key=" + key + "\n" );
-		},
-		enter : function( x, y, data, options ) {
-		// Uncomment the following code line to inspect x/y parameters:
+            PS.gridSize(params.gridSize[0], params.gridSize[1]);
+            PS.gridColor(params.gridColor);
+			PS.color(PS.ALL, PS.ALL, params.backColor);
+			PS.border(PS.ALL, PS.ALL, 0);
+            PS.statusText("Night Explore");
+			PS.statusColor(params.statusColor);
 
-		// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
+			initPlayer();
 
-		// Add code here for when the mouse cursor/touch enters a bead.
-		},
-		exit : function( x, y, data, options ) {
-			// Uncomment the following code line to inspect x/y parameters:
+            // This code should be the last thing
+            // called by your PS.init() handler.
+            // DO NOT MODIFY IT, except for the change
+            // explained in the comment below.
+            PS.dbLogin("imgd2900", TEAM, function (id, user) {
+                if (user === PS.ERROR) {
+                    return;
+                }
+                PS.dbEvent(TEAM, "startup", user);
+                PS.dbSend(TEAM, PS.CURRENT, {discard: true});
+            }, {active: false});
+            // Change the false in the final line above to true
+            // before deploying the code to your Web site.
+        },
+        touch: function (x, y) {
+            // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
+        },
+        keyDown: function (key) {
+            // PS.debug( "PS.keyDown(): key=" + key + "\n" );
+        },
+        enter: function (x, y, data, options) {
+            // Uncomment the following code line to inspect x/y parameters:
 
-			// PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
+            // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
-			// Add code here for when the mouse cursor/touch exits a bead.
-		},
-	};
-} () );
+            // Add code here for when the mouse cursor/touch enters a bead.
+        },
+        exit: function (x, y, data, options) {
+            // Uncomment the following code line to inspect x/y parameters:
+
+            // PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
+
+            // Add code here for when the mouse cursor/touch exits a bead.
+        },
+    };
+}());
 
 PS.init = G.init;
 PS.touch = G.touch;
