@@ -193,7 +193,26 @@ const G = (function () {
         //PS.debug(Math.abs(theta_degrees) + "\n");
         // pointing flashlight up/down straight
         //if (Math.abs(player.position[0] - x) <= 1) {
-        if (((theta_degrees >= 45) && (theta_degrees <= 135))) {
+        if (theta_degrees == 45 || theta_degrees == 135) {
+            let newX = 0, newY = 0;
+            if (x > player.position[0]) {
+                newX = params.gridSize[0] - 1
+            }
+            if (y > player.position[1]) {
+                newY = params.gridSize[1] - 1
+            }
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX-1), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX-2), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX+1), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX+2), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY-1)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY-2)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+1)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+2)))
+
+            PS.debug("edge case \n")
+        } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
             let newY = 0;
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
@@ -202,14 +221,12 @@ const G = (function () {
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
         }
-        // pointing flashlight to the side
+            // pointing flashlight to the side
         //else if (Math.abs(player.position[1] - y) <= 2) {
-        else if ((theta_degrees <= 45) || (theta_degrees >= 135)) {
+        else if ((theta_degrees < 45) || (theta_degrees > 135)) {
             let newX = 0;
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
@@ -238,7 +255,7 @@ const G = (function () {
                     for (let mapx = 0; mapx < map.width; mapx += 1) {
                         let data = map.data[k];
                         let color = null;
-                        if((mapx == lines[i][j][0]) && (mapy == lines[i][j][1])){
+                        if ((mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
 
                             switch (data) {
                                 case 0:
