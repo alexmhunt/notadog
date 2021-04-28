@@ -40,12 +40,12 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 "use strict"; // Do NOT delete this directive!
 
 const G = (function () {
-    let time = 0, score = 0 // status bar parameters
+    let time = 10, score = 0, myTimerID  // status bar parameters
     const params = {
-        gridColor: 0x4a4a4a,
+        gridColor: 0x7f7f7f,
 		backColor : PS.COLOR_BLACK,
 		gridSize : [16,16],
-        player : 0x303030,
+        player : 0x7f7f7f,
         light : PS.COLOR_WHITE,
 		statusColor : PS.COLOR_WHITE,
 		spritePlanePlayer : 1
@@ -54,16 +54,30 @@ const G = (function () {
         id: "", // sprite id
         color: params.player, // color
         position: [0, 0], // [x,y] position on map
-        progress: 0 // progress towards completing level
+        progress: 0, // progress towards completing level
+        alpha: 255
     }
 
     function initPlayer(){
     	player.id = PS.spriteSolid(1,1);
     	PS.spriteSolidColor(player.id, player.color);
+        PS.spriteSolidAlpha(player.id, player.alpha);
     	PS.spritePlane(player.id, params.spritePlanePlayer);
     	PS.spriteMove(player.id, 8, 8);
 		player.position = [8, 8];
 	}
+
+    function myTimer() {
+        if (time > 0) {
+            PS.statusText("Timer:" + time);
+            time -= 1;
+        }
+        else {
+            PS.statusText("GameOver");
+            PS.timerStop( myTimerID);
+        }
+    }
+
 
     return {
         init: function () {
@@ -73,10 +87,10 @@ const G = (function () {
             PS.gridColor(params.gridColor);
 			PS.color(PS.ALL, PS.ALL, params.backColor);
 			PS.border(PS.ALL, PS.ALL, 0);
-            PS.statusText("Night Explore");
 			PS.statusColor(params.statusColor);
 
 			initPlayer();
+            myTimerID = PS.timerStart( 60, myTimer );
 
             // This code should be the last thing
             // called by your PS.init() handler.
@@ -96,7 +110,11 @@ const G = (function () {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
         },
         keyDown: function (key) {
-            // PS.debug( "PS.keyDown(): key=" + key + "\n" );
+            if(key === 49){
+                params.gridColor == PS.COLOR_GRAY
+
+            }
+            PS.debug( "PS.keyDown(): key=" + key + "\n" );
         },
         enter: function (x, y, data, options) {
             // Uncomment the following code line to inspect x/y parameters:
