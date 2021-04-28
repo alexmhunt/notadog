@@ -40,23 +40,57 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 "use strict"; // Do NOT delete this directive!
 
 const G = (function () {
-    let time = 10, score = 0, myTimerID  // status bar parameters
+    // status bar parameters
+    let time = 10, score = 0, gameTimer, gameOver = false;
+    let levelNum = 0, pathmap, animateTimer;
+    // constants
     const params = {
         gridColor: 0x7f7f7f,
-		backColor : PS.COLOR_BLACK,
+		backColor : 0x424242,
 		gridSize : [16,16],
         player : 0x7f7f7f,
         light : PS.COLOR_WHITE,
 		statusColor : PS.COLOR_WHITE,
-		spritePlanePlayer : 1
+		spritePlanePlayer : 3,
+        spritePlaneTreasure : 1,
+        planeLight : 4,
+        planeDark : 2,
     }
     let player = {
         id: "", // sprite id
         color: params.player, // color
         position: [0, 0], // [x,y] position on map
         progress: 0, // progress towards completing level
-        alpha: 255
+        alpha: 255,
+        path : null,
+        pathPos : 0,
     }
+    const maps = [
+    {
+        width: params.gridSize[0],
+        height: params.gridSize[1],
+        pixelSize: 1,
+        data:[
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    ]
+    },
+    ]
+
 
     function initPlayer(){
     	player.id = PS.spriteSolid(1,1);
@@ -67,6 +101,35 @@ const G = (function () {
 		player.position = [8, 8];
 	}
 
+	function drawMap(){
+        let map = maps[levelNum];
+
+        PS.gridPlane(0)
+        let i = 0;
+        for ( let y = 0; y < map.height; y += 1 ) {
+            for ( let x = 0; x < map.width; x += 1 ) {
+                let data = map.data[ i ];
+                let color;
+                switch ( data ) {
+                    case 0:
+                        color = PS.COLOR_BLACK;
+                        break;
+                    case 1:
+                        color = params.backColor;
+                        break;
+                    default:
+                        color = params.gridColor;
+                        break;
+                }
+                PS.color( x, y, color );
+                i += 1;
+            }
+        }
+        PS.gridPlane(PS.planeDark);
+        PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+        PS.gridPlane(0);
+    }
+
     function myTimer() {
         if (time > 0) {
             PS.statusText("Timer:" + time);
@@ -74,8 +137,38 @@ const G = (function () {
         }
         else {
             PS.statusText("GameOver");
-            PS.timerStop( myTimerID);
+            PS.timerStop( gameTimer);
         }
+    }
+
+    function playerAnimate(){
+        if (player.path) {
+            let point = player.path[ player.pathPos ];
+            let x = point[ 0 ];
+            let y = point[ 1 ];
+            if (isWall( x, y )) {
+             	player.path = null;
+             	player.pathPos = 0;
+             	return;
+            }
+            playerMove( x, y );
+            player.pathPos += 1;
+            if (player.pathPos >= player.path.length ) {
+                player.path = null;
+            }
+        }
+    }
+
+    function playerMove(x, y){
+        if(isWall(x, y)){
+            return;
+        }
+        PS.spriteMove(player.id, x, y);
+        player.position = [x, y];
+    }
+
+    function isWall(x, y){
+        return (maps[levelNum].data[x][y] == 0);
     }
 
 
@@ -90,7 +183,10 @@ const G = (function () {
 			PS.statusColor(params.statusColor);
 
 			initPlayer();
-            myTimerID = PS.timerStart( 60, myTimer );
+			drawMap();
+			pathmap = PS.pathMap(maps[levelNum])
+            gameTimer = PS.timerStart( 60, myTimer );
+			animateTimer = PS.timerStart(6, playerAnimate);
 
             // This code should be the last thing
             // called by your PS.init() handler.
@@ -105,9 +201,6 @@ const G = (function () {
             }, {active: false});
             // Change the false in the final line above to true
             // before deploying the code to your Web site.
-        },
-        touch: function (x, y) {
-            // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
         },
         keyDown: function (key) {
             if(key === 49){
@@ -130,6 +223,15 @@ const G = (function () {
 
             // Add code here for when the mouse cursor/touch exits a bead.
         },
+        touch : function ( x, y ) {
+            // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
+            let path = PS.pathFind( pathmap, player.position[0], player.position[1], x, y );
+            if ( path.length > 0 ) {
+                player.pathPos = 0;
+                player.path = path;
+            }
+            // _path_print();
+        },
     };
 }());
 
@@ -138,3 +240,4 @@ PS.touch = G.touch;
 PS.keyDown = G.keyDown;
 PS.enter = G.enter;
 PS.exit = G.exit;
+PS.touch = G.touch;
