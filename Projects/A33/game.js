@@ -46,15 +46,16 @@ const G = (function () {
     // constants
     const params = {
         gridColor: 0x7f7f7f,
-		backColor : 0x424242,
-		gridSize : [16,16],
-        player : 0x7f7f7f,
-        light : PS.COLOR_WHITE,
-		statusColor : PS.COLOR_WHITE,
-        planeMap : 4,
-		spritePlanePlayer : 1,
-        spritePlaneTreasure : 3,
-        planeLight : 0,
+        backColor: 0x424242,
+        wallColor: PS.COLOR_WHITE,
+        gridSize: [16, 16],
+        player: 0x7f7f7f,
+        light: PS.COLOR_WHITE,
+        statusColor: PS.COLOR_WHITE,
+        planeMap: 4,
+        spritePlanePlayer: 1,
+        spritePlaneTreasure: 3,
+        planeLight: 0,
     }
     let player = {
         id: "", // sprite id
@@ -62,47 +63,47 @@ const G = (function () {
         position: [0, 0], // [x,y] position on map
         progress: 0, // progress towards completing level
         alpha: 255,
-        path : null,
-        pathPos : 0,
+        path: null,
+        pathPos: 0,
     }
     const maps = [
-    {
-        width: params.gridSize[0],
-        height: params.gridSize[1],
-        pixelSize: 1,
-        data:[
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    ]
-    },
+        {
+            width: params.gridSize[0],
+            height: params.gridSize[1],
+            pixelSize: 1,
+            data: [
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            ]
+        },
     ]
 
-	function drawMap(){
+    function drawMap() {
         let map = maps[levelNum];
 
         PS.gridPlane(params.planeMap)
         let i = 0;
-        for ( let y = 0; y < map.height; y += 1 ) {
-            for ( let x = 0; x < map.width; x += 1 ) {
-                let data = map.data[ i ];
+        for (let y = 0; y < map.height; y += 1) {
+            for (let x = 0; x < map.width; x += 1) {
+                let data = map.data[i];
                 let color;
-                switch ( data ) {
+                switch (data) {
                     case 0:
-                        color = PS.COLOR_BLACK;
+                        color = params.wallColor;
                         break;
                     case 1:
                         color = params.backColor;
@@ -110,7 +111,7 @@ const G = (function () {
                     default:
                         break;
                 }
-                PS.color( x, y, color );
+                PS.color(x, y, color);
                 i += 1;
             }
         }
@@ -119,8 +120,8 @@ const G = (function () {
         //PS.gridPlane(params.planeMap);
     }
 
-    function initPlayer(){
-        player.id = PS.spriteSolid(1,1);
+    function initPlayer() {
+        player.id = PS.spriteSolid(1, 1);
         PS.spriteSolidColor(player.id, player.color);
         PS.spriteSolidAlpha(player.id, player.alpha);
         PS.spritePlane(player.id, params.spritePlanePlayer);
@@ -128,26 +129,26 @@ const G = (function () {
         player.position = [8, 8];
     }
 
-    function playerAnimate(){
+    function playerAnimate() {
         if (player.path) {
-            let point = player.path[ player.pathPos ];
-            let x = point[ 0 ];
-            let y = point[ 1 ];
-            if (isWall( x, y )) {
-             	player.path = null;
-             	player.pathPos = 0;
-             	return;
+            let point = player.path[player.pathPos];
+            let x = point[0];
+            let y = point[1];
+            if (isWall(x, y)) {
+                player.path = null;
+                player.pathPos = 0;
+                return;
             }
-            playerMove( x, y );
+            playerMove(x, y);
             player.pathPos += 1;
-            if (player.pathPos >= player.path.length ) {
+            if (player.pathPos >= player.path.length) {
                 player.path = null;
             }
         }
     }
 
-    function playerMove(x, y){
-        if(isWall(x, y)){
+    function playerMove(x, y) {
+        if (isWall(x, y)) {
             return;
         }
         PS.spriteMove(player.id, x, y);
@@ -158,105 +159,100 @@ const G = (function () {
         if (time > 0) {
             PS.statusText("Timer:" + time);
             time -= 1;
-        }
-        else {
+        } else {
             PS.statusText("GameOver");
-            PS.timerStop( gameTimer);
+            PS.timerStop(gameTimer);
         }
     }
 
-    function isWall(x, y){
+    function isWall(x, y) {
         return (maps[levelNum].data[x][y] == 0);
     }
 
     // Clamps a number to be within the grid size parameters.
     // Assumes a square grid size (4x4, 8x8, 16x16, etc.)
-    function clampToGrid(num){
-        if(num >= params.gridSize[0]){
-            return params.gridSize[0]-1;
-        }
-        else if(num < 0){
+    function clampToGrid(num) {
+        if (num >= params.gridSize[0]) {
+            return params.gridSize[0] - 1;
+        } else if (num < 0) {
             return 0;
         }
         return num;
     }
 
     // Flashlight effect
-    function doFlashlight(x, y){
-        if((x == player.position[0]) && (y == player.position[1])){
+    function doFlashlight(x, y) {
+        if ((x == player.position[0]) && (y == player.position[1])) {
             return;
         }
 
         let lines = [];
         // pointing flashlight up/down straight
-        if(Math.abs(player.position[0] - x) <= 2){
+        if (Math.abs(player.position[0] - x) <= 2) {
             let newY = 0;
-            if(y > player.position[1]){
-                newY = params.gridSize[1] -1
+            if (y > player.position[1]) {
+                newY = params.gridSize[1] - 1
             }
             //PS.debug("same y \n")
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+1), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+2), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+3), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-1), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-2), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-3), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
         }
         // pointing flashlight to the side
-        else if(Math.abs(player.position[1] - y) <= 2){
+        else if (Math.abs(player.position[1] - y) <= 2) {
             let newX = 0;
-            if(x > player.position[0]){
-                newX = params.gridSize[0] -1
+            if (x > player.position[0]) {
+                newX = params.gridSize[0] - 1
             }
             //PS.debug("same y \n")
             lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-1)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-2)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+1)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+2)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 1)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 2)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 1)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 2)));
         }
         // pointing flashlight up/down at an angle
         else {
             let newY = y;
-            if(y < player.position[1]){
+            if (y < player.position[1]) {
                 newY = 0;
-            }
-            else{
-                newY = params.gridSize[1] -1
+            } else {
+                newY = params.gridSize[1] - 1
             }
             let delta_x = x - player.position[0];
             let delta_y = player.position[1] - y;
-            let theta_radians = Math.abs(Math.atan2(delta_y, delta_x) * (180/Math.PI));
+            let theta_radians = Math.abs(Math.atan2(delta_y, delta_x) * (180 / Math.PI));
 
-            if(((theta_radians <= 160) && (theta_radians >= 145)) || ((theta_radians <= 45) && (theta_radians >= 20))){
+            if (((theta_radians <= 160) && (theta_radians >= 145)) || ((theta_radians <= 45) && (theta_radians >= 20))) {
                 let newX = x;
-                if(x < player.position[0]){
+                if (x < player.position[0]) {
                     newX = 0;
-                }
-                else{
-                    newX = params.gridSize[0] -1
+                } else {
+                    newX = params.gridSize[0] - 1
                 }
 
                 //PS.debug("edge case\n")
                 //PS.debug(Math.abs(theta_radians) + "\n");
                 lines.push(PS.line(player.position[0], player.position[1], newX, y));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+1)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+2)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+3)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-1)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-2)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-3)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 1)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 2)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 3)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 1)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 2)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 3)));
 
-            }
-            else{
+            } else {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+1), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+2), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+3), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-1), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-2), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-3), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
 
             }
 
@@ -264,13 +260,44 @@ const G = (function () {
         }
 
         PS.gridPlane(params.planeLight);
-        for(let i=0; i<lines.length;i++){
-            for(let j=0;j<lines[i].length;j++){
+        if (!lines) {
+            return;
+        }
+        for (let i = 0; i < lines.length; i++) {
+            for (let j = 0; j < lines[i].length; j++) {
                 //PS.debug("Drawing on plane " + plane + "\n");
+                //PS.color(lines[i][j][0], lines[i][j][1], PS.COLOR_WHITE);
+                let map = maps[levelNum];
+                let k = 0;
 
-                PS.color(lines[i][j][0], lines[i][j][1], PS.COLOR_WHITE);
+                for (let mapy = 0; mapy < map.height; mapy += 1) {
+                    for (let mapx = 0; mapx < map.width; mapx += 1) {
+                        let data = map.data[k];
+                        let color = null;
+                        if((mapx == lines[i][j][0]) && (mapy == lines[i][j][1])){
 
-                
+                            switch (data) {
+                                case 0:
+                                    color = params.wallColor;
+                                    break;
+                                case 1:
+                                    color = params.backColor;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (color) {
+                                //PS.gridPlane(params.planeLight);
+                                PS.color(mapx, mapy, color);
+                            }
+
+                        }
+
+
+                        k += 1;
+                    }
+                }
+
                 //PS.alpha(PS.ALL, PS.ALL, 128);
             }
         }
@@ -283,14 +310,14 @@ const G = (function () {
 
             PS.gridSize(params.gridSize[0], params.gridSize[1]);
             PS.gridColor(params.gridColor);
-			PS.border(PS.ALL, PS.ALL, 0);
-			PS.statusColor(params.statusColor);
+            PS.border(PS.ALL, PS.ALL, 0);
+            PS.statusColor(params.statusColor);
 
-			initPlayer();
-			pathmap = PS.pathMap(maps[levelNum])
+            initPlayer();
+            pathmap = PS.pathMap(maps[levelNum])
             drawMap();
-            gameTimer = PS.timerStart( 60, myTimer );
-			animateTimer = PS.timerStart(6, playerAnimate);
+            gameTimer = PS.timerStart(60, myTimer);
+            animateTimer = PS.timerStart(6, playerAnimate);
 
             // This code should be the last thing
             // called by your PS.init() handler.
@@ -307,11 +334,11 @@ const G = (function () {
             // before deploying the code to your Web site.
         },
         keyDown: function (key) {
-            if(key === 49){
+            if (key === 49) {
                 params.gridColor == PS.COLOR_GRAY
 
             }
-            PS.debug( "PS.keyDown(): key=" + key + "\n" );
+            PS.debug("PS.keyDown(): key=" + key + "\n");
         },
         enter: function (x, y, data, options) {
             // Uncomment the following code line to inspect x/y parameters:
@@ -320,10 +347,9 @@ const G = (function () {
 
             // Add code here for when the mouse cursor/touch enters a bead.
 
-            if(((x >= 0) && (y >= 0)) && ((x < params.gridSize[0]) && (y <  params.gridSize[1]))){
+            if (((x >= 0) && (y >= 0)) && ((x < params.gridSize[0]) && (y < params.gridSize[1]))) {
                 doFlashlight(x, y);
             }
-
 
 
         },
@@ -337,10 +363,10 @@ const G = (function () {
             PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
             PS.gridPlane(params.planeMap);
         },
-        touch : function ( x, y ) {
+        touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-            let path = PS.pathFind( pathmap, player.position[0], player.position[1], x, y );
-            if ( path.length > 0 ) {
+            let path = PS.pathFind(pathmap, player.position[0], player.position[1], x, y);
+            if (path.length > 0) {
                 player.pathPos = 0;
                 player.path = path;
             }
