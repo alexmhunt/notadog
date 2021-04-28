@@ -187,8 +187,13 @@ const G = (function () {
         }
 
         let lines = [];
+        let delta_x = x - player.position[0];
+        let delta_y = player.position[1] - y;
+        let theta_degrees = Math.abs(Math.atan2(delta_y, delta_x) * (180 / Math.PI));
+        //PS.debug(Math.abs(theta_degrees) + "\n");
         // pointing flashlight up/down straight
-        if (Math.abs(player.position[0] - x) <= 2) {
+        //if (Math.abs(player.position[0] - x) <= 1) {
+        if (((theta_degrees >= 45) && (theta_degrees <= 135))) {
             let newY = 0;
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
@@ -203,7 +208,8 @@ const G = (function () {
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
         }
         // pointing flashlight to the side
-        else if (Math.abs(player.position[1] - y) <= 2) {
+        //else if (Math.abs(player.position[1] - y) <= 2) {
+        else if ((theta_degrees <= 45) || (theta_degrees >= 135)) {
             let newX = 0;
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
@@ -217,44 +223,43 @@ const G = (function () {
         }
         // pointing flashlight up/down at an angle
         else {
-            let newY = y;
-            if (y < player.position[1]) {
-                newY = 0;
-            } else {
-                newY = params.gridSize[1] - 1
-            }
-            let delta_x = x - player.position[0];
-            let delta_y = player.position[1] - y;
-            let theta_radians = Math.abs(Math.atan2(delta_y, delta_x) * (180 / Math.PI));
-
-            if (((theta_radians <= 160) && (theta_radians >= 145)) || ((theta_radians <= 45) && (theta_radians >= 20))) {
-                let newX = x;
-                if (x < player.position[0]) {
-                    newX = 0;
-                } else {
-                    newX = params.gridSize[0] - 1
-                }
-
-                //PS.debug("edge case\n")
-                //PS.debug(Math.abs(theta_radians) + "\n");
-                lines.push(PS.line(player.position[0], player.position[1], newX, y));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 1)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 2)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 3)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 1)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 2)));
-                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 3)));
-
-            } else {
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
-
-            }
+            PS.debug("edge case\n")
+            // let newY = y;
+            // if (y < player.position[1]) {
+            //     newY = 0;
+            // } else {
+            //     newY = params.gridSize[1] - 1
+            // }
+            //
+            // if (((theta_degrees <= 160) && (theta_degrees >= 145)) || ((theta_degrees <= 45) && (theta_degrees >= 20))) {
+            //     let newX = x;
+            //     if (x < player.position[0]) {
+            //         newX = 0;
+            //     } else {
+            //         newX = params.gridSize[0] - 1
+            //     }
+            //
+            //
+            //
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, y));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 1)));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 2)));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 3)));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 1)));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 2)));
+            //     lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 3)));
+            //
+            // }
+            // else {
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
+            //     lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
+            //
+            // }
 
             //PS.debug("Pointing down\n")
         }
