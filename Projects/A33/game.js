@@ -68,7 +68,7 @@ const G = (function () {
     }
 
     let item = {
-        color: PS.COLOR_BLACK,
+        color: PS.COLOR_GREY,
         postionX: 0,
         positionY: 0,
     }
@@ -128,8 +128,8 @@ const G = (function () {
     }
 
     function createItem(){
-        item.positionX = PS.random(params.gridSize[0]);
-        item.positionY = PS.random(params.gridSize[1]);
+        item.positionX = PS.random(params.gridSize[0] - 1);
+        item.positionY = PS.random(params.gridSize[1] - 1);
         PS.color(item.postionX,item.positionY,item.color);
         PS.scale(item.positionX,item.positionY,50)
     }
@@ -171,7 +171,7 @@ const G = (function () {
 
     function myTimer() {
         if (time > 0) {
-            PS.statusText("Timer:" + time);
+            PS.statusText("Timer:" + time + " Score:" + score) ;
             time -= 1;
         } else {
             PS.statusText("GameOver");
@@ -329,11 +329,7 @@ const G = (function () {
             // before deploying the code to your Web site.
         },
         keyDown: function (key) {
-            if (key === 49) {
-                params.gridColor == PS.COLOR_GRAY
-
-            }
-            PS.debug("PS.keyDown(): key=" + key + "\n");
+            // PS.debug("PS.keyDown(): key=" + key + "\n");
         },
         enter: function (x, y, data, options) {
             // Uncomment the following code line to inspect x/y parameters:
@@ -364,6 +360,12 @@ const G = (function () {
             if (path.length > 0) {
                 player.pathPos = 0;
                 player.path = path;
+            }
+            //click on Item
+            if (x === item.positionX && y === item.positionY) {
+                time += 5;
+                score += 1;
+                createItem();
             }
             // _path_print();
         },
