@@ -211,7 +211,7 @@ const G = (function () {
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+1)))
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+2)))
 
-            PS.debug("edge case \n")
+            //PS.debug("edge case \n")
         } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
             let newY = 0;
             if (y > player.position[1]) {
