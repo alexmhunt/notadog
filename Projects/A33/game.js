@@ -66,6 +66,13 @@ const G = (function () {
         path: null,
         pathPos: 0,
     }
+
+    let item = {
+        color: PS.COLOR_BLACK,
+        postionX: 0,
+        positionY: 0,
+    }
+
     const maps = [
         {
             width: params.gridSize[0],
@@ -120,8 +127,15 @@ const G = (function () {
         //PS.gridPlane(params.planeMap);
     }
 
-    function initPlayer() {
-        player.id = PS.spriteSolid(1, 1);
+    function createItem(){
+        item.positionX = PS.random(params.gridSize[0]);
+        item.positionY = PS.random(params.gridSize[1]);
+        PS.color(item.postionX,item.positionY,item.color);
+        PS.scale(item.positionX,item.positionY,50)
+    }
+
+    function initPlayer(){
+        player.id = PS.spriteSolid(1,1);
         PS.spriteSolidColor(player.id, player.color);
         PS.spriteSolidAlpha(player.id, player.alpha);
         PS.spritePlane(player.id, params.spritePlanePlayer);
@@ -287,7 +301,7 @@ const G = (function () {
 
     return {
         init: function () {
-            const TEAM = "teamname";
+            const TEAM = "notadog";
 
             PS.gridSize(params.gridSize[0], params.gridSize[1]);
             PS.gridColor(params.gridColor);
@@ -297,9 +311,9 @@ const G = (function () {
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
             drawMap();
-            gameTimer = PS.timerStart(60, myTimer);
-            animateTimer = PS.timerStart(6, playerAnimate);
-
+            gameTimer = PS.timerStart( 60, myTimer );
+			animateTimer = PS.timerStart(6, playerAnimate);
+            createItem();
             // This code should be the last thing
             // called by your PS.init() handler.
             // DO NOT MODIFY IT, except for the change
