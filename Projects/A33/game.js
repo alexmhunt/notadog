@@ -51,10 +51,10 @@ const G = (function () {
         player : 0x7f7f7f,
         light : PS.COLOR_WHITE,
 		statusColor : PS.COLOR_WHITE,
-		spritePlanePlayer : 3,
-        spritePlaneTreasure : 1,
-        planeLight : 4,
-        planeDark : 2,
+        planeMap : 4,
+		spritePlanePlayer : 1,
+        spritePlaneTreasure : 3,
+        planeLight : 0,
     }
     let player = {
         id: "", // sprite id
@@ -91,20 +91,10 @@ const G = (function () {
     },
     ]
 
-
-    function initPlayer(){
-    	player.id = PS.spriteSolid(1,1);
-    	PS.spriteSolidColor(player.id, player.color);
-        PS.spriteSolidAlpha(player.id, player.alpha);
-    	PS.spritePlane(player.id, params.spritePlanePlayer);
-    	PS.spriteMove(player.id, 8, 8);
-		player.position = [8, 8];
-	}
-
 	function drawMap(){
         let map = maps[levelNum];
 
-        PS.gridPlane(0)
+        PS.gridPlane(params.planeMap)
         let i = 0;
         for ( let y = 0; y < map.height; y += 1 ) {
             for ( let x = 0; x < map.width; x += 1 ) {
@@ -118,27 +108,24 @@ const G = (function () {
                         color = params.backColor;
                         break;
                     default:
-                        color = params.gridColor;
                         break;
                 }
                 PS.color( x, y, color );
                 i += 1;
             }
         }
-        PS.gridPlane(PS.planeDark);
+        PS.gridPlane(params.planeLight);
         PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
-        PS.gridPlane(0);
+        //PS.gridPlane(params.planeMap);
     }
 
-    function myTimer() {
-        if (time > 0) {
-            PS.statusText("Timer:" + time);
-            time -= 1;
-        }
-        else {
-            PS.statusText("GameOver");
-            PS.timerStop( gameTimer);
-        }
+    function initPlayer(){
+        player.id = PS.spriteSolid(1,1);
+        PS.spriteSolidColor(player.id, player.color);
+        PS.spriteSolidAlpha(player.id, player.alpha);
+        PS.spritePlane(player.id, params.spritePlanePlayer);
+        PS.spriteMove(player.id, 8, 8);
+        player.position = [8, 8];
     }
 
     function playerAnimate(){
@@ -167,8 +154,126 @@ const G = (function () {
         player.position = [x, y];
     }
 
+    function myTimer() {
+        if (time > 0) {
+            PS.statusText("Timer:" + time);
+            time -= 1;
+        }
+        else {
+            PS.statusText("GameOver");
+            PS.timerStop( gameTimer);
+        }
+    }
+
     function isWall(x, y){
         return (maps[levelNum].data[x][y] == 0);
+    }
+
+    // Clamps a number to be within the grid size parameters.
+    // Assumes a square grid size (4x4, 8x8, 16x16, etc.)
+    function clampToGrid(num){
+        if(num >= params.gridSize[0]){
+            return params.gridSize[0]-1;
+        }
+        else if(num < 0){
+            return 0;
+        }
+        return num;
+    }
+
+    // Flashlight effect
+    function doFlashlight(x, y){
+        if((x == player.position[0]) && (y == player.position[1])){
+            return;
+        }
+
+        let lines = [];
+        // pointing flashlight up/down straight
+        if(Math.abs(player.position[0] - x) <= 2){
+            let newY = 0;
+            if(y > player.position[1]){
+                newY = params.gridSize[1] -1
+            }
+            //PS.debug("same y \n")
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+1), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+2), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+3), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-1), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-2), newY));
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-3), newY));
+        }
+        // pointing flashlight to the side
+        else if(Math.abs(player.position[1] - y) <= 2){
+            let newX = 0;
+            if(x > player.position[0]){
+                newX = params.gridSize[0] -1
+            }
+            //PS.debug("same y \n")
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-1)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-2)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+1)));
+            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+2)));
+        }
+        // pointing flashlight up/down at an angle
+        else {
+            let newY = y;
+            if(y < player.position[1]){
+                newY = 0;
+            }
+            else{
+                newY = params.gridSize[1] -1
+            }
+            let delta_x = x - player.position[0];
+            let delta_y = player.position[1] - y;
+            let theta_radians = Math.abs(Math.atan2(delta_y, delta_x) * (180/Math.PI));
+
+            if(((theta_radians <= 160) && (theta_radians >= 145)) || ((theta_radians <= 45) && (theta_radians >= 20))){
+                let newX = x;
+                if(x < player.position[0]){
+                    newX = 0;
+                }
+                else{
+                    newX = params.gridSize[0] -1
+                }
+
+                //PS.debug("edge case\n")
+                //PS.debug(Math.abs(theta_radians) + "\n");
+                lines.push(PS.line(player.position[0], player.position[1], newX, y));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+1)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+2)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y+3)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-1)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-2)));
+                lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y-3)));
+
+            }
+            else{
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+1), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+2), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x+3), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-1), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-2), newY));
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x-3), newY));
+
+            }
+
+            //PS.debug("Pointing down\n")
+        }
+
+        PS.gridPlane(params.planeLight);
+        for(let i=0; i<lines.length;i++){
+            for(let j=0;j<lines[i].length;j++){
+                //PS.debug("Drawing on plane " + plane + "\n");
+
+                PS.color(lines[i][j][0], lines[i][j][1], PS.COLOR_WHITE);
+
+                
+                //PS.alpha(PS.ALL, PS.ALL, 128);
+            }
+        }
     }
 
 
@@ -178,13 +283,12 @@ const G = (function () {
 
             PS.gridSize(params.gridSize[0], params.gridSize[1]);
             PS.gridColor(params.gridColor);
-			PS.color(PS.ALL, PS.ALL, params.backColor);
 			PS.border(PS.ALL, PS.ALL, 0);
 			PS.statusColor(params.statusColor);
 
 			initPlayer();
-			drawMap();
 			pathmap = PS.pathMap(maps[levelNum])
+            drawMap();
             gameTimer = PS.timerStart( 60, myTimer );
 			animateTimer = PS.timerStart(6, playerAnimate);
 
@@ -215,6 +319,13 @@ const G = (function () {
             // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
             // Add code here for when the mouse cursor/touch enters a bead.
+
+            if(((x >= 0) && (y >= 0)) && ((x < params.gridSize[0]) && (y <  params.gridSize[1]))){
+                doFlashlight(x, y);
+            }
+
+
+
         },
         exit: function (x, y, data, options) {
             // Uncomment the following code line to inspect x/y parameters:
@@ -222,6 +333,9 @@ const G = (function () {
             // PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
 
             // Add code here for when the mouse cursor/touch exits a bead.
+            PS.gridPlane(params.planeLight);
+            PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+            PS.gridPlane(params.planeMap);
         },
         touch : function ( x, y ) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
