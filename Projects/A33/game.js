@@ -68,12 +68,6 @@ const G = (function () {
     }
     let items = []
 
-    let item = {
-        color: PS.COLOR_GREY,
-        postionX: 0,
-        positionY: 0,
-    }
-
     const maps = [
         {
             width: params.gridSize[0],
@@ -127,13 +121,29 @@ const G = (function () {
         PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
         //PS.gridPlane(params.planeMap);
     }
+    
+    let itemParams = {
+        positionX : PS.random(params.gridSize[0]-1),
+        positionY : PS.random(params.gridSize[1]-1),
+    }
 
-    function makeItem(){
+    let items = [];
 
-        item.positionX = PS.random(params.gridSize[0] - 1);
-        item.positionY = PS.random(params.gridSize[1] - 1);
-        PS.color(item.postionX,item.positionY,item.color);
-        PS.scale(item.positionX,item.positionY,50)
+    function theItem(){
+        PS.color(itemParams.positionX,itemParams.positionY,PS.COLOR_BLACK);
+        PS.scale(itemParams.positionX,itemParams.positionY,50);
+        PS.border(itemParams.positionX,itemParams.positionY,0);
+    }
+
+    function createItem(){
+        let newItem = theItem();
+        items.push(newItem)
+    };
+
+    function destroyItem(){
+        let newItem = items.splice(2,1);
+        newItem = theItem();
+        items.push(newItem)
     }
 
     function initPlayer(){
@@ -176,8 +186,9 @@ const G = (function () {
             PS.statusText("Timer:" + time + " Score:" + score) ;
             time -= 1;
         } else {
-            PS.statusText("GameOver");
-            PS.timerStop(gameTimer);
+            PS.statusText("gameover");
+            time = 60;
+            score = 0;
         }
     }
 
@@ -364,10 +375,10 @@ const G = (function () {
                 player.path = path;
             }
             //click on Item
-            if (x === item.positionX && y === item.positionY) {
+            if (x == itemParams.positionX && y == itemParams.positionY) {
                 time += 5;
                 score += 1;
-                createItem();
+                destroyItem();
             }
             // _path_print();
         },
