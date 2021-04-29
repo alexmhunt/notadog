@@ -66,6 +66,7 @@ const G = (function () {
         path: null,
         pathPos: 0,
     }
+    let items = []
 
     let item = {
         color: PS.COLOR_GREY,
@@ -127,7 +128,8 @@ const G = (function () {
         //PS.gridPlane(params.planeMap);
     }
 
-    function createItem(){
+    function makeItem(){
+
         item.positionX = PS.random(params.gridSize[0] - 1);
         item.positionY = PS.random(params.gridSize[1] - 1);
         PS.color(item.postionX,item.positionY,item.color);
@@ -313,7 +315,7 @@ const G = (function () {
             drawMap();
             gameTimer = PS.timerStart( 60, myTimer );
 			animateTimer = PS.timerStart(6, playerAnimate);
-            createItem();
+            let item1 = new makeItem();
             // This code should be the last thing
             // called by your PS.init() handler.
             // DO NOT MODIFY IT, except for the change
