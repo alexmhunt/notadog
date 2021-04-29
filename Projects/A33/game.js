@@ -41,7 +41,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 10, score = 0, gameTimer, gameOver = false;
+    let time = 15, initTime = 15, score = 0, highScore = 0, gameTimer, gameOver = false;
     let levelNum = 0, pathmap, animateTimer;
     // constants
     const params = {
@@ -77,8 +77,8 @@ const G = (function () {
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -200,19 +200,31 @@ const G = (function () {
         player.position = [x, y];
 
         if (x == itemParams.positionX && y == itemParams.positionY) {
-            time += 5;
+            time += 2;
             score += 1;
+            if (score % 2 == 0){
+                PS.audioPlay("perc_block_low",{volume:0.2})
+            } else if (score % 2 == 1){
+                PS.audioPlay("perc_block_high",{volume:0.2})
+            }
             destroyItem();
         }
     }
 
     function myTimer() {
         if (time > 0) {
-            PS.statusText("Timer:" + time + " Score:" + score);
+            PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
             time -= 1;
         } else {
+            if(score > highScore){
+                highScore = score;
+                PS.audioPlay("fx_tada",{volume:0.1})
+            }else{
+                PS.audioPlay("fx_uhoh",{volume:0.2})
+            }
+
             PS.statusText("gameover");
-            time = 60;
+            time = initTime;
             score = 0;
         }
     }
@@ -342,7 +354,7 @@ const G = (function () {
     return {
         init: function () {
             const TEAM = "notadog";
-
+            
             PS.gridSize(params.gridSize[0], params.gridSize[1]);
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
