@@ -121,33 +121,52 @@ const G = (function () {
         PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
         //PS.gridPlane(params.planeMap);
     }
-    
+
     let itemParams = {
-        positionX : PS.random(params.gridSize[0]-1),
-        positionY : PS.random(params.gridSize[1]-1),
+        positionX: PS.random(params.gridSize[0] - 1),
+        positionY: PS.random(params.gridSize[1] - 1),
+        color: PS.COLOR_BLACK,
+        scale: 50,
+        border: 0,
     }
 
-    let items = [];
+    function theItem() {
+        let x = PS.random(params.gridSize[0] - 1);
+        let y = PS.random(params.gridSize[1] - 1);
 
-    function theItem(){
-        PS.color(itemParams.positionX,itemParams.positionY,PS.COLOR_BLACK);
-        PS.scale(itemParams.positionX,itemParams.positionY,50);
-        PS.border(itemParams.positionX,itemParams.positionY,0);
+        while(isWall(x,y)){
+            x = PS.random(params.gridSize[0] - 1);
+            y = PS.random(params.gridSize[1] - 1);
+        }
+
+        itemParams.positionX = x;
+        itemParams.positionY = y;
+
+        // PS.color(x,y,PS.COLOR_BLACK);
+        // PS.scale(x,y,50);
+        // PS.border(x,y,0);
     }
 
-    function createItem(){
+    function createItem() {
         let newItem = theItem();
         items.push(newItem)
     };
 
-    function destroyItem(){
-        let newItem = items.splice(2,1);
+    function destroyItem() {
+        let newItem;
+        PS.scale(itemParams.positionX, itemParams.positionY, 100);
+        // delete old item
+        items.splice(2, 1);
+        // add in new item
         newItem = theItem();
-        items.push(newItem)
+        items.push(newItem);
+
+        PS.border(PS.ALL, PS.ALL, 0);
+
     }
 
-    function initPlayer(){
-        player.id = PS.spriteSolid(1,1);
+    function initPlayer() {
+        player.id = PS.spriteSolid(1, 1);
         PS.spriteSolidColor(player.id, player.color);
         PS.spriteSolidAlpha(player.id, player.alpha);
         PS.spritePlane(player.id, params.spritePlanePlayer);
@@ -174,16 +193,22 @@ const G = (function () {
     }
 
     function playerMove(x, y) {
-        if (isWall(x, y)) {
+        if(isWall(x, y)) {
             return;
         }
         PS.spriteMove(player.id, x, y);
         player.position = [x, y];
+
+        if (x == itemParams.positionX && y == itemParams.positionY) {
+            time += 5;
+            score += 1;
+            destroyItem();
+        }
     }
 
     function myTimer() {
         if (time > 0) {
-            PS.statusText("Timer:" + time + " Score:" + score) ;
+            PS.statusText("Timer:" + time + " Score:" + score);
             time -= 1;
         } else {
             PS.statusText("gameover");
@@ -229,14 +254,14 @@ const G = (function () {
                 newY = params.gridSize[1] - 1
             }
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX-1), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX-2), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX+1), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX+2), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY-1)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY-2)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+1)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY+2)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - 1), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - 2), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + 1), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + 2), clampToGrid(newY)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - 1)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - 2)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + 1)))
+            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + 2)))
 
             //PS.debug("edge case \n")
         } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
@@ -295,18 +320,20 @@ const G = (function () {
                                     break;
                             }
                             if (color) {
-                                //PS.gridPlane(params.planeLight);
                                 PS.color(mapx, mapy, color);
                             }
-
+                            if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
+                                PS.color(itemParams.positionX, itemParams.positionY, PS.COLOR_BLACK);
+                                PS.scale(itemParams.positionX, itemParams.positionY, 50);
+                                PS.border(itemParams.positionX, itemParams.positionY, 0);
+                            }
                         }
-
 
                         k += 1;
                     }
                 }
 
-                //PS.alpha(PS.ALL, PS.ALL, 128);
+
             }
         }
     }
@@ -324,9 +351,9 @@ const G = (function () {
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
             drawMap();
-            gameTimer = PS.timerStart( 60, myTimer );
-			animateTimer = PS.timerStart(6, playerAnimate);
-            let item1 = new makeItem();
+            gameTimer = PS.timerStart(60, myTimer);
+            animateTimer = PS.timerStart(6, playerAnimate);
+            createItem();
             // This code should be the last thing
             // called by your PS.init() handler.
             // DO NOT MODIFY IT, except for the change
@@ -366,6 +393,8 @@ const G = (function () {
             PS.gridPlane(params.planeLight);
             PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
             PS.gridPlane(params.planeMap);
+            PS.border(PS.ALL, PS.ALL, 0);
+            PS.scale(PS.ALL, PS.ALL, 100);
         },
         touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
@@ -375,11 +404,11 @@ const G = (function () {
                 player.path = path;
             }
             //click on Item
-            if (x == itemParams.positionX && y == itemParams.positionY) {
-                time += 5;
-                score += 1;
-                destroyItem();
-            }
+            // if (x == itemParams.positionX && y == itemParams.positionY) {
+            //     time += 5;
+            //     score += 1;
+            //     destroyItem();
+            // }
             // _path_print();
         },
     };
