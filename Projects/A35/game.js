@@ -399,7 +399,7 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
-            PS.statusText("Night Run");
+            PS.statusText("Collect the items");
 
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
