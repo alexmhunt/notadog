@@ -133,7 +133,7 @@ const G = (function () {
                         break;
                 }
                 PS.color(x, y, color);
-                map.data2d[x][15-y] = data;
+                map.data2d[x][params.gridSize[1]-1-y] = data;
 
                 i += 1;
             }
