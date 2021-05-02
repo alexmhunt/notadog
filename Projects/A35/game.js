@@ -42,7 +42,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 const G = (function () {
     // status bar parameters
     let time = 15, initTime = 15, score = 0, highScore = 0, gameTimer, gameOver = false;
-    let levelNum = 0, pathmap, animateTimer;
+    let levelNum = 0, pathmap, animateTimer, inGrid;
     // constants
     const params = {
         gridColor: 0x7f7f7f,
@@ -77,11 +77,11 @@ const G = (function () {
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+                1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -95,11 +95,11 @@ const G = (function () {
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+                [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -272,13 +272,13 @@ const G = (function () {
             return;
         }
 
-        let lines = [];
+        let lines = [], width = 3;
         let delta_x = x - player.position[0];
         let delta_y = player.position[1] - y;
         let theta_degrees = Math.abs(Math.atan2(delta_y, delta_x) * (180 / Math.PI));
         //PS.debug(Math.abs(theta_degrees) + "\n");
         // pointing flashlight up/down straight
-        //if (Math.abs(player.position[0] - x) <= 1) {
+
         if (theta_degrees == 45 || theta_degrees == 135) {
             let newX = 0, newY = 0;
             if (x > player.position[0]) {
@@ -287,31 +287,37 @@ const G = (function () {
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
+
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - 1), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - 2), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + 1), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + 2), clampToGrid(newY)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - 1)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - 2)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + 1)))
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + 2)))
+            for(let i=1;i<=width;i++){
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - i), clampToGrid(newY)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + i), clampToGrid(newY)))
+
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - i)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + i)))
+            }
 
             //PS.debug("edge case \n")
-        } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
+        }
+        else if (((theta_degrees > 45) && (theta_degrees < 135))) {
             let newY = 0;
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
             //PS.debug("same y \n")
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
-            lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
+            for(let i=1;i<=width;i++){
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - i), clampToGrid(newY)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + i), clampToGrid(newY)))
+            }
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
+            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
         }
             // pointing flashlight to the side
-        //else if (Math.abs(player.position[1] - y) <= 2) {
         else if ((theta_degrees < 45) || (theta_degrees > 135)) {
             let newX = 0;
             if (x > player.position[0]) {
@@ -319,10 +325,10 @@ const G = (function () {
             }
             //PS.debug("same y \n")
             lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 1)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y - 2)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 1)));
-            lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y + 2)));
+            for(let i=1;i<=width;i++){
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(y - i)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(y + i)))
+            }
         }
         // pointing flashlight up/down at an angle
 
@@ -330,6 +336,11 @@ const G = (function () {
         if (!lines) {
             return;
         }
+        // for (let i = 0; i < lines.length; i++) {
+        //     for (let j = 0; j < lines[i].length; j++) {
+        //
+        //     }
+        // }
         for (let i = 0; i < lines.length; i++) {
             for (let j = 0; j < lines[i].length; j++) {
                 //PS.debug("Drawing on plane " + plane + "\n");
@@ -341,11 +352,10 @@ const G = (function () {
                     for (let mapx = 0; mapx < map.width; mapx += 1) {
                         let data = map.data[k];
                         let color = null;
-                        if ((mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
-
+                        if ((lines[i][j]) && (mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
                             switch (data) {
                                 case 0:
-                                    color = params.wallColor;
+                                    lines[i].splice(j+1);
                                     break;
                                 case 1:
                                     color = params.backColor;
@@ -356,7 +366,7 @@ const G = (function () {
                             if (color) {
                                 PS.color(mapx, mapy, color);
                             }
-                            if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
+                            else if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
                                 PS.color(itemParams.positionX, itemParams.positionY, PS.COLOR_BLACK);
                                 PS.scale(itemParams.positionX, itemParams.positionY, 50);
                                 PS.border(itemParams.positionX, itemParams.positionY, 0);
@@ -366,7 +376,6 @@ const G = (function () {
                         k += 1;
                     }
                 }
-
 
             }
         }
@@ -429,6 +438,9 @@ const G = (function () {
             PS.gridPlane(params.planeMap);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.scale(PS.ALL, PS.ALL, 100);
+        },
+        exitGrid : function(options){
+
         },
         touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
