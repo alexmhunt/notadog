@@ -366,7 +366,7 @@ const G = (function () {
                             if (color) {
                                 PS.color(mapx, mapy, color);
                             }
-                            else if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
+                            if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
                                 PS.color(itemParams.positionX, itemParams.positionY, PS.COLOR_BLACK);
                                 PS.scale(itemParams.positionX, itemParams.positionY, 50);
                                 PS.border(itemParams.positionX, itemParams.positionY, 0);
