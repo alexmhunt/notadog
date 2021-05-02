@@ -334,11 +334,20 @@ const G = (function () {
                     PS.audioPlay("fx_uhoh",{volume:0.2})
                     PS.statusText("Try Again")
                 }
-                levelNum = PS.random(2)
+                
+                levelNum = PS.random(2);
                 drawMap();
-                initPlayer();
                 time = initTime;
                 score = 0;
+
+                while(isWall(player.position[0], player.position[1])){
+                    if(player.position[0] >= 8){
+                        playerMove(clampToGrid(player.position[0] - 1), player.position[1])
+                    }
+                    else{
+                        playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
+                    }
+                }
             }
         }
     }
