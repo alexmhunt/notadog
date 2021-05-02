@@ -236,21 +236,23 @@ const G = (function () {
 
     // Timer
     function myTimer() {
-        if (time > 0) {
-            PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
-            time -= 1;
-        } else {
-            if(score > highScore){
-                highScore = score;
-                PS.audioPlay("fx_tada",{volume:0.1})
-                PS.statusText("HIGHSCORE!!!")
-            }else{
-                PS.audioPlay("fx_uhoh",{volume:0.2})
-                PS.statusText("Try Again")
-            }
+        if (score > 0){
+            if (time > 0) {
+                PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
+                time -= 1;
+            } else {
+                if(score > highScore){
+                    highScore = score;
+                    PS.audioPlay("fx_tada",{volume:0.1})
+                    PS.statusText("HIGHSCORE!!!")
+                }else{
+                    PS.audioPlay("fx_uhoh",{volume:0.2})
+                    PS.statusText("Try Again")
+                }
 
-            time = initTime;
-            score = 0;
+                time = initTime;
+                score = 0;
+            }
         }
     }
 
@@ -397,6 +399,7 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
+            PS.statusText("Night Run");
 
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
