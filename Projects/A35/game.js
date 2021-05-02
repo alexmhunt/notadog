@@ -355,6 +355,7 @@ const G = (function () {
                         if ((lines[i][j]) && (mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
                             switch (data) {
                                 case 0:
+                                    color = params.wallColor;
                                     lines[i].splice(j+1);
                                     break;
                                 case 1:
