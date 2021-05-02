@@ -148,10 +148,12 @@ const G = (function () {
         border: 0,
     }
 
+    // Initialize item position
     function theItem() {
         let x = PS.random(params.gridSize[0] - 1);
         let y = PS.random(params.gridSize[1] - 1);
 
+        // Don't spawn inside a wall bead
         while(isWall(x,y)){
             //PS.debug("Spawned in wall at (" + x + ", " + y + ")\n");
             x = PS.random(params.gridSize[0] - 1);
@@ -160,10 +162,6 @@ const G = (function () {
 
         itemParams.positionX = x;
         itemParams.positionY = y;
-
-        // PS.color(x,y,PS.COLOR_BLACK);
-        // PS.scale(x,y,50);
-        // PS.border(x,y,0);
     }
 
     function createItem() {
@@ -193,6 +191,7 @@ const G = (function () {
         player.position = [8, 8];
     }
 
+    // Player movement animation
     function playerAnimate() {
         if (player.path) {
             let point = player.path[player.pathPos];
@@ -211,6 +210,8 @@ const G = (function () {
         }
     }
 
+    // Moves the player to (x, y).
+    // Picks up an item if one is present at (x, y).
     function playerMove(x, y) {
         if(isWall(x, y)) {
             return;
@@ -230,6 +231,7 @@ const G = (function () {
         }
     }
 
+    // Timer
     function myTimer() {
         if (time > 0) {
             PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
@@ -272,15 +274,22 @@ const G = (function () {
             return;
         }
 
-        let lines = [], width = 3;
+        let lines = []; // ray traces
+        // width of flashlight
+        // (how many ray traces to do in each direction)
+        let width = 4;
+
+        // calculate angle between mouse position and player position
+        // (in degrees)
         let delta_x = x - player.position[0];
         let delta_y = player.position[1] - y;
         let theta_degrees = Math.abs(Math.atan2(delta_y, delta_x) * (180 / Math.PI));
-        //PS.debug(Math.abs(theta_degrees) + "\n");
-        // pointing flashlight up/down straight
 
+        // do flashlight ray casts based on angle of mouse cursor
+        // compared to player position
         if (theta_degrees == 45 || theta_degrees == 135) {
             let newX = 0, newY = 0;
+            // flashlight extends to end of grid
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
             }
@@ -288,6 +297,7 @@ const G = (function () {
                 newY = params.gridSize[1] - 1
             }
 
+            // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
             for(let i=1;i<=width;i++){
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - i), clampToGrid(newY)))
@@ -296,55 +306,48 @@ const G = (function () {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - i)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + i)))
             }
-
-            //PS.debug("edge case \n")
         }
         else if (((theta_degrees > 45) && (theta_degrees < 135))) {
             let newY = 0;
+            // flashlight extends to end of grid
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
-            //PS.debug("same y \n")
+
+            // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
             for(let i=1;i<=width;i++){
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - i), clampToGrid(newY)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + i), clampToGrid(newY)))
             }
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 1), newY));
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 2), newY));
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + 3), newY));
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 1), newY));
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 2), newY));
-            // lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - 3), newY));
         }
-            // pointing flashlight to the side
+        // pointing flashlight to the side
         else if ((theta_degrees < 45) || (theta_degrees > 135)) {
             let newX = 0;
+            // flashlight extends to end of grid
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
             }
-            //PS.debug("same y \n")
+
+            // ray casts
             lines.push(PS.line(player.position[0], player.position[1], newX, clampToGrid(y)));
-            for(let i=1;i<=width;i++){
+            for (let i = 1; i <= width; i++) {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(y - i)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(y + i)))
             }
         }
-        // pointing flashlight up/down at an angle
 
         PS.gridPlane(params.planeLight);
+
+        // don't draw anything if no ray casts exist
         if (!lines) {
             return;
         }
-        // for (let i = 0; i < lines.length; i++) {
-        //     for (let j = 0; j < lines[i].length; j++) {
-        //
-        //     }
-        // }
+
+        // draw the map inside the ray casts' area
+        // using the level map
         for (let i = 0; i < lines.length; i++) {
             for (let j = 0; j < lines[i].length; j++) {
-                //PS.debug("Drawing on plane " + plane + "\n");
-                //PS.color(lines[i][j][0], lines[i][j][1], PS.COLOR_WHITE);
                 let map = maps[levelNum];
                 let k = 0;
 
