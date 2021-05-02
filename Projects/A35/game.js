@@ -277,7 +277,7 @@ const G = (function () {
         let lines = []; // ray traces
         // width of flashlight
         // (how many ray traces to do in each direction)
-        let width = 4;
+        let width = 8;
 
         // calculate angle between mouse position and player position
         // (in degrees)
