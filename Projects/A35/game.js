@@ -41,7 +41,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 15, initTime = 15, score = 0, highScore = 0, levelNum = 0;
+    let time = 30, initTime = 30, score = 0, highScore = 0, levelNum = 0;
     let gameOver = false, pathmap, animateTimer, gameTimer;
     // constants
     const params = {
@@ -220,7 +220,7 @@ const G = (function () {
         player.position = [x, y];
 
         if (x == itemParams.positionX && y == itemParams.positionY) {
-            time += 2;
+            time += 5;
             score += 1;
             if (score % 2 == 0){
                 PS.audioPlay("perc_block_low",{volume:0.2})
