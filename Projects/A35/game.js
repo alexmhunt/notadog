@@ -41,8 +41,8 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 15, initTime = 15, score = 0, highScore = 0, gameTimer, gameOver = false;
-    let levelNum = 0, pathmap, animateTimer, inGrid;
+    let time = 15, initTime = 15, score = 0, highScore = 0, levelNum = 0;
+    let gameOver = false, pathmap, animateTimer, gameTimer;
     // constants
     const params = {
         gridColor: 0x7f7f7f,
@@ -419,28 +419,15 @@ const G = (function () {
 
             // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
-            // Add code here for when the mouse cursor/touch enters a bead.
-
-            if (((x >= 0) && (y >= 0)) && ((x < params.gridSize[0]) && (y < params.gridSize[1]))) {
-                doFlashlight(x, y);
-            }
-
-
-        },
-        exit: function (x, y, data, options) {
-            // Uncomment the following code line to inspect x/y parameters:
-
-            // PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
-
-            // Add code here for when the mouse cursor/touch exits a bead.
+            // Disable the previous flashlight
             PS.gridPlane(params.planeLight);
             PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
             PS.gridPlane(params.planeMap);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.scale(PS.ALL, PS.ALL, 100);
-        },
-        exitGrid : function(options){
 
+            // Draw the flashlight again
+            doFlashlight(x, y);
         },
         touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
@@ -464,5 +451,4 @@ PS.init = G.init;
 PS.touch = G.touch;
 PS.keyDown = G.keyDown;
 PS.enter = G.enter;
-PS.exit = G.exit;
 PS.touch = G.touch;
