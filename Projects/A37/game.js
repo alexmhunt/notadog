@@ -360,8 +360,8 @@ const G = (function () {
         positionX: PS.random(params.gridSize[0] - 1),
         positionY: PS.random(params.gridSize[1] - 1),
         color: PS.COLOR_BLACK,
-        scale: 50,
-        border: 0,
+        scale: 100,
+        border: 6,
     }
 
     // Initialize item position
@@ -616,8 +616,8 @@ const G = (function () {
                             }
                             if (mapx == itemParams.positionX && mapy == itemParams.positionY) {
                                 PS.color(itemParams.positionX, itemParams.positionY, PS.COLOR_BLACK);
-                                PS.scale(itemParams.positionX, itemParams.positionY, 50);
-                                PS.border(itemParams.positionX, itemParams.positionY, 0);
+                                PS.scale(itemParams.positionX, itemParams.positionY, itemParams.scale);
+                                PS.border(itemParams.positionX, itemParams.positionY, itemParams.border);
                             }
                         }
 
