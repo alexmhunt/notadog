@@ -476,7 +476,7 @@ const G = (function () {
                     PS.audioPlay("fx_tada", {volume: 0.1})
                     PS.statusText("HIGHSCORE!!!")
                 } else {
-                    PS.audioPlay("fx_uhoh", {volume: 0.2})
+                    PS.audioPlay("fx_squawk", {volume: 0.2})
                     PS.statusText("Try Again")
                 }
 
@@ -638,7 +638,7 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
-            PS.statusText("Collect the Items")
+            PS.statusText("Collect the Wise Koroks")
 
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
