@@ -345,13 +345,14 @@ const G = (function () {
                         break;
                 }
                 PS.color(x, y, color);
-                map.data2d[x][15-y] = data;
+                map.data2d[x][15 - y] = data;
 
                 i += 1;
             }
         }
         PS.gridPlane(params.planeLight);
         PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+        pathmap = PS.pathMap(map);
         //PS.gridPlane(params.planeMap);
     }
 
@@ -369,8 +370,8 @@ const G = (function () {
         let y = PS.random(params.gridSize[1] - 1);
 
         // Don't spawn inside a wall bead
-        while(isWall(x,y)){
-           // PS.debug("Spawned in wall at (" + x + ", " + y + ")\n");
+        while (isWall(x, y)) {
+            // PS.debug("Spawned in wall at (" + x + ", " + y + ")\n");
             x = PS.random(params.gridSize[0] - 1);
             y = PS.random(params.gridSize[1] - 1);
         }
@@ -425,28 +426,26 @@ const G = (function () {
         }
     }
 
-        // Changes level every 5 points
-    /*function levelChange(){
-        if (score > 0){
-            if (score % 5 == 0){
-                levelNum = PS.random(5);
-                drawMap();
-                //player.path = null;
-                while(isWall(player.position[0], player.position[1])){
-                    if(player.position[0] >= 8){
-                        playerMove(clampToGrid(player.position[0] - 1), player.position[1])
-                    }
-                    else{
-                        playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
-                    }
+    // Changes level every 5 points
+    function levelChange() {
+        if ((score > 0) && (score % 5 == 0)) {
+            levelNum = PS.random(5);
+            //PS.debug("Changing level to " + levelNum + "\n")
+            drawMap();
+            while (isWall(player.position[0], player.position[1])) {
+                if (player.position[0] >= 8) {
+                    playerMove(clampToGrid(player.position[0] - 1), player.position[1])
+                } else {
+                    playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
                 }
             }
         }
-    }*/
+    }
+
     // Moves the player to (x, y).
     // Picks up an item if one is present at (x, y).
     function playerMove(x, y) {
-        if(isWall(x, y)) {
+        if (isWall(x, y)) {
             return;
         }
         PS.spriteMove(player.id, x, y);
@@ -455,29 +454,29 @@ const G = (function () {
         if (x == itemParams.positionX && y == itemParams.positionY) {
             time += 2;
             score += 1;
-            if (score % 2 == 0){
-                PS.audioPlay("perc_block_low",{volume:0.2})
-            } else if (score % 2 == 1){
-                PS.audioPlay("perc_block_high",{volume:0.2})
+            if (score % 2 == 0) {
+                PS.audioPlay("perc_block_low", {volume: 0.2})
+            } else if (score % 2 == 1) {
+                PS.audioPlay("perc_block_high", {volume: 0.2})
             }
-            //levelChange();
+            levelChange();
             destroyItem();
         }
     }
 
     // Timer
     function myTimer() {
-        if (score > 0){
+        if (score > 0) {
             if (time > 0) {
                 PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
                 time -= 1;
             } else {
-                if(score > highScore){
+                if (score > highScore) {
                     highScore = score;
-                    PS.audioPlay("fx_tada",{volume:0.1})
+                    PS.audioPlay("fx_tada", {volume: 0.1})
                     PS.statusText("HIGHSCORE!!!")
-                }else{
-                    PS.audioPlay("fx_uhoh",{volume:0.2})
+                } else {
+                    PS.audioPlay("fx_uhoh", {volume: 0.2})
                     PS.statusText("Try Again")
                 }
 
@@ -485,13 +484,11 @@ const G = (function () {
                 drawMap();
                 time = initTime;
                 score = 0;
-                player.path = null;
 
-                while(isWall(player.position[0], player.position[1])){
-                    if(player.position[0] >= 8){
+                while (isWall(player.position[0], player.position[1])) {
+                    if (player.position[0] >= 8) {
                         playerMove(clampToGrid(player.position[0] - 1), player.position[1])
-                    }
-                    else{
+                    } else {
                         playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
                     }
                 }
@@ -547,15 +544,14 @@ const G = (function () {
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
-            for(let i=1;i<=width;i++){
+            for (let i = 1; i <= width; i++) {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - i), clampToGrid(newY)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + i), clampToGrid(newY)))
 
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - i)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + i)))
             }
-        }
-        else if (((theta_degrees > 45) && (theta_degrees < 135))) {
+        } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
             let newY = 0;
             // flashlight extends to end of grid
             if (y > player.position[1]) {
@@ -564,7 +560,7 @@ const G = (function () {
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
-            for(let i=1;i<=width;i++){
+            for (let i = 1; i <= width; i++) {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - i), clampToGrid(newY)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + i), clampToGrid(newY)))
             }
@@ -607,7 +603,7 @@ const G = (function () {
                             switch (data) {
                                 case 0:
                                     color = params.wallColor;
-                                    lines[i].splice(j+1);
+                                    lines[i].splice(j + 1);
                                     break;
                                 case 1:
                                     color = params.backColor;
@@ -637,7 +633,7 @@ const G = (function () {
     return {
         init: function () {
             const TEAM = "notadog";
-            
+
             PS.gridSize(params.gridSize[0], params.gridSize[1]);
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
@@ -689,6 +685,8 @@ const G = (function () {
                 player.pathPos = 0;
                 player.path = path;
             }
+
+            isWall(x,y)
             //click on Item
             // if (x == itemParams.positionX && y == itemParams.positionY) {
             //     time += 5;
