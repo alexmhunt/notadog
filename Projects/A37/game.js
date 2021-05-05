@@ -41,8 +41,8 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 30, initTime = 30, score = 0, levelNum = 0;
-    let gameOver = false, pathmap, animateTimer, gameTimer;
+    let time = 30, initTime = 30, score = 0, level = 0;
+    let inputEnabled = true, pathmap, animateTimer, gameTimer;
     // constants
     const params = {
         gridColor: 0x7f7f7f,
@@ -67,6 +67,8 @@ const G = (function () {
         pathPos: 0,
     }
     let items = []
+    const messages = ["The wood shifts around you.", "The wood's wisdom grows stronger.",
+    "You can feel it surge within you.", "So close...", ""]
 
     const maps = [
         //tutorial level
@@ -325,7 +327,7 @@ const G = (function () {
     ]
 
     function drawMap() {
-        let map = maps[levelNum];
+        let map = maps[level];
 
         PS.gridPlane(params.planeMap)
         let i = 0;
@@ -427,10 +429,18 @@ const G = (function () {
     }
 
     // Changes level every 5 points
-    function levelChange() {
+    async function levelChange() {
+
         if ((score > 0) && (score % 5 == 0)) {
-            levelNum = PS.random(5);
-            //PS.debug("Changing level to " + levelNum + "\n")
+
+            // Display flavor text
+            PS.statusText(messages[player.progress]);
+            player.progress += 1;
+            inputEnabled = false;
+            await sleep(2000);
+            level = PS.random(5);
+            //PS.debug("Changing level to " + level + "\n")
+
             drawMap();
             while (isWall(player.position[0], player.position[1])) {
                 if (player.position[0] >= 8) {
@@ -439,7 +449,13 @@ const G = (function () {
                     playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
                 }
             }
+
+            inputEnabled = true;
         }
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     // Moves the player to (x, y).
@@ -468,17 +484,20 @@ const G = (function () {
     function myTimer() {
         if (score > 0) {
             if (time > 0) {
-                PS.statusText("Timer:" + time + " Tracker:"  + score + "/25");
-                time -= 1;
+                if(inputEnabled){
+                    PS.statusText("Timer:" + time + " Wisdom:"  + score + "/25");
+                    time -= 1;
+                }
                 if (score == 25){
-                    PS.statusText("You're Winners!");
+                    PS.statusText("You have achieved inner wisdom!");
                     time = initTime;
                     score = 0;
+                    inputEnabled = false;
                 }
             } else {
                 PS.audioPlay("fx_squawk", {volume: 0.2})
                 PS.statusText("Try Again")
-                levelNum = PS.random(5);
+                level = PS.random(5);
                 drawMap();
                 time = initTime;
                 score = 0;
@@ -496,8 +515,8 @@ const G = (function () {
 
     // Returns true if (x,y) is at a wall, false otherwise
     function isWall(x, y) {
-        //PS.debug("Map data at (" + x + ", " + y + ") is " + maps[levelNum].data2d[x][y] + "\n")
-        return (maps[levelNum].data2d[x][params.gridSize[1] - 1 - y] == 0);
+        //PS.debug("Map data at (" + x + ", " + y + ") is " + maps[level].data2d[x][y] + "\n")
+        return (maps[level].data2d[x][params.gridSize[1] - 1 - y] == 0);
     }
 
     // Clamps a number to be within the grid size parameters.
@@ -590,7 +609,7 @@ const G = (function () {
         // using the level map
         for (let i = 0; i < lines.length; i++) {
             for (let j = 0; j < lines[i].length; j++) {
-                let map = maps[levelNum];
+                let map = maps[level];
                 let k = 0;
 
                 for (let mapy = 0; mapy < map.height; mapy += 1) {
@@ -636,10 +655,10 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
-            PS.statusText("Collect 20 pieces of the Woods Wisdom")
+            PS.statusText("Collect 20 pieces of the Wood's Wisdom.")
 
             initPlayer();
-            pathmap = PS.pathMap(maps[levelNum])
+            pathmap = PS.pathMap(maps[level])
             drawMap();
             gameTimer = PS.timerStart(60, myTimer);
             animateTimer = PS.timerStart(6, playerAnimate);
@@ -678,6 +697,9 @@ const G = (function () {
         },
         touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
+            if(!inputEnabled){
+                return;
+            }
             let path = PS.pathFind(pathmap, player.position[0], player.position[1], x, y);
             if (path.length > 0) {
                 player.pathPos = 0;
