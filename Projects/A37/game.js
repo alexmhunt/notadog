@@ -503,7 +503,6 @@ const G = (function () {
                 }
                 if (score == 25){
                     PS.statusText("You have achieved inner wisdom!");
-                    inputEnabled = false;
                     win = true;
                 }
             } else {
@@ -514,7 +513,6 @@ const G = (function () {
                 time = initTime;
                 score = 0;
                 gameOver = true;
-                inputEnabled = false;
 
                 while (isWall(player.position[0], player.position[1])) {
                     if (player.position[0] >= 8) {
@@ -691,9 +689,6 @@ const G = (function () {
             // Change the false in the final line above to true
             // before deploying the code to your Web site.
         },
-        keyDown: function (key) {
-            // PS.debug("PS.keyDown(): key=" + key + "\n");
-        },
         enter: function (x, y, data, options) {
             // Uncomment the following code line to inspect x/y parameters:
 
@@ -718,17 +713,16 @@ const G = (function () {
             if(!inputEnabled){
                 return;
             }
-            if (win == true){
-                if ((0 <= x <= 15) && (0 <= y <= 15)){
-                    level = 0;
-                    drawMap();
-                }
-            }
 
-            if (gameOver == true){
-                if (x >= 0 && y >= 0){
+            if(win == true || gameOver == true){
+                if(x < params.gridSize[0] && y < params.gridSize[0]){
+                    win = false;
+                    gameOver = false;
                     level = 0;
                     drawMap();
+                    player.color = PS.spriteSolidColor(player.id, 0x7f7f7f);
+                    score = 0;
+                    time = initTime;
                 }
             }
 
@@ -752,5 +746,4 @@ const G = (function () {
 
 PS.init = G.init;
 PS.touch = G.touch;
-PS.keyDown = G.keyDown;
 PS.enter = G.enter;
