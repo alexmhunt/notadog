@@ -43,6 +43,7 @@ const G = (function () {
     // status bar parameters
     let time = 30, initTime = 30, score = 0, level = 0;
     let inputEnabled = true, pathmap, animateTimer, gameTimer;
+    let gameOver = false, win = false;
     // constants
     const params = {
         gridColor: 0x7f7f7f,
@@ -329,7 +330,7 @@ const G = (function () {
     function drawMap() {
         let map = maps[level];
 
-        PS.gridPlane(params.planeMap)
+        PS.gridPlane(params.planeLight)
         let i = 0;
         for (let y = 0; y < map.height; y += 1) {
             for (let x = 0; x < map.width; x += 1) {
@@ -352,8 +353,9 @@ const G = (function () {
                 i += 1;
             }
         }
-        PS.gridPlane(params.planeLight);
-        PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+        if(!win){
+            PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+        }
         pathmap = PS.pathMap(map);
         //PS.gridPlane(params.planeMap);
     }
@@ -428,6 +430,13 @@ const G = (function () {
         }
     }
 
+    // Turn fade off for this bead.
+    // Meant to be called as the onEnd
+    // option of PS.fade()
+    function endFade(x, y){
+        PS.fade(x, y, 0)
+    }
+
     // Changes level every 5 points
     async function levelChange() {
 
@@ -437,6 +446,10 @@ const G = (function () {
             PS.statusText(messages[player.progress]);
             player.progress += 1;
             inputEnabled = false;
+            // fade isn't working as intended right now, so commented out
+            // PS.fade(player.position[0], player.position[1], 60,
+            //     {onEnd : endFade, params : [player.position[0], player.position[1]]})
+            player.color = PS.spriteSolidColor(player.id, player.color + 0x2d2d2d)
             await sleep(2000);
             level = PS.random(5);
             //PS.debug("Changing level to " + level + "\n")
@@ -483,7 +496,7 @@ const G = (function () {
     // Timer
     function myTimer() {
         if (score > 0) {
-            if (time > 0) {
+            if (time > 0 && !gameOver) {
                 if(inputEnabled){
                     PS.statusText("Timer:" + time + " Wisdom:"  + score + "/25");
                     time -= 1;
@@ -493,6 +506,8 @@ const G = (function () {
                     time = initTime;
                     score = 0;
                     inputEnabled = false;
+                    win = true;
+                    drawMap();
                 }
             } else {
                 PS.audioPlay("fx_squawk", {volume: 0.2})
@@ -501,6 +516,8 @@ const G = (function () {
                 drawMap();
                 time = initTime;
                 score = 0;
+                gameOver = true;
+                inputEnabled = false;
 
                 while (isWall(player.position[0], player.position[1])) {
                     if (player.position[0] >= 8) {
@@ -686,14 +703,18 @@ const G = (function () {
             // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
             // Disable the previous flashlight
-            PS.gridPlane(params.planeLight);
-            PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
-            PS.gridPlane(params.planeMap);
-            PS.border(PS.ALL, PS.ALL, 0);
-            PS.scale(PS.ALL, PS.ALL, 100);
+            if(!win){
+                PS.gridPlane(params.planeLight);
+                PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+                PS.gridPlane(params.planeMap);
+                PS.border(PS.ALL, PS.ALL, 0);
+                PS.scale(PS.ALL, PS.ALL, 100);
+            }
 
             // Draw the flashlight again
-            doFlashlight(x, y);
+            if(!gameOver){
+                doFlashlight(x, y);
+            }
         },
         touch: function (x, y) {
             // PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
