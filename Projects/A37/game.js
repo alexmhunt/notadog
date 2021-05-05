@@ -41,7 +41,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 30, initTime = 30, score = 0, highScore = 0, levelNum = 0;
+    let time = 30, initTime = 30, score = 0, levelNum = 0;
     let gameOver = false, pathmap, animateTimer, gameTimer;
     // constants
     const params = {
@@ -468,18 +468,16 @@ const G = (function () {
     function myTimer() {
         if (score > 0) {
             if (time > 0) {
-                PS.statusText("Timer:" + time + " Score:" + score + " Highscore:" + highScore);
+                PS.statusText("Timer:" + time + " Tracker:"  + score + "/25");
                 time -= 1;
-            } else {
-                if (score > highScore) {
-                    highScore = score;
-                    PS.audioPlay("fx_tada", {volume: 0.1})
-                    PS.statusText("HIGHSCORE!!!")
-                } else {
-                    PS.audioPlay("fx_squawk", {volume: 0.2})
-                    PS.statusText("Try Again")
+                if (score == 25){
+                    PS.statusText("You're Winners!");
+                    time = initTime;
+                    score = 0;
                 }
-
+            } else {
+                PS.audioPlay("fx_squawk", {volume: 0.2})
+                PS.statusText("Try Again")
                 levelNum = PS.random(5);
                 drawMap();
                 time = initTime;
@@ -638,7 +636,7 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
-            PS.statusText("Collect the Wise Koroks")
+            PS.statusText("Collect 20 pieces of the Woods Wisdom")
 
             initPlayer();
             pathmap = PS.pathMap(maps[levelNum])
