@@ -503,11 +503,8 @@ const G = (function () {
                 }
                 if (score == 25){
                     PS.statusText("You have achieved inner wisdom!");
-                    time = initTime;
-                    score = 0;
                     inputEnabled = false;
                     win = true;
-                    drawMap();
                 }
             } else {
                 PS.audioPlay("fx_squawk", {volume: 0.2})
@@ -721,6 +718,20 @@ const G = (function () {
             if(!inputEnabled){
                 return;
             }
+            if (win == true){
+                if ((0 <= x <= 15) && (0 <= y <= 15)){
+                    level = 0;
+                    drawMap();
+                }
+            }
+
+            if (gameOver == true){
+                if (x >= 0 && y >= 0){
+                    level = 0;
+                    drawMap();
+                }
+            }
+
             let path = PS.pathFind(pathmap, player.position[0], player.position[1], x, y);
             if (path.length > 0) {
                 player.pathPos = 0;
@@ -743,4 +754,3 @@ PS.init = G.init;
 PS.touch = G.touch;
 PS.keyDown = G.keyDown;
 PS.enter = G.enter;
-PS.touch = G.touch;
