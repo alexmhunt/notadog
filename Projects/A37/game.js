@@ -68,6 +68,7 @@ const G = (function () {
         pathPos: 0,
     }
     let items = []
+    const switchLevelSound = ["l_piano_c6", "l_piano_db6", "l_piano_d6", "l_piano_eb6", "piano_e6"];
     const messages = ["The wood shifts around you.", "The wood's wisdom grows stronger.",
     "You can feel it surge within you.", "So close...", ""]
 
@@ -435,6 +436,11 @@ const G = (function () {
         if ((score > 0) && (score % 5 == 0)) {
 
             // Display flavor text
+            if (score == targetScore){
+                PS.audioPlay("perc_triangle")
+            } else {
+                PS.audioPlay(switchLevelSound[(PS.random(5) - 1)], {volume:0.3});
+            }
             PS.statusText(messages[player.progress]);
             player.progress += 1;
             inputEnabled = false;
@@ -442,7 +448,7 @@ const G = (function () {
             // PS.fade(player.position[0], player.position[1], 60,
             //     {onEnd : endFade, params : [player.position[0], player.position[1]]})
             player.color = PS.spriteSolidColor(player.id, player.color + 0x2d2d2d)
-            await sleep(2000);
+            await sleep(3000);
             level = PS.random(5);
             //PS.debug("Changing level to " + level + "\n"
             destroyItem();
@@ -496,13 +502,15 @@ const G = (function () {
                     time -= 1;
                 }
                 if (score == targetScore){
-                    destroyItem();
-                    PS.statusText("You have achieved inner wisdom!");
+                    PS.statusText("Inner wisdom achieved!! (Restart->Click)");
+                    time = initTime;
+                    score = 0;
                     win = true;
+                    destroyItem();
                 }
             } else {
                 PS.audioPlay("fx_squawk", {volume: 0.2})
-                PS.statusText("Try Again")
+                PS.statusText("Try Again (Restart->Click)")
                 time = initTime;
                 score = 0;
                 gameOver = true;
