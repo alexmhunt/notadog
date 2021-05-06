@@ -41,7 +41,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 
 const G = (function () {
     // status bar parameters
-    let time = 30, initTime = 30, score = 0, level = 0;
+    let time = 30, initTime = 30, score = 0, level = 0, targetScore = 25;
     let inputEnabled = true, pathmap, animateTimer, gameTimer;
     let gameOver = false, win = false;
     // constants
@@ -390,16 +390,8 @@ const G = (function () {
     };
 
     function destroyItem() {
-        let newItem;
-        PS.scale(itemParams.positionX, itemParams.positionY, 100);
         // delete old item
         items.splice(2, 1);
-        // add in new item
-        newItem = theItem();
-        items.push(newItem);
-
-        PS.border(PS.ALL, PS.ALL, 0);
-
     }
 
     function initPlayer() {
@@ -452,9 +444,10 @@ const G = (function () {
             player.color = PS.spriteSolidColor(player.id, player.color + 0x2d2d2d)
             await sleep(2000);
             level = PS.random(5);
-            //PS.debug("Changing level to " + level + "\n")
-
+            //PS.debug("Changing level to " + level + "\n"
+            destroyItem();
             drawMap();
+            createItem();
             while (isWall(player.position[0], player.position[1])) {
                 if (player.position[0] >= 8) {
                     playerMove(clampToGrid(player.position[0] - 1), player.position[1])
@@ -488,39 +481,32 @@ const G = (function () {
             } else if (score % 2 == 1) {
                 PS.audioPlay("perc_block_high", {volume: 0.2})
             }
-            levelChange();
             destroyItem();
+            createItem();
+            levelChange();
         }
     }
 
     // Timer
     function myTimer() {
         if (score > 0) {
-            if (time > 0 && !gameOver) {
+            if (time > 0 && !gameOver && !win) {
                 if(inputEnabled){
-                    PS.statusText("Timer:" + time + " Wisdom:"  + score + "/25");
+                    PS.statusText("Timer:" + time + " Wisdom:"  + score + "/" + targetScore.toString());
                     time -= 1;
                 }
-                if (score == 25){
+                if (score == targetScore){
+                    destroyItem();
                     PS.statusText("You have achieved inner wisdom!");
                     win = true;
                 }
             } else {
                 PS.audioPlay("fx_squawk", {volume: 0.2})
                 PS.statusText("Try Again")
-                level = PS.random(5);
-                drawMap();
                 time = initTime;
                 score = 0;
                 gameOver = true;
-
-                while (isWall(player.position[0], player.position[1])) {
-                    if (player.position[0] >= 8) {
-                        playerMove(clampToGrid(player.position[0] - 1), player.position[1])
-                    } else {
-                        playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
-                    }
-                }
+                destroyItem();
             }
         }
     }
@@ -667,7 +653,7 @@ const G = (function () {
             PS.gridColor(params.gridColor);
             PS.border(PS.ALL, PS.ALL, 0);
             PS.statusColor(params.statusColor);
-            PS.statusText("Collect 20 pieces of the Wood's Wisdom.")
+            PS.statusText("Collect " + targetScore.toString() + " pieces of the Wood's Wisdom.")
 
             initPlayer();
             pathmap = PS.pathMap(maps[level])
@@ -716,13 +702,21 @@ const G = (function () {
 
             if(win == true || gameOver == true){
                 if(x < params.gridSize[0] && y < params.gridSize[0]){
-                    win = false;
-                    gameOver = false;
                     level = 0;
                     drawMap();
+                    createItem();
                     player.color = PS.spriteSolidColor(player.id, 0x7f7f7f);
                     score = 0;
                     time = initTime;
+                    win = false;
+                    gameOver = false;
+                    while (isWall(player.position[0], player.position[1])) {
+                        if (player.position[0] >= 8) {
+                            playerMove(clampToGrid(player.position[0] - 1), player.position[1])
+                        } else {
+                            playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
+                        }
+                    }
                 }
             }
 
