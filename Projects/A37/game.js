@@ -718,6 +718,7 @@ const G = (function () {
                     time = initTime;
                     win = false;
                     gameOver = false;
+                    PS.statusText("Collect " + targetScore.toString() + " pieces of the Wood's Wisdom.")
                     while (isWall(player.position[0], player.position[1])) {
                         if (player.position[0] >= 8) {
                             playerMove(clampToGrid(player.position[0] - 1), player.position[1])
