@@ -38,4 +38,4 @@ Oliver - [Piano Hints](https://alexmhunt.github.io/notadog/Projects/PianoHints/g
 [Further Refined Night Run](https://alexmhunt.github.io/notadog/Projects/A37/game.html)
 
 ### A38 - Complete a design challenge
-[Alex's Whither mod](https://alexmhunt.github.io/notadog/Projects/A38/game.html)
+[Alex's Whither mod](https://alexmhunt.github.io/notadog/Projects/A38-alex/game.html)
