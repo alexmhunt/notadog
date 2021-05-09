@@ -43,7 +43,7 @@ const G = (function () {
     // status bar parameters
     let time = 30, initTime = 30, score = 0, level = 0, targetScore = 25;
     let inputEnabled = true, pathmap, animateTimer, gameTimer;
-    let gameOver = false, win = false;
+    let gameOver = false, win = false, transitioning = false;
     // constants
     const params = {
         gridColor: [127, 127, 127],
@@ -354,7 +354,7 @@ const G = (function () {
                 i += 1;
             }
         }
-        if(!win){
+        if(!win && !transitioning){
             PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
         }
         pathmap = PS.pathMap(map);
@@ -435,7 +435,9 @@ const G = (function () {
     async function levelChange() {
 
         if ((score > 0) && (score % 5 == 0)) {
-
+            inputEnabled = false;
+            transitioning = true;
+            drawMap();
             // Display flavor text
             if (score == targetScore){
                 PS.audioPlay("perc_triangle")
@@ -444,15 +446,15 @@ const G = (function () {
             }
             PS.statusText(messages[player.progress]);
             player.progress += 1;
-            inputEnabled = false;
-            // fade isn't working as intended right now, so commented out
-            // PS.fade(player.position[0], player.position[1], 60,
-            //     {onEnd : endFade, params : [player.position[0], player.position[1]]})
-            player.color = PS.spriteSolidColor(player.id, player.color + 0x2d2d2d)
-            await sleep(3000);
+            player.color = [player.color[0] + 20, player.color[1] + 20, player.color[2] + 20]
+            PS.spriteSolidColor(player.id, player.color);
+            await sleep(2000);
             level = PS.random(5);
             //PS.debug("Changing level to " + level + "\n"
             destroyItem();
+
+
+            transitioning = false;
             drawMap();
             createItem();
             while (isWall(player.position[0], player.position[1])) {
@@ -462,7 +464,6 @@ const G = (function () {
                     playerMove(clampToGrid(player.position[0] + 1), player.position[1]);
                 }
             }
-
             inputEnabled = true;
         }
     }
@@ -545,7 +546,6 @@ const G = (function () {
 
         let lines = []; // ray traces
         let newX, newY;
-        let edgeThreshold = 2;
         // width of flashlight
         // (how many ray traces to do in each direction)
         let width = 8;
@@ -567,8 +567,6 @@ const G = (function () {
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
-            //PS.debug("diagonal\n")
-            edgeThreshold = null;
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
@@ -586,7 +584,6 @@ const G = (function () {
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
-
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
@@ -635,18 +632,14 @@ const G = (function () {
                         if ((lines[i][j]) && (mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
                             switch (data) {
                                 case 0:
+                                    // light hit a wall
                                     color = params.wallColor;
-                                    if((edgeThreshold) && i >= (lines.length - edgeThreshold)){
-                                        color = [params.wallColor[0] + dimming, params.wallColor[1] + dimming, params.wallColor[2] + dimming];
-                                    }
-                                    //PS.debug(color + '\n')
+                                    // make area after wall dark
                                     lines[i].splice(j + 1);
                                     break;
                                 case 1:
+                                    // light hit a regular background bead
                                     color = params.backColor;
-                                    if((edgeThreshold) && i >= (lines.length - edgeThreshold)){
-                                        color = [params.backColor[0] + dimming, params.backColor[1] + dimming, params.backColor[2] + dimming];
-                                    }
                                     break;
                                 default:
                                     break;
