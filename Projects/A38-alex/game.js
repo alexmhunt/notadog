@@ -790,7 +790,6 @@ const W = ( function () {
 
 			if(color[0] === PS.COLOR_BLACK){
 				PS.timerStop(fadeTimer)
-				PS.statusText("fin.")
 			}
 
 		}
