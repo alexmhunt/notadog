@@ -443,13 +443,13 @@ const G = (function () {
                 PS.audioPlay("perc_triangle")
             } else {
                 PS.audioPlay(switchLevelSound[(PS.random(5) - 1)], {volume:0.3});
+                player.progress += 1;
+                level = PS.random(5);
             }
             PS.statusText(messages[player.progress]);
-            player.progress += 1;
             player.color = [player.color[0] + 20, player.color[1] + 20, player.color[2] + 20]
             PS.spriteSolidColor(player.id, player.color);
             await sleep(3000);
-            level = PS.random(5);
             //PS.debug("Changing level to " + level + "\n"
             destroyItem();
 
