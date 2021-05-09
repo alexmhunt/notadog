@@ -502,6 +502,7 @@ const G = (function () {
                 if(inputEnabled){
                     PS.statusText("Timer:" + time + " Wisdom:"  + score + "/" + targetScore.toString());
                     time -= 1;
+                    PS.audioPlay("fx_click");
                 }
                 if (score == targetScore){
                     PS.statusText("Inner wisdom achieved!! (Restart->Click)");
