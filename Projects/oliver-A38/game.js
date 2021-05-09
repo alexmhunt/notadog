@@ -39,8 +39,8 @@ const W = ( function () {
 	const _STEP13 = 20;
 
 	// lets important for ending
-	let _COLOR_FLOOR = PS.COLOR_GRAY;
-	let _COLOR_FLOOR_BORDER = PS.COLOR_GRAY;
+	let _color_floor = PS.COLOR_GRAY;
+	let _color_floor_border = PS.COLOR_GRAY;
 	const _COLOR_GOAL = PS.COLOR_GRAY;
 	const _COLOR_GOAL_BORDER = PS.COLOR_BLACK;
 	const _COLOR_ACTOR = PS.COLOR_BLACK;
@@ -472,7 +472,7 @@ const W = ( function () {
 		PS.alpha( x, y, _actor_delta );
 		PS.border( x, y, size );
 		if (_level == 20);
-		PS.borderColor( x, y, PS.COLOR_WHITE );
+		PS.borderColor( x, y, _COLOR_ACTOR_BORDER );
 		PS.borderAlpha( x, y, _COLOR_BORDER_DELTA);
 		PS.data( x, y, _IS_FLOOR ); // set id
 	};
@@ -480,10 +480,10 @@ const W = ( function () {
 	// Change x, y to floor
 
 	const _place_floor = function ( x, y ) {
-		PS.color( x, y, _COLOR_FLOOR );
+		PS.color( x, y, _color_floor );
 		PS.alpha( x, y, PS.ALPHA_OPAQUE );
 		PS.border( x, y, 0 );
-		PS.borderColor( x, y, _COLOR_FLOOR_BORDER );
+		PS.borderColor( x, y, _color_floor_border );
 		PS.borderAlpha( x, y, PS.ALPHA_OPAQUE );
 		PS.data( x, y, _IS_FLOOR ); // set id
 	};
@@ -522,11 +522,11 @@ const W = ( function () {
 
 		// Completely reset grid
 
-		PS.gridColor( _COLOR_FLOOR );
-		PS.color( PS.ALL, PS.ALL, _COLOR_FLOOR );
+		PS.gridColor( _color_floor );
+		PS.color( PS.ALL, PS.ALL, _color_floor );
 		PS.alpha( PS.ALL, PS.ALL, PS.ALPHA_OPAQUE );
 		PS.border( PS.ALL, PS.ALL, 0 ); // hide borders
-		PS.borderColor( PS.ALL, PS.ALL, _COLOR_FLOOR_BORDER );
+		PS.borderColor( PS.ALL, PS.ALL, _color_floor_border );
 		PS.borderAlpha( PS.ALL, PS.ALL, PS.ALPHA_OPAQUE );
 		PS.data( PS.ALL, PS.ALL, _IS_FLOOR ); // all floor
 
@@ -720,8 +720,8 @@ const W = ( function () {
 					j -= 10;
 					PS.color(PS.ALL, PS.ALL, j, j, j)
 					PS.gridColor(j, j, j)
-					_COLOR_FLOOR = j, j, j
-					_COLOR_FLOOR_BORDER = j, j, j
+					_color_floor = j, j, j
+					_color_floor_border = j, j, j
 					PS.statusColor(k, k, k)
 				  }, i * 500);
 				}
