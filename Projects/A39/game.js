@@ -46,11 +46,11 @@ const G = (function () {
     let gameOver = false, win = false;
     // constants
     const params = {
-        gridColor: 0x7f7f7f,
-        backColor: 0x424242,
-        wallColor: PS.COLOR_WHITE,
+        gridColor: [127, 127, 127],
+        backColor: [66, 66, 66],
+        wallColor: [255, 255, 255],
         gridSize: [16, 16],
-        player: 0x7f7f7f,
+        player: [127, 127, 127],
         light: PS.COLOR_WHITE,
         statusColor: PS.COLOR_WHITE,
         planeMap: 4,
@@ -404,6 +404,7 @@ const G = (function () {
         player.position = [8, 8];
     }
 
+
     // Player movement animation
     function playerAnimate() {
         if (player.path) {
@@ -543,6 +544,8 @@ const G = (function () {
         }
 
         let lines = []; // ray traces
+        let newX, newY;
+        let edgeThreshold = 2;
         // width of flashlight
         // (how many ray traces to do in each direction)
         let width = 8;
@@ -556,7 +559,7 @@ const G = (function () {
         // do flashlight ray casts based on angle of mouse cursor
         // compared to player position
         if (theta_degrees == 45 || theta_degrees == 135) {
-            let newX = 0, newY = 0;
+            newX = 0, newY = 0;
             // flashlight extends to end of grid
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
@@ -564,22 +567,26 @@ const G = (function () {
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
+            //PS.debug("diagonal\n")
+            edgeThreshold = null;
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY)))
             for (let i = 1; i <= width; i++) {
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - i), clampToGrid(newY)))
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + i), clampToGrid(newY)))
 
-                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - i)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY + i)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX), clampToGrid(newY - i)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX + i), clampToGrid(newY)))
+                lines.push(PS.line(player.position[0], player.position[1], clampToGrid(newX - i), clampToGrid(newY)))
             }
+
         } else if (((theta_degrees > 45) && (theta_degrees < 135))) {
-            let newY = 0;
+            newY = 0;
             // flashlight extends to end of grid
             if (y > player.position[1]) {
                 newY = params.gridSize[1] - 1
             }
+
 
             // ray casts
             lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x), newY));
@@ -587,10 +594,12 @@ const G = (function () {
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - i), clampToGrid(newY)))
                 lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + i), clampToGrid(newY)))
             }
+            //lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x - width), clampToGrid(newY)))
+            //lines.push(PS.line(player.position[0], player.position[1], clampToGrid(x + width), clampToGrid(newY)))
         }
         // pointing flashlight to the side
         else if ((theta_degrees < 45) || (theta_degrees > 135)) {
-            let newX = 0;
+            newX = 0;
             // flashlight extends to end of grid
             if (x > player.position[0]) {
                 newX = params.gridSize[0] - 1
@@ -622,14 +631,22 @@ const G = (function () {
                     for (let mapx = 0; mapx < map.width; mapx += 1) {
                         let data = map.data[k];
                         let color = null;
+                        let dimming = -50;
                         if ((lines[i][j]) && (mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
                             switch (data) {
                                 case 0:
                                     color = params.wallColor;
+                                    if((edgeThreshold) && i >= (lines.length - edgeThreshold)){
+                                        color = [params.wallColor[0] + dimming, params.wallColor[1] + dimming, params.wallColor[2] + dimming];
+                                    }
+                                    //PS.debug(color + '\n')
                                     lines[i].splice(j + 1);
                                     break;
                                 case 1:
                                     color = params.backColor;
+                                    if((edgeThreshold) && i >= (lines.length - edgeThreshold)){
+                                        color = [params.backColor[0] + dimming, params.backColor[1] + dimming, params.backColor[2] + dimming];
+                                    }
                                     break;
                                 default:
                                     break;
