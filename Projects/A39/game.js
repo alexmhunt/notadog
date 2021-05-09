@@ -448,7 +448,7 @@ const G = (function () {
             player.progress += 1;
             player.color = [player.color[0] + 20, player.color[1] + 20, player.color[2] + 20]
             PS.spriteSolidColor(player.id, player.color);
-            await sleep(2000);
+            await sleep(3000);
             level = PS.random(5);
             //PS.debug("Changing level to " + level + "\n"
             destroyItem();
