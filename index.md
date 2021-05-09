@@ -40,4 +40,4 @@ Oliver - [Piano Hints](https://alexmhunt.github.io/notadog/Projects/PianoHints/g
 ### A38 - Complete a design challenge
 [Alex's Whither mod](https://alexmhunt.github.io/notadog/Projects/A38-alex/game.html)
 
-[Oliver's Whither mod](https://alexmhunt.github.io/notadog/Projects/A38-oliver/game.html)
+[Oliver's Whither mod](https://alexmhunt.github.io/notadog/Projects/oliver-A38/game.html)
