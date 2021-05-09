@@ -629,7 +629,6 @@ const G = (function () {
                     for (let mapx = 0; mapx < map.width; mapx += 1) {
                         let data = map.data[k];
                         let color = null;
-                        let dimming = -50;
                         if ((lines[i][j]) && (mapx == lines[i][j][0]) && (mapy == lines[i][j][1])) {
                             switch (data) {
                                 case 0:
@@ -724,7 +723,8 @@ const G = (function () {
                     level = 0;
                     drawMap();
                     createItem();
-                    player.color = PS.spriteSolidColor(player.id, 0x7f7f7f);
+                    player.color = [128, 128, 128]
+                    PS.spriteSolidColor(player.id, player.color);
                     score = 0;
                     time = initTime;
                     win = false;
