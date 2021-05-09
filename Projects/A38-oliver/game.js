@@ -64,7 +64,7 @@ const W = ( function () {
 	let _max_x; // maximum actor x-pos
 	let _max_y; // maximum actor y-pos
 
-	let _level = 0; // starting/current level
+	let _level = 20; // starting/current level
 
 	let _actor_x; // current actor x-pos
 	let _actor_y; // current actor y-pos
