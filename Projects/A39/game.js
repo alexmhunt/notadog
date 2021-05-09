@@ -700,7 +700,7 @@ const G = (function () {
             // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
             // Disable the previous flashlight
-            if(!win){
+            if(!win && !transitioning){
                 PS.gridPlane(params.planeLight);
                 PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
                 PS.gridPlane(params.planeMap);
