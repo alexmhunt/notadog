@@ -440,20 +440,20 @@ const G = (function () {
             drawMap();
             // Display flavor text
             if (score == targetScore){
-                PS.audioPlay("perc_triangle")
+                PS.audioPlay("perc_triangle");
             } else {
                 PS.audioPlay(switchLevelSound[(PS.random(5) - 1)], {volume:0.3});
-                player.progress += 1;
-                level = PS.random(5);
             }
             PS.statusText(messages[player.progress]);
             player.color = [player.color[0] + 20, player.color[1] + 20, player.color[2] + 20]
             PS.spriteSolidColor(player.id, player.color);
             await sleep(3000);
+            player.progress += 1;
             //PS.debug("Changing level to " + level + "\n"
+            if (score != targetScore){
+                level = PS.random(5);
+            }
             destroyItem();
-
-
             transitioning = false;
             drawMap();
             createItem();
@@ -482,7 +482,7 @@ const G = (function () {
         player.position = [x, y];
 
         if (x == itemParams.positionX && y == itemParams.positionY) {
-            time += 3;
+            time += 4;
             score += 1;
             if (score % 2 == 0) {
                 PS.audioPlay("perc_block_low", {volume: 0.2})
