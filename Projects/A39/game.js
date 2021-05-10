@@ -482,7 +482,7 @@ const G = (function () {
         player.position = [x, y];
 
         if (x == itemParams.positionX && y == itemParams.positionY) {
-            time += 4;
+            time += 3;
             score += 1;
             if (score % 2 == 0) {
                 PS.audioPlay("perc_block_low", {volume: 0.2})
