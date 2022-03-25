@@ -385,9 +385,9 @@ const G = ( function () {
 		}
 		else{
 			drawMap(maps[1]);
-			let lvl1note1 = new noteBlock( 8, 11, "testsound", 1);
-			let lvl1note2 = new noteBlock( 8, 9, "testsound", 2);
-			let lvl1note3 = new noteBlock( 8, 6, "testsound", 3);
+			let lvl1note1 = new noteBlock( 8, 5, "testsound", 1);
+			let lvl1note2 = new noteBlock( 8, 4, "testsound", 2);
+			let lvl1note3 = new noteBlock( 8, 3, "testsound", 3);
 			let lvl1note4 = new noteBlock( 8, 2, "testers", 4);
 			// note: you need to initialize color after the first function call so that PS.spriteSolidColor() works
 			//PS.debug(lv1note1.id + "\n")
@@ -1024,7 +1024,7 @@ const G = ( function () {
 			// called by your PS.init() handler.
 			// DO NOT MODIFY IT, except for the change
 			// explained in the comment below.
-
+			/*
 			PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
 				if ( user === PS.ERROR ) {
 					return;
@@ -1032,7 +1032,7 @@ const G = ( function () {
 				PS.dbEvent( TEAM, "startup", user );
 				PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
 			}, { active : false } );
-
+			*/
 			// Change the false in the final line above to true
 			// before deploying the code to your Web site.
 		},
