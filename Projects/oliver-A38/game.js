@@ -713,7 +713,7 @@ const W = ( function () {
 				let j = 128; // grey initially
 				let k = 255; // black initially
 
-				// sets up ending animation (too musch for PS.timer)
+				// sets up ending animation (too much for PS.timer)
 				for(var i = 8; i > 0; i -= 1) {
 				  setTimeout(function () {
 					k -= 32;
