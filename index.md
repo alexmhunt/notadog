@@ -9,7 +9,7 @@ Oliver Rayner
 
 ### A09 - Mod the sample toy
 **Task**:
-Make modifications to an already existing toy of pressable beads.
+Make modifications to an already existing toy of pressable beads.<br>
 **Progress**:
 New!
 
