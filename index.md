@@ -10,7 +10,7 @@ Oliver Rayner
 ### A09 - Mod the sample toy
 **Task**:
 Make modifications to an already existing toy of pressable beads.<br>
-**Progress**:
+**Update**:
 New!
 
 Alex - [Gradient Maker](https://alexmhunt.github.io/notadog/Projects/GradientMaker/game.html)
